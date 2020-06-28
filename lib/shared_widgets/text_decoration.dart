@@ -1,10 +1,11 @@
+import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
-import 'package:mlkit/mlkit.dart';
+// import 'package:mlkit/mlkit.dart';
 
 class TextDetectDecoration extends Decoration {
   final Size _originalImageSize;
-  final List<VisionText> _texts;
-  TextDetectDecoration(List<VisionText> texts, Size originalImageSize)
+  final List _texts;
+  TextDetectDecoration(List texts, Size originalImageSize)
       : _texts = texts,
         _originalImageSize = originalImageSize;
 
@@ -15,7 +16,7 @@ class TextDetectDecoration extends Decoration {
 }
 
 class _TextDetectPainter extends BoxPainter {
-  final List<VisionText> _texts;
+  final List _texts;
   final Size _originalImageSize;
   _TextDetectPainter(texts, originalImageSize)
       : _texts = texts,
@@ -32,12 +33,12 @@ class _TextDetectPainter extends BoxPainter {
     final _heightRatio = _originalImageSize.height / configuration.size.height;
     final _widthRatio = _originalImageSize.width / configuration.size.width;
     for (var text in _texts) {
-      print("text : ${text.text}, rect : ${text.rect}");
+      print("text : ${text.text}, rect : ${text.boundingBox}");
       final _rect = Rect.fromLTRB(
-          offset.dx + text.rect.left / _widthRatio,
-          offset.dy + text.rect.top / _heightRatio,
-          offset.dx + text.rect.right / _widthRatio,
-          offset.dy + text.rect.bottom / _heightRatio);
+          offset.dx + text.boundingBox.left / _widthRatio,
+          offset.dy + text.boundingBox.top / _heightRatio,
+          offset.dx + text.boundingBox.right / _widthRatio,
+          offset.dy + text.boundingBox.bottom / _heightRatio);
       //final _rect = Rect.fromLTRB(24.0, 115.0, 75.0, 131.2);
       print("_rect : ${_rect}");
       canvas.drawRect(_rect, paint);

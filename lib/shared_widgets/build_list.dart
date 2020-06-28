@@ -40,6 +40,9 @@ class BuildList extends StatelessWidget {
               ),
             ),
           ),
+          SizedBox(
+            width: 4.0,
+          ),
           Row(
             children: <Widget>[
               GestureDetector(

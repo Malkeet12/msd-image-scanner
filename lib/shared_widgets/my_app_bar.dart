@@ -26,7 +26,8 @@ class MyAppBar extends StatelessWidget with PreferredSizeWidget {
       ),
       leading: hideBack != true
           ? GestureDetector(
-              onTap: onBackTap != null ? onBackTap : () {},
+              onTap: () =>
+                  onBackTap != null ? onBackTap() : Navigator.pop(context),
               child: Container(
                 margin: EdgeInsets.all(5.0),
                 decoration: new BoxDecoration(

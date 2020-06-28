@@ -1,10 +1,8 @@
-import 'dart:async';
 import 'dart:io';
 
-import 'package:camera/camera.dart';
+import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:image_scanner/picture.dart';
 import 'package:image_scanner/shared_widgets/blue_button.dart';
 import 'package:image_scanner/shared_widgets/build_list.dart';
 import 'package:image_scanner/shared_widgets/my_app_bar.dart';
@@ -13,22 +11,23 @@ import 'package:image_scanner/shared_widgets/text_decoration.dart';
 import 'package:image_scanner/theme/style.dart';
 import 'package:image_scanner/util/analytics_service.dart';
 import 'package:image_scanner/util/common_util.dart';
-import 'package:mlkit/mlkit.dart';
 import 'package:share/share.dart';
 
-class CopyTextWidget extends StatefulWidget {
+class GalleryView extends StatefulWidget {
   final scaffoldKey;
 
-  const CopyTextWidget({Key key, this.scaffoldKey}) : super(key: key);
+  const GalleryView({Key key, this.scaffoldKey}) : super(key: key);
   @override
-  _CopyTextWidgetState createState() => _CopyTextWidgetState();
+  _GalleryViewState createState() => _GalleryViewState();
 }
 
-class _CopyTextWidgetState extends State<CopyTextWidget> {
+class _GalleryViewState extends State<GalleryView> {
   File _file;
-  List<VisionText> _currentLabels = <VisionText>[];
-
-  FirebaseVisionTextDetector detector = FirebaseVisionTextDetector.instance;
+  List labels = [];
+  var completeDoc;
+  final TextRecognizer textRecognizer =
+      FirebaseVision.instance.textRecognizer();
+  // FirebaseVisionTextDetector detector = FirebaseVisionTextDetector.instance;
 
   @override
   initState() {
@@ -46,10 +45,31 @@ class _CopyTextWidgetState extends State<CopyTextWidget> {
           _file = File(pickedFile.path);
         });
         try {
-          var currentLabels = await detector.detectFromPath(_file?.path);
-
+          var image = FirebaseVisionImage.fromFilePath(_file.path);
+          final VisionText visionText =
+              await textRecognizer.processImage(image);
+          String text = visionText.text;
+          //reseting labels list before adding new image data
+          labels = [];
+          for (TextBlock block in visionText.blocks) {
+            final Rect boundingBox = block.boundingBox;
+            final List<Offset> cornerPoints = block.cornerPoints;
+            final String text = block.text;
+            final List<RecognizedLanguage> languages =
+                block.recognizedLanguages;
+            print('languages $languages');
+            print('text $text');
+            for (TextLine line in block.lines) {
+              // Same getters as TextBlock
+              labels.add(line);
+              for (TextElement element in line.elements) {
+                // Same getters as TextBlock
+              }
+            }
+          }
           setState(() {
-            _currentLabels = currentLabels;
+            completeDoc = text;
+            labels = labels;
           });
         } catch (e) {
           print(e.toString());
@@ -96,7 +116,7 @@ class _CopyTextWidgetState extends State<CopyTextWidget> {
             if (snapshot.hasData) {
               return Container(
                   foregroundDecoration:
-                      TextDetectDecoration(_currentLabels, snapshot.data),
+                      TextDetectDecoration(labels, snapshot.data),
                   child: Image.file(_file, fit: BoxFit.fitWidth));
             } else {
               return Text('Detecting...');
@@ -108,10 +128,6 @@ class _CopyTextWidgetState extends State<CopyTextWidget> {
   }
 
   Widget _buildBody() {
-    var _fullString = '';
-    for (var i = 0; i < _currentLabels.length; i++) {
-      _fullString += _currentLabels[i].text + ' ';
-    }
     return SingleChildScrollView(
       child: Center(
         child: Container(
@@ -151,13 +167,13 @@ class _CopyTextWidgetState extends State<CopyTextWidget> {
                           name: 'share_consolidated_doc_click',
                         );
                         final RenderBox box = context.findRenderObject();
-                        Share.share(_fullString,
+                        Share.share(completeDoc,
                             sharePositionOrigin:
                                 box.localToGlobal(Offset.zero) & box.size);
                       },
                     ),
                   ),
-                BuildList(texts: _currentLabels),
+                BuildList(texts: labels),
               ],
             ),
           ),

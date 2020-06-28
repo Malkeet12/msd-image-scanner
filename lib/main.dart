@@ -1,9 +1,8 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:image_scanner/copy-text.dart';
-import 'package:image_scanner/picture.dart';
+import 'package:image_scanner/screens/take_picture.dart';
+import 'package:image_scanner/screens/gallery_view.dart';
 import 'package:image_scanner/shared_widgets/blue_button.dart';
-import 'package:image_scanner/shared_widgets/primary_button.dart';
 import 'package:image_scanner/theme/style.dart';
 import 'package:image_scanner/util/analytics_service.dart';
 
@@ -40,7 +39,7 @@ class _MyAppState extends State<MyApp> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TakePictureScreen(camera: firstCamera),
+        builder: (context) => TakePicture(camera: firstCamera),
       ),
     );
   }
@@ -52,7 +51,7 @@ class _MyAppState extends State<MyApp> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CopyTextWidget(scaffoldKey: _scaffoldKey),
+        builder: (context) => GalleryView(scaffoldKey: _scaffoldKey),
       ),
     );
   }

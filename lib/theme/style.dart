@@ -23,15 +23,7 @@ extension CustomTextTheme on TextTheme {
       fontSize: 20.0, fontWeight: FontWeight.w500, height: 24.0 / 20.0);
   TextStyle get h4 => TextStyle(
       fontSize: 16.0, fontWeight: FontWeight.w500, height: 20.0 / 16.0);
-  TextStyle get h5 => TextStyle(
-      fontSize: 12.0,
-      fontWeight: FontWeight.w500,
-      height: 16.0 / 12.0,
-      letterSpacing: 1.0);
-  TextStyle get pageTitle => TextStyle(
-      fontSize: 16.0, fontWeight: FontWeight.w700, height: 20.0 / 16.0);
-  TextStyle get body1Regular => TextStyle(
-      fontSize: 14.0, fontWeight: FontWeight.w400, height: 18.0 / 14.0);
+
   TextStyle get body1Medium => TextStyle(
       fontSize: 14.0, fontWeight: FontWeight.w500, height: 18.0 / 14.0);
   TextStyle get body1Bold => TextStyle(
@@ -42,13 +34,4 @@ extension CustomTextTheme on TextTheme {
       fontSize: 12.0, fontWeight: FontWeight.w400, height: 16.0 / 12.0);
   TextStyle get body2Medium => TextStyle(
       fontSize: 12.0, fontWeight: FontWeight.w500, height: 16.0 / 12.0);
-  TextStyle get body2Bold => TextStyle(
-      fontSize: 12.0, fontWeight: FontWeight.w700, height: 16.0 / 12.0);
-  TextStyle get body2Italic => TextStyle(
-      fontSize: 12.0,
-      fontWeight: FontWeight.w700,
-      height: 16.0 / 12.0,
-      fontStyle: FontStyle.italic);
-  TextStyle get formFieldText => TextStyle(
-      fontSize: 16.0, fontWeight: FontWeight.w400, letterSpacing: 2.0);
 }
