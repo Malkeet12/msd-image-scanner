@@ -16,6 +16,9 @@ import 'package:mlkit/mlkit.dart';
 import 'package:share/share.dart';
 
 class CopyTextWidget extends StatefulWidget {
+  final scaffoldKey;
+
+  const CopyTextWidget({Key key, this.scaffoldKey}) : super(key: key);
   @override
   _CopyTextWidgetState createState() => _CopyTextWidgetState();
 }
@@ -53,6 +56,13 @@ class _CopyTextWidgetState extends State<CopyTextWidget> {
       }
     } catch (e) {
       print(e.toString());
+      widget.scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text('The user did not allow photo access.'),
+        backgroundColor: Colors.redAccent,
+        duration: Duration(seconds: 2),
+      ));
+
+      Navigator.pop(context);
     }
   }
 

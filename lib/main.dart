@@ -45,14 +45,16 @@ class _MyAppState extends State<MyApp> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CopyTextWidget(),
+        builder: (context) => CopyTextWidget(scaffoldKey: _scaffoldKey),
       ),
     );
   }
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: ColorShades.backgroundColorPrimary,
       appBar: AppBar(
         elevation: 0.0,
