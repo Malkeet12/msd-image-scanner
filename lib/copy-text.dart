@@ -11,6 +11,7 @@ import 'package:image_scanner/shared_widgets/my_app_bar.dart';
 import 'package:image_scanner/shared_widgets/primary_button.dart';
 import 'package:image_scanner/shared_widgets/text_decoration.dart';
 import 'package:image_scanner/theme/style.dart';
+import 'package:image_scanner/util/analytics_service.dart';
 import 'package:image_scanner/util/common_util.dart';
 import 'package:mlkit/mlkit.dart';
 import 'package:share/share.dart';
@@ -53,6 +54,8 @@ class _CopyTextWidgetState extends State<CopyTextWidget> {
         } catch (e) {
           print(e.toString());
         }
+      } else {
+        Navigator.pop(context);
       }
     } catch (e) {
       print(e.toString());
@@ -144,6 +147,9 @@ class _CopyTextWidgetState extends State<CopyTextWidget> {
                     child: BlueButton(
                       text: 'Share consolidated document',
                       onPressed: () {
+                        AnalyticsService().sendEvent(
+                          name: 'share_consolidated_doc_click',
+                        );
                         final RenderBox box = context.findRenderObject();
                         Share.share(_fullString,
                             sharePositionOrigin:

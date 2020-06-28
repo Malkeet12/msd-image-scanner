@@ -5,6 +5,7 @@ import 'package:image_scanner/picture.dart';
 import 'package:image_scanner/shared_widgets/blue_button.dart';
 import 'package:image_scanner/shared_widgets/primary_button.dart';
 import 'package:image_scanner/theme/style.dart';
+import 'package:image_scanner/util/analytics_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +29,9 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   capureImage() async {
+    AnalyticsService().sendEvent(
+      name: 'capture_image_click',
+    );
     // Obtain a list of the available cameras on the device.
     final cameras = await availableCameras();
 
@@ -42,6 +46,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   uploadImage() async {
+    AnalyticsService().sendEvent(
+      name: 'upload_image_click',
+    );
     Navigator.push(
       context,
       MaterialPageRoute(

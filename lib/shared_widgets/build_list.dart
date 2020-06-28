@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_scanner/shared_widgets/blue_button.dart';
 import 'package:image_scanner/shared_widgets/primary_button.dart';
 import 'package:image_scanner/theme/style.dart';
+import 'package:image_scanner/util/analytics_service.dart';
 import 'package:share/share.dart';
 
 class BuildList extends StatelessWidget {
@@ -43,6 +44,9 @@ class BuildList extends StatelessWidget {
             children: <Widget>[
               GestureDetector(
                 onTap: () {
+                  AnalyticsService().sendEvent(
+                    name: 'copy_text_click',
+                  );
                   Scaffold.of(context).showSnackBar(SnackBar(
                     content: Text('Text copied to clipboard '),
                     duration: const Duration(seconds: 1),
@@ -58,6 +62,9 @@ class BuildList extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
+                  AnalyticsService().sendEvent(
+                    name: 'share_text_click',
+                  );
                   Share.share(text,
                       sharePositionOrigin: Rect.fromLTWH(0, 0, 0, 0));
                 },
