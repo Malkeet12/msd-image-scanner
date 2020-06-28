@@ -52,7 +52,7 @@ class ImagePreview extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: PrimaryButton(
                 onPressed: () => Navigator.pop(context),
-                text: 'Upload another',
+                text: 'Click another',
               ),
             ),
             // Image.file(File(imagePath)),
