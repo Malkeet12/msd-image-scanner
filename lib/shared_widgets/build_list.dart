@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_scanner/shared_widgets/blue_button.dart';
 import 'package:image_scanner/shared_widgets/primary_button.dart';
 import 'package:image_scanner/theme/style.dart';
@@ -54,6 +55,7 @@ class BuildList extends StatelessWidget {
                     content: Text('Text copied to clipboard '),
                     duration: const Duration(seconds: 1),
                   ));
+                  Clipboard.setData(ClipboardData(text: text));
                 },
                 child: Icon(
                   Icons.content_copy,
