@@ -34,7 +34,7 @@ class PrimaryButton extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 20),
         height: 42.0,
-        width: 160.0,
+        width: 180.0,
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
