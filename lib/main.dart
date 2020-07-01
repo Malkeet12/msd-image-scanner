@@ -1,7 +1,9 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:image_scanner/screens/take_picture.dart';
 import 'package:image_scanner/screens/gallery_view.dart';
+import 'package:image_scanner/services/foreground_service.dart';
 import 'package:image_scanner/shared_widgets/blue_button.dart';
 import 'package:image_scanner/theme/style.dart';
 import 'package:image_scanner/util/analytics_service.dart';
@@ -42,6 +44,14 @@ class _MyAppState extends State<MyApp> {
         builder: (context) => TakePicture(camera: firstCamera),
       ),
     );
+  }
+
+  detectObject() async {
+    final picker = ImagePicker();
+    var pickedFile = await picker.getImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      ForegroundService.start(pickedFile.path);
+    }
   }
 
   uploadImage() async {
@@ -87,6 +97,13 @@ class _MyAppState extends State<MyApp> {
             BlueButton(
               onPressed: uploadImage,
               text: 'Pick from gallery',
+            ),
+            SizedBox(
+              height: 20.0,
+            ),
+            BlueButton(
+              onPressed: detectObject,
+              text: 'Detect object',
             ),
             // BlueButton(
             //   onPressed: () async {
