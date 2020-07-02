@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_scanner/screens/document_details.dart';
 import 'package:image_scanner/screens/edit_document/edit_document.dart';
 import 'package:image_scanner/shared_widgets/my_pdf_view.dart';
 import 'package:image_scanner/theme/style.dart';
@@ -18,12 +21,12 @@ class Documents extends StatelessWidget {
 
     List<Widget> list = new List<Widget>();
 
-    for (var i = 0; i < docs.length; i++) {
+    for (var i = docs.length - 1; i >= 0; i--) {
       var doc = docs[i];
       var timestamp = doc['timestamp'];
       String delta = DateFormatter.readableDelta(timestamp);
       var name = doc['name'];
-      var path = doc["path"];
+      var images = doc["images"];
 
       list.add(GestureDetector(
         behavior: HitTestBehavior.translucent,
@@ -31,7 +34,9 @@ class Documents extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => EditDoc(doc: doc),
+              builder: (context) => DocumentDetails(
+                doc: doc,
+              ),
             ),
           );
         },
@@ -53,8 +58,10 @@ class Documents extends StatelessWidget {
                     BoxShadow(color: Colors.orange, spreadRadius: 3),
                   ],
                 ),
-                child: MyPdfView(
-                  path: path,
+                child: Image.file(
+                  File(
+                    images[0],
+                  ),
                 ),
               ),
               SizedBox(

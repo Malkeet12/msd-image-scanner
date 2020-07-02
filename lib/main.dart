@@ -1,7 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:image_scanner/screens/documents/user_documents_view.dart';
-import 'package:image_scanner/screens/image_scanner.dart';
+import 'package:image_scanner/screens/documents/all_documents.dart';
 import 'package:image_scanner/screens/take_picture.dart';
 import 'package:image_scanner/screens/gallery_view.dart';
 import 'package:image_scanner/shared_widgets/blue_button.dart';
@@ -62,7 +61,7 @@ class _MyAppState extends State<MyApp> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => UserDocumentsView(),
+        builder: (context) => AllDocuments(),
       ),
     );
   }

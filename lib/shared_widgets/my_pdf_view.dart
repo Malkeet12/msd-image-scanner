@@ -14,10 +14,12 @@ class MyPdfView extends StatelessWidget {
     return PDFView(
       filePath: path,
       enableSwipe: true,
-      pageSnap: false,
-      autoSpacing: false,
+      pageSnap: true,
+      autoSpacing: true,
+      fitPolicy: FitPolicy.BOTH,
       fitEachPage: true,
-      pageFling: true,
+      // fitEachPage: true,
+      // pageFling: true,
       onRender: (_pages) {},
       onError: (error) {
         print(error.toString());

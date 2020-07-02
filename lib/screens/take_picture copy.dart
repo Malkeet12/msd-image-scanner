@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
-import 'package:image_scanner/screens/PdfPreviewScreen.dart';
 import 'package:image_scanner/screens/image_preview.dart';
 import 'package:image_scanner/shared_widgets/my_app_bar.dart';
 import 'package:path/path.dart' show join;
@@ -126,7 +125,7 @@ class TakePictureState extends State<TakePicture> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => PdfPreviewScreen(
+                    builder: (context) => DocumentDetails(
                           path: fullPath,
                         )));
           } catch (e) {

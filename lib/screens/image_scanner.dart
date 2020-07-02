@@ -7,14 +7,12 @@ import 'package:camera/camera.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:image_scanner/screens/PdfPreviewScreen.dart';
-import 'package:image_scanner/screens/image_preview.dart';
+import 'package:image_scanner/screens/document_details.dart';
 import 'package:image_scanner/shared_widgets/my_app_bar.dart';
 import 'package:image_scanner/util/storage_manager.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 class ImageScanner extends StatefulWidget {
@@ -91,13 +89,18 @@ class ImageScannerState extends State<ImageScanner> {
     userDocs = jsonDecode(userDocs);
     List images = [];
     images.add(path);
+    // images.add(path);
+    var rng = new Random();
+    var uid = rng.nextInt(pow(10, 6));
     var obj = {
       "name": "Document${DateTime.now()}",
+      "documentId": uid,
       "images": images,
       "timestamp": DateTime.now().millisecondsSinceEpoch,
     };
     userDocs.add(obj);
     await StorageManager.setItem("userDocs", userDocs);
+    return obj;
   }
 
   @override
@@ -169,17 +172,15 @@ class ImageScannerState extends State<ImageScanner> {
             // String fullPath = "$documentPath/msd12$uid.pdf";
             // File file = File(fullPath);
             // file.writeAsBytesSync(pdf.save());
-            await saveDoc(
-              path,
+            var doc = await saveDoc(
+              croppedFile.path,
             );
-            var userDocs = await StorageManager.getItem('userDocs') ?? "[]";
-            userDocs = jsonDecode(userDocs);
 
-            Navigator.push(
+            Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => PdfPreviewScreen(
-                          files: userDocs,
+                    builder: (context) => DocumentDetails(
+                          doc: doc,
                         )));
           } catch (e) {
             // If an error occurs, log the error to the console.
