@@ -38,8 +38,8 @@ class ImagePreview extends StatelessWidget {
                 builder: (BuildContext context, AsyncSnapshot<Size> snapshot) {
                   if (snapshot.hasData) {
                     return Container(
-                        foregroundDecoration:
-                            TextDetectDecoration(currentLabels, snapshot.data),
+                        // foregroundDecoration:
+                        //     TextDetectDecoration(currentLabels, snapshot.data),
                         child:
                             Image.file(File(imagePath), fit: BoxFit.fitWidth));
                   } else {
@@ -71,7 +71,7 @@ class ImagePreview extends StatelessWidget {
                 },
               ),
             ),
-            BuildList(texts: currentLabels),
+            // BuildList(texts: currentLabels),
           ],
         ),
       ),

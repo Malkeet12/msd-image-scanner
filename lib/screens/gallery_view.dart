@@ -155,6 +155,7 @@ class _GalleryViewState extends State<GalleryView> {
                       text: 'Upload another',
                     ),
                   ),
+
                 if (_file != null)
                   _buildImage(),
                 if (_file != null)

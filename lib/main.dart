@@ -1,5 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:image_scanner/screens/documents/user_documents_view.dart';
+import 'package:image_scanner/screens/image_scanner.dart';
 import 'package:image_scanner/screens/take_picture.dart';
 import 'package:image_scanner/screens/gallery_view.dart';
 import 'package:image_scanner/shared_widgets/blue_button.dart';
@@ -56,6 +58,15 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
+  scanImage() async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => UserDocumentsView(),
+      ),
+    );
+  }
+
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
@@ -77,6 +88,13 @@ class _MyAppState extends State<MyApp> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            BlueButton(
+              onPressed: scanImage,
+              text: 'Scan image',
+            ),
+            SizedBox(
+              height: 20.0,
+            ),
             BlueButton(
               onPressed: capureImage,
               text: 'Capture image',

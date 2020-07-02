@@ -33,11 +33,11 @@ class BlueButton extends StatelessWidget {
       width: width ?? null,
       decoration: BoxDecoration(
         boxShadow: [
-          BoxShadow(
-            color: ColorShades.textPrimaryDark,
-            offset: Offset(-7, -7),
-            blurRadius: 20,
-          )
+          // BoxShadow(
+          //   color: ColorShades.textPrimaryDark,
+          //   offset: Offset(-7, -7),
+          //   blurRadius: 20,
+          // )
         ],
         borderRadius: BorderRadius.circular(50.0),
         // border: Border.all(color: ColorShades.textPrimaryDark, width: 3.0),
