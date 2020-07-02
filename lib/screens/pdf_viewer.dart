@@ -28,12 +28,30 @@ class _PdfViewerState extends State<PdfViewer> {
         pdf.document,
         bytes: file.readAsBytesSync(),
       );
-      pdf.addPage(pw.Page(build: (pw.Context context) {
-        return pw.FittedBox(
-          fit: pw.BoxFit.fill,
-          child: pw.Image(image),
-        ); // Center
-      }));
+      pdf.addPage(
+        pw.Page(
+          build: (pw.Context context) {
+            return
+                // pw.FittedBox(
+                //   fit:
+                // pw.BoxFit.fill,
+                // child:
+                pw.Image(
+              image,
+              alignment: pw.Alignment.center,
+              fit: pw.BoxFit.contain,
+              // width: double.infinity,
+              // width: MediaQuery.of(ctx).size.width * 2,
+              // height: MediaQuery.of(ctx).size.height * 2,
+              // ),
+            ); // Center
+          },
+          margin: pw.EdgeInsets.all(0.0),
+          pageFormat: PdfPageFormat.a4,
+          // theme: pw.ThemeData.withFont(),
+          // clip: true,
+        ),
+      );
     }
   }
 
