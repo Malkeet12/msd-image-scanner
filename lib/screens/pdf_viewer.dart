@@ -5,6 +5,7 @@ import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_scanner/shared_widgets/my_pdf_view.dart';
+import 'package:image_scanner/theme/style.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -27,7 +28,8 @@ class _PdfViewerState extends State<PdfViewer> {
         bytes: file.readAsBytesSync(),
       );
       pdf.addPage(pw.Page(build: (pw.Context context) {
-        return pw.Center(
+        return pw.FittedBox(
+          fit: pw.BoxFit.fill,
           child: pw.Image(image),
         ); // Center
       }));
@@ -67,9 +69,11 @@ class _PdfViewerState extends State<PdfViewer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ColorShades.textPrimaryDark,
       appBar: AppBar(
         backgroundColor: Colors.deepOrange,
-        title: Text('doc'),
+        title: Text('Pdf view'),
+        centerTitle: true,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.share),
@@ -83,6 +87,7 @@ class _PdfViewerState extends State<PdfViewer> {
             if (!snapshot.hasData) return SizedBox();
             var path = snapshot.data;
             return Container(
+              color: ColorShades.textPrimaryDark,
               child: MyPdfView(
                 path: path,
               ),

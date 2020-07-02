@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_scanner/screens/documents/documents.dart';
 import 'package:image_scanner/screens/image_scanner.dart';
 import 'package:image_scanner/shared_widgets/my_app_bar.dart';
+import 'package:image_scanner/shared_widgets/my_drawer.dart';
 import 'package:image_scanner/theme/style.dart';
 import 'package:image_scanner/util/storage_manager.dart';
 
@@ -23,10 +24,6 @@ class _AllDocumentsState extends State<AllDocuments> {
     return jsonDecode(userDocuments);
   }
 
-  refreshDocs() {
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -35,15 +32,34 @@ class _AllDocumentsState extends State<AllDocuments> {
         setState(() {});
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: MyAppBar(
-          text: "All docs",
+        drawer: MyDrawer(),
+        // backgroundColor: Colors.blueGrey,
+        backgroundColor: ColorShades.textColorOffWhite,
+        // backgroundColor: ColorShades.backgroundColorPrimary,
+        appBar: AppBar(
+          title: Text("All docs"),
+          backgroundColor: Colors.deepOrange,
+          centerTitle: true,
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                'Refresh',
+                style: Theme.of(context).textTheme.body1Medium.copyWith(
+                      color: Colors.white,
+                    ),
+              ),
+              onPressed: () {
+                setState(() {});
+              },
+            )
+          ],
         ),
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              SizedBox(
+              Container(
                 height: 20,
+                color: ColorShades.textColorOffWhite,
               ),
               FutureBuilder(
                   future: getUserDocuments(),

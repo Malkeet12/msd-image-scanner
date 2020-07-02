@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_scanner/shared_widgets/blue_button.dart';
 import 'package:image_scanner/shared_widgets/build_list.dart';
 import 'package:image_scanner/shared_widgets/my_app_bar.dart';
+import 'package:image_scanner/shared_widgets/my_drawer.dart';
 import 'package:image_scanner/shared_widgets/primary_button.dart';
 import 'package:image_scanner/shared_widgets/text_decoration.dart';
 import 'package:image_scanner/theme/style.dart';
@@ -23,6 +24,7 @@ class ImagePreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: MyDrawer(),
       backgroundColor: ColorShades.backgroundColorPrimary,
       appBar: MyAppBar(text: 'Image preview'),
       // The image is stored as a file on the device. Use the `Image.file`

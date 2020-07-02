@@ -4,6 +4,7 @@ import 'package:image_scanner/screens/documents/all_documents.dart';
 import 'package:image_scanner/screens/take_picture.dart';
 import 'package:image_scanner/screens/gallery_view.dart';
 import 'package:image_scanner/shared_widgets/blue_button.dart';
+import 'package:image_scanner/shared_widgets/my_drawer.dart';
 import 'package:image_scanner/theme/style.dart';
 import 'package:image_scanner/util/analytics_service.dart';
 
@@ -15,7 +16,7 @@ void main() {
     // on the FirstScreen Widget
     initialRoute: '/',
     routes: {
-      '/': (context) => MyApp(),
+      '/': (context) => AllDocuments(),
     },
   ));
 }
@@ -70,6 +71,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: MyDrawer(),
       key: _scaffoldKey,
       backgroundColor: ColorShades.backgroundColorPrimary,
       appBar: AppBar(

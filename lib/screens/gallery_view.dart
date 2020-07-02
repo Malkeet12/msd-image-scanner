@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:image_scanner/shared_widgets/blue_button.dart';
 import 'package:image_scanner/shared_widgets/build_list.dart';
 import 'package:image_scanner/shared_widgets/my_app_bar.dart';
+import 'package:image_scanner/shared_widgets/my_drawer.dart';
 import 'package:image_scanner/shared_widgets/primary_button.dart';
 import 'package:image_scanner/shared_widgets/text_decoration.dart';
 import 'package:image_scanner/theme/style.dart';
@@ -93,6 +94,7 @@ class _GalleryViewState extends State<GalleryView> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        drawer: MyDrawer(),
         backgroundColor: ColorShades.backgroundColorPrimary,
         appBar: MyAppBar(
             text: 'Image scanner',
@@ -150,7 +152,7 @@ class _GalleryViewState extends State<GalleryView> {
                 if (_file != null)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: PrimaryButton(
+                    child: BlueButton(
                       onPressed: uploadImage,
                       text: 'Upload another',
                     ),

@@ -88,19 +88,35 @@ class ImageScannerState extends State<ImageScanner> {
     var userDocs = await StorageManager.getItem('userDocs') ?? "[]";
     userDocs = jsonDecode(userDocs);
     List images = [];
-    images.add(path);
-    // images.add(path);
-    var rng = new Random();
-    var uid = rng.nextInt(pow(10, 6));
-    var obj = {
-      "name": "Document${DateTime.now()}",
-      "documentId": uid,
-      "images": images,
-      "timestamp": DateTime.now().millisecondsSinceEpoch,
-    };
-    userDocs.add(obj);
-    await StorageManager.setItem("userDocs", userDocs);
-    return obj;
+    var currentDocumentId = await StorageManager.getItem("currentDocumentId");
+
+    var index;
+    for (var i = 0; i < userDocs.length; i++) {
+      if (userDocs[i]['documentId'] == currentDocumentId) index = i;
+    }
+
+    if (index != null && index > 0) {
+      var existingDoc = userDocs[index];
+      existingDoc['images'].add(path);
+      existingDoc["timestamp"] = DateTime.now().millisecondsSinceEpoch;
+      userDocs[index] = existingDoc;
+      await StorageManager.setItem("userDocs", userDocs);
+      return existingDoc;
+    } else {
+      images.add(path);
+      // images.add(path);
+      var rng = new Random();
+      var uid = rng.nextInt(pow(10, 6));
+      var obj = {
+        "name": "Document${DateTime.now()}",
+        "documentId": uid,
+        "images": images,
+        "timestamp": DateTime.now().millisecondsSinceEpoch,
+      };
+      userDocs.add(obj);
+      await StorageManager.setItem("userDocs", userDocs);
+      return obj;
+    }
   }
 
   @override
@@ -175,6 +191,13 @@ class ImageScannerState extends State<ImageScanner> {
             var doc = await saveDoc(
               croppedFile.path,
             );
+            var updatingDocument =
+                await StorageManager.getItem("currentDocumentId");
+            StorageManager.deleteItem("currentDocumentId");
+            print(updatingDocument);
+            if (updatingDocument != null) {
+              Navigator.pop(context);
+            }
 
             Navigator.pushReplacement(
                 context,

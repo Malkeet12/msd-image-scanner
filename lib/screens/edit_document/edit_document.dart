@@ -11,14 +11,16 @@ import 'package:image_scanner/util/date_formater.dart';
 
 class EditDoc extends StatefulWidget {
   final doc;
-  const EditDoc({Key key, this.doc}) : super(key: key);
+  final carouselInitialPage;
+  const EditDoc({Key key, this.doc, this.carouselInitialPage})
+      : super(key: key);
 
   @override
   _EditDocState createState() => _EditDocState();
 }
 
 class _EditDocState extends State<EditDoc> {
-  int _current = 0;
+  int _currentPage = 0;
   Choice _selectedChoice = choices[0]; // The app's "state".
   void _showDialog() {
     // flutter defined function
@@ -56,8 +58,9 @@ class _EditDocState extends State<EditDoc> {
     // Causes the app to rebuild with the new _selectedChoice.
   }
 
-  Future<void> _shareImage(name, path) async {
+  Future<void> _shareImage(name) async {
     try {
+      var path = widget.doc['images'][_currentPage];
       var splitedPath = path.split(".");
       var docType = splitedPath[splitedPath.length - 1];
       final ByteData bytes = await rootBundle.load(path);
@@ -80,14 +83,15 @@ class _EditDocState extends State<EditDoc> {
     );
     var images = widget.doc["images"];
     return Scaffold(
-      backgroundColor: ColorShades.backgroundColorPrimary,
+      backgroundColor: Colors.blueGrey,
       appBar: AppBar(
         backgroundColor: Colors.deepOrange,
+        centerTitle: true,
         title: Text(name),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.share),
-            onPressed: () => _shareImage(name, file.path),
+            onPressed: () => _shareImage(name),
           ),
           PopupMenuButton<Choice>(
             onSelected: _select,
@@ -105,14 +109,16 @@ class _EditDocState extends State<EditDoc> {
       body: Center(
         child: Container(
           // color: Colors.deepOrange,
+
           child: CarouselSlider(
               options: CarouselOptions(
                   height: MediaQuery.of(context).size.height,
                   viewportFraction: 1,
+                  initialPage: widget.carouselInitialPage,
                   enableInfiniteScroll: false,
                   onPageChanged: (index, reason) {
                     setState(() {
-                      _current = index;
+                      _currentPage = index;
                     });
                   },
                   scrollDirection: Axis.horizontal),
@@ -127,7 +133,7 @@ class _EditDocState extends State<EditDoc> {
                                 children: <Widget>[
                                   Image.file(
                                     File(
-                                      path,
+                                      item,
                                     ),
                                     fit: BoxFit.fill,
                                   ),
@@ -149,7 +155,7 @@ class _EditDocState extends State<EditDoc> {
                                       padding: EdgeInsets.symmetric(
                                           vertical: 10.0, horizontal: 20.0),
                                       child: Text(
-                                        "${images.indexOf(item)}/${images.length}"
+                                        "${images.indexOf(item) + 1}/${images.length}"
                                             .toString(),
                                         style: TextStyle(
                                           color: Colors.white,

@@ -20,7 +20,12 @@ class Documents extends StatelessWidget {
     if (docs.length == 0) return SizedBox();
 
     List<Widget> list = new List<Widget>();
-
+    docs.sort((a, b) {
+      return a['timestamp']
+          .toString()
+          .toLowerCase()
+          .compareTo(b['timestamp'].toString().toLowerCase());
+    });
     for (var i = docs.length - 1; i >= 0; i--) {
       var doc = docs[i];
       var timestamp = doc['timestamp'];
@@ -41,52 +46,63 @@ class Documents extends StatelessWidget {
           );
         },
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          margin: EdgeInsets.only(
-            bottom: 16,
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          color: ColorShades.textColorOffWhite,
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          // margin: EdgeInsets.only(
+          //   bottom: 8,
+          // ),
+          child: Column(
             children: <Widget>[
-              Container(
-                height: 72.0,
-                width: 72.0,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(color: Colors.orange, spreadRadius: 3),
-                  ],
-                ),
-                child: Image.file(
-                  File(
-                    images[0],
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    // height: 72.0,
+                    width: 72.0,
+                    decoration: BoxDecoration(
+                      // borderRadius: BorderRadius.circular(20),
+                      // color: Colors.black,
+                      boxShadow: [
+                        BoxShadow(spreadRadius: 2),
+                      ],
+                    ),
+                    child: Image.file(
+                      File(
+                        images[0],
+                      ),
+                    ),
                   ),
-                ),
+                  SizedBox(
+                    width: 12,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          name,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.h4.copyWith(
+                                color: ColorShades.textPrimaryDark,
+                              ),
+                        ),
+                        Text(
+                          delta.toString(),
+                          style:
+                              Theme.of(context).textTheme.body2Medium.copyWith(
+                                    color: ColorShades.textPrimaryDark,
+                                  ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
               SizedBox(
-                width: 12,
+                height: 8,
               ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      name,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.h4.copyWith(
-                            color: ColorShades.textPrimaryDark,
-                          ),
-                    ),
-                    Text(
-                      delta.toString(),
-                      style: Theme.of(context).textTheme.body2Medium.copyWith(
-                            color: ColorShades.textPrimaryDark,
-                          ),
-                    ),
-                  ],
-                ),
-              ),
+              // if (i > 0)
+              Divider(color: Colors.black),
             ],
           ),
         ),
