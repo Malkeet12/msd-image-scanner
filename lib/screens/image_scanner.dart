@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:camera/camera.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
+
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_scanner/screens/document_details.dart';
 import 'package:image_scanner/shared_widgets/my_app_bar.dart';

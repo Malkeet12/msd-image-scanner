@@ -19,7 +19,8 @@ class PdfViewer extends StatefulWidget {
 }
 
 class _PdfViewerState extends State<PdfViewer> {
-  var fullPath1;
+  var fullPath;
+
   writeOnPdf(pdf, images) {
     for (var index = 0; index < images.length; index++) {
       File file = File(images[index]);
@@ -45,10 +46,9 @@ class _PdfViewerState extends State<PdfViewer> {
       Directory documentDirectory = await getApplicationDocumentsDirectory();
 
       String documentPath = documentDirectory.path;
-      String fullPath = "$documentPath/msd12$uid.pdf";
+      fullPath = "$documentPath/msd12$uid.pdf";
       File file = File(fullPath);
       file.writeAsBytesSync(pdf.save());
-      fullPath1 = fullPath;
       return fullPath;
       // final ByteData bytes = await rootBundle.load(fullPath);
       // await Share.file('File shared by image scanner',
@@ -60,7 +60,7 @@ class _PdfViewerState extends State<PdfViewer> {
   }
 
   shareAsPdf() async {
-    final ByteData bytes = await rootBundle.load(fullPath1);
+    final ByteData bytes = await rootBundle.load(fullPath);
     await Share.file('File shared by image scanner',
         'Image scanner document.pdf', bytes.buffer.asUint8List(), 'text/csv',
         text: 'File shared by image scanner.');
