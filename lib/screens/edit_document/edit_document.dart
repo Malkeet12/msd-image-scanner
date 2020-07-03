@@ -1,13 +1,18 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_scanner/screens/document_details.dart';
+import 'package:image_scanner/screens/documents/all_documents.dart';
 import 'package:image_scanner/shared_widgets/my_app_bar.dart';
 import 'package:image_scanner/shared_widgets/my_pdf_view.dart';
 import 'package:image_scanner/theme/style.dart';
 import 'package:image_scanner/util/date_formater.dart';
+import 'package:image_scanner/util/storage_manager.dart';
 
 class EditDoc extends StatefulWidget {
   final doc;
@@ -21,6 +26,7 @@ class EditDoc extends StatefulWidget {
 
 class _EditDocState extends State<EditDoc> {
   int _currentPage = 0;
+
   Choice _selectedChoice = choices[0]; // The app's "state".
   void _showDialog() {
     // flutter defined function
@@ -43,7 +49,7 @@ class _EditDocState extends State<EditDoc> {
               child: new Text(
                 "Delete",
               ),
-              onPressed: () {},
+              onPressed: deleteImage,
             ),
           ],
         );
@@ -51,10 +57,83 @@ class _EditDocState extends State<EditDoc> {
     );
   }
 
-  void _select(Choice choice) {
+  void deleteImage() async {
+    var userDocs = await StorageManager.getItem('userDocs') ?? "[]";
+    userDocs = jsonDecode(userDocs);
+    var currentDocumentId = widget.doc['documentId'];
+    var index;
+    for (var i = 0; i < userDocs.length; i++) {
+      if (userDocs[i]['documentId'] == currentDocumentId) index = i;
+    }
+    var existingDoc = userDocs[index];
+    if (existingDoc['images'].length == 1) {
+      userDocs.removeAt(index);
+      await StorageManager.setItem("userDocs", userDocs);
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AllDocuments(),
+        ),
+      );
+    } else {
+      existingDoc['images'].removeAt(_currentPage);
+      userDocs[index] = existingDoc;
+      existingDoc["timestamp"] = DateTime.now().millisecondsSinceEpoch;
+      await StorageManager.setItem("userDocs", userDocs);
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => DocumentDetails(
+                    doc: existingDoc,
+                  )));
+    }
+  }
+
+  void _select(Choice choice) async {
     if (choice.title == 'Delete') {
       _showDialog();
-    } else if (choice.title == 'Rename') {}
+    } else if (choice.title == 'Edit') {
+      var path = widget.doc['images'][_currentPage];
+      File croppedFile = await ImageCropper.cropImage(
+          sourcePath: path,
+          aspectRatioPresets: [
+            CropAspectRatioPreset.square,
+            CropAspectRatioPreset.ratio3x2,
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.ratio4x3,
+            CropAspectRatioPreset.ratio16x9
+          ],
+          androidUiSettings: AndroidUiSettings(
+              toolbarTitle: 'Edit image',
+              toolbarColor: Colors.deepOrange,
+              toolbarWidgetColor: Colors.white,
+              initAspectRatio: CropAspectRatioPreset.original,
+              lockAspectRatio: false),
+          iosUiSettings: IOSUiSettings(
+            minimumAspectRatio: 1.0,
+          ));
+      widget.doc['images'].removeAt(_currentPage);
+      widget.doc['images'].insert(_currentPage, croppedFile.path);
+      var userDocs = await StorageManager.getItem('userDocs') ?? "[]";
+      userDocs = jsonDecode(userDocs);
+      var currentDocumentId = widget.doc['documentId'];
+      var index;
+      for (var i = 0; i < userDocs.length; i++) {
+        if (userDocs[i]['documentId'] == currentDocumentId) index = i;
+      }
+      var existingDoc = userDocs[index];
+      existingDoc['images'].removeAt(_currentPage);
+      existingDoc['images'].add(croppedFile.path);
+      existingDoc["timestamp"] = DateTime.now().millisecondsSinceEpoch;
+      userDocs[index] = existingDoc;
+      await StorageManager.setItem("userDocs", userDocs);
+    }
+
     // Causes the app to rebuild with the new _selectedChoice.
   }
 
@@ -197,7 +276,7 @@ class Choice {
 }
 
 const List<Choice> choices = const <Choice>[
-  const Choice(title: 'Rename', icon: Icons.edit),
+  const Choice(title: 'Edit', icon: Icons.edit),
   const Choice(title: 'Delete', icon: Icons.delete),
 ];
 

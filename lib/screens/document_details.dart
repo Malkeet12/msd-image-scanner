@@ -31,6 +31,19 @@ class DocumentDetails extends StatelessWidget {
         ),
         actions: <Widget>[
           IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () async {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PdfViewer(
+                    doc: doc,
+                  ),
+                ),
+              );
+            },
+          ),
+          IconButton(
             icon: Icon(Icons.picture_as_pdf),
             onPressed: () async {
               Navigator.push(

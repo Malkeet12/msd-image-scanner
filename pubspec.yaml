@@ -28,6 +28,7 @@ dependencies:
   pull_to_refresh: ^1.6.0
   permission_handler: ^3.0.0
   share: ^0.6.3+6
+  simple_permissions: ^0.1.9
   image_cropper: ^1.2.3
   carousel_slider: ^2.2.1
   shared_preferences: ^0.5.6+3

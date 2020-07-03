@@ -96,7 +96,7 @@ class ImageScannerState extends State<ImageScanner> {
       if (userDocs[i]['documentId'] == currentDocumentId) index = i;
     }
 
-    if (index != null && index > 0) {
+    if (index != null && index > -1) {
       var existingDoc = userDocs[index];
       existingDoc['images'].add(path);
       existingDoc["timestamp"] = DateTime.now().millisecondsSinceEpoch;
@@ -166,6 +166,7 @@ class ImageScannerState extends State<ImageScanner> {
             await _controller.takePicture(path);
             File croppedFile = await ImageCropper.cropImage(
                 sourcePath: path,
+                compressQuality: 100,
                 aspectRatioPresets: [
                   CropAspectRatioPreset.square,
                   CropAspectRatioPreset.ratio3x2,
