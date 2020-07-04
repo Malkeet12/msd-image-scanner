@@ -20,7 +20,8 @@ class _MyDrawerState extends State<MyDrawer> {
     AnalyticsService().sendEvent(
       name: 'capture_image_click',
     );
-    ForegroundService.start();
+    ForegroundService.start('camera');
+    ForegroundService.registerCallBack("saveImage", handleImageBitMap);
     // Obtain a list of the available cameras on the device.
 //     final cameras = await availableCameras();
 
@@ -34,16 +35,21 @@ class _MyDrawerState extends State<MyDrawer> {
 //     );
   }
 
+  handleImageBitMap(data) {
+    print('back to future');
+  }
+
   uploadImage() async {
-    AnalyticsService().sendEvent(
-      name: 'upload_image_click',
-    );
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => GalleryView(scaffoldKey: _scaffoldKey),
-      ),
-    );
+    ForegroundService.start('gallery');
+    // AnalyticsService().sendEvent(
+    //   name: 'upload_image_click',
+    // );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => GalleryView(scaffoldKey: _scaffoldKey),
+    //   ),
+    // );
   }
 
   allDocuments() async {

@@ -8,9 +8,9 @@ class ForegroundService {
   static const methodChannel = MethodChannel("flutterToNative");
   static var callBackDispacther = new Map();
 
-  static start() async {
+  static start(method) async {
     if (Platform.isAndroid) {
-      String res = await methodChannel.invokeMethod("camera");
+      String res = await methodChannel.invokeMethod(method);
       debugPrint(res);
     }
   }
