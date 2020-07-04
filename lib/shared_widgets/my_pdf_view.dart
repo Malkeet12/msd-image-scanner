@@ -16,7 +16,6 @@ class MyPdfView extends StatelessWidget {
       // autoSpacing: true,
       // pageSnap: true,
       // fitEachPage: true,
-      fitPolicy: FitPolicy.HEIGHT,
       onRender: (_pages) {},
       onError: (error) {
         print(error.toString());

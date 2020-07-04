@@ -7,23 +7,20 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import androidx.core.app.ActivityCompat
-import androidx.core.content.FileProvider
 import com.scanlibrary.ScanActivity
 import com.scanlibrary.ScanConstants
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
+import java.io.FilenameFilter
 import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.*
 
 
 class MainActivity: FlutterActivity() {
@@ -64,11 +61,68 @@ class MainActivity: FlutterActivity() {
                         val intent = Intent(this, ScanActivity::class.java)
                         intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference)
                         startActivityForResult(intent, REQUEST_CODE)
-                    }
+                    }else if(call.method=="getImages"){
+                       val imgs = getImages()
+                       if (imgs.isEmpty()) {
+                           result.error("Empty", "No Images.", null)
+                       } else {
+                           result.success(imgs.toString())
+                       }
+                   }else if(call.method =="getGroupImages"){
+                       val imgs = getGroupImages(call.arguments as String)
+                       if (imgs!!.isEmpty()) {
+                           result.error("Empty", "No Images.", null)
+                       } else {
+                           result.success(imgs)
+                       }
+                   }
 
                 }
     }
+    private fun getImages(): MutableList<JSONObject> {
+        val root = Environment.getExternalStorageDirectory().absolutePath
+        val folder = File("$root/ImageScanner/")
+        folder.mkdirs()
+        val directoryListing: Array<File> = folder.listFiles()
+        val list: MutableList<JSONObject> = ArrayList()
+//        val list: List<String> = MutableList()
+        for (child in directoryListing) {
+            if (child.isDirectory) {
+                var first = true
+                for (file in child.listFiles()) {
+                    if (first) {
+                        first = false
+                        if (file.isFile) {
+                            val item = JSONObject()
+                            item.put("id", child.toString())
+                            item.put("firstChild", file.toString())
+                            list.add(item)
+                        }
+                    }
 
+                }
+            }
+        }
+        return list
+    }
+
+    private fun getGroupImages(groupName: String): List<String>? {
+        val root = Environment.getExternalStorageDirectory().absolutePath
+//        val folder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/ImageScanner/")
+        val folder = File("$root/ImageScanner/$groupName")
+//        folder.mkdirs()
+        val allFiles: Array<File> = folder.listFiles(object : FilenameFilter {
+            override fun accept(dir: File?, name: String): Boolean {
+                return name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png")
+            }
+        })
+
+        val item: MutableList<String> = ArrayList()
+        for (file in allFiles) {
+            item.add(file.toString() + "")
+        }
+        return item
+    }
 //     fun openCamera() {
 //         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 //         val file = createImageFile()
@@ -115,11 +169,17 @@ class MainActivity: FlutterActivity() {
     private fun SaveImage(finalBitmap: Bitmap) {
         verifyStoragePermissions(this)
         val root = Environment.getExternalStorageDirectory().absolutePath
-        val myDir = File("$root/saved_images")
-        myDir.mkdirs()
+        val myDir = File("$root/ImageScanner")
+        if (!myDir.exists()) {
+            myDir.mkdirs()
+        }
+        val imageGroupDir = File("$root/ImageScanner/${System.currentTimeMillis()}")
+        if (!imageGroupDir.exists()) {
+            imageGroupDir.mkdirs()
+        }
         var time=	System.currentTimeMillis()
-        val fname = "Image-$time.jpg"
-        val file = File(myDir, fname)
+        val fname = "$time.jpg"
+        val file = File(imageGroupDir, fname)
         if (file.exists()) file.delete()
         try {
             val out = FileOutputStream(file)

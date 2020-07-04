@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -8,10 +9,10 @@ class ForegroundService {
   static const methodChannel = MethodChannel("flutterToNative");
   static var callBackDispacther = new Map();
 
-  static start(method) async {
+  static start(method, data) async {
     if (Platform.isAndroid) {
-      String res = await methodChannel.invokeMethod(method);
-      debugPrint(res);
+      var res = await methodChannel.invokeMethod(method, data);
+      return res;
     }
   }
 

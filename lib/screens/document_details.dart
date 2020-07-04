@@ -9,14 +9,12 @@ import 'package:image_scanner/theme/style.dart';
 import 'package:image_scanner/util/storage_manager.dart';
 
 class DocumentDetails extends StatelessWidget {
-  final doc;
+  final docs;
 
-  DocumentDetails({this.doc});
+  DocumentDetails({this.docs});
 
   @override
   Widget build(BuildContext context) {
-    var name = doc["name"];
-    var images = doc["images"];
     return Scaffold(
       backgroundColor: ColorShades.textColorOffWhite,
       appBar: AppBar(
@@ -24,7 +22,7 @@ class DocumentDetails extends StatelessWidget {
         backgroundColor: Colors.deepOrange,
         centerTitle: true,
         title: Text(
-          name,
+          'name',
           style: TextStyle(
             color: ColorShades.textColorOffWhite,
           ),
@@ -37,7 +35,7 @@ class DocumentDetails extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => PdfViewer(
-                    doc: doc,
+                    doc: docs,
                   ),
                 ),
               );
@@ -50,7 +48,7 @@ class DocumentDetails extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => PdfViewer(
-                    doc: doc,
+                    doc: docs,
                   ),
                 ),
               );
@@ -75,7 +73,7 @@ class DocumentDetails extends StatelessWidget {
                 mainAxisSpacing: 10,
                 // childAspectRatio: 0.8,
                 children: List.generate(
-                  images.length,
+                  docs.length,
                   (index) {
                     return Stack(
                       children: <Widget>[
@@ -85,7 +83,7 @@ class DocumentDetails extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => EditDoc(
-                                  doc: doc,
+                                  doc: docs,
                                   carouselInitialPage: index,
                                 ),
                               ),
@@ -95,7 +93,7 @@ class DocumentDetails extends StatelessWidget {
                             width: double.infinity,
                             child: Image.file(
                               File(
-                                images[index],
+                                docs[index],
                               ),
                               fit: BoxFit.fill,
                               // width: double.maxFinite,

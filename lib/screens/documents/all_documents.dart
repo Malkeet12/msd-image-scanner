@@ -4,10 +4,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:image_scanner/screens/documents/documents.dart';
 import 'package:image_scanner/screens/image_scanner.dart';
+import 'package:image_scanner/services/foreground_service.dart';
 import 'package:image_scanner/shared_widgets/my_app_bar.dart';
 import 'package:image_scanner/shared_widgets/my_drawer.dart';
 import 'package:image_scanner/theme/style.dart';
 import 'package:image_scanner/util/storage_manager.dart';
+import 'package:path_provider/path_provider.dart';
 
 class AllDocuments extends StatefulWidget {
   const AllDocuments({
@@ -19,9 +21,16 @@ class AllDocuments extends StatefulWidget {
 }
 
 class _AllDocumentsState extends State<AllDocuments> {
-  getUserDocuments() async {
-    var userDocuments = await StorageManager.getItem("userDocs") ?? "[]";
-    return jsonDecode(userDocuments);
+  var userImages;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  getUserImages() async {
+    var res = await ForegroundService.start('getImages', '');
+    return jsonDecode(res);
   }
 
   @override
@@ -62,7 +71,7 @@ class _AllDocumentsState extends State<AllDocuments> {
                 color: ColorShades.textColorOffWhite,
               ),
               FutureBuilder(
-                  future: getUserDocuments(),
+                  future: getUserImages(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) return SizedBox();
                     return Documents(
@@ -79,6 +88,8 @@ class _AllDocumentsState extends State<AllDocuments> {
             ),
             // Provide an onPressed callback.
             onPressed: () async {
+              ForegroundService.start('camera', '');
+              // ForegroundService.registerCallBack("saveImage", handleImageBitMap);
 //               final cameras = await availableCameras();
 
 // // Get a specific camera from the list of available cameras.

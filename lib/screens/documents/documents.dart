@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_scanner/screens/document_details.dart';
 import 'package:image_scanner/screens/edit_document/edit_document.dart';
+import 'package:image_scanner/services/foreground_service.dart';
 import 'package:image_scanner/shared_widgets/my_pdf_view.dart';
 import 'package:image_scanner/theme/style.dart';
 import 'package:image_scanner/util/date_formater.dart';
@@ -20,27 +21,31 @@ class Documents extends StatelessWidget {
     if (docs.length == 0) return SizedBox();
 
     List<Widget> list = new List<Widget>();
-    docs.sort((a, b) {
-      return a['timestamp']
-          .toString()
-          .toLowerCase()
-          .compareTo(b['timestamp'].toString().toLowerCase());
-    });
+    // docs.sort((a, b) {
+    //   return a['timestamp']
+    //       .toString()
+    //       .toLowerCase()
+    //       .compareTo(b['timestamp'].toString().toLowerCase());
+    // });
     for (var i = docs.length - 1; i >= 0; i--) {
       var doc = docs[i];
-      var timestamp = doc['timestamp'];
-      String delta = DateFormatter.readableDelta(timestamp);
-      var name = doc['name'];
-      var images = doc["images"];
+      // var timestamp = doc['timestamp'];
+      // String delta = DateFormatter.readableDelta(timestamp);
+      var path = doc["firstChild"].split("/");
+      var name = path[path.length - 1];
+      var image = doc["firstChild"];
 
       list.add(GestureDetector(
         behavior: HitTestBehavior.translucent,
-        onTap: () {
+        onTap: () async {
+          var res = await ForegroundService.start(
+              'getGroupImages', path[path.length - 2]);
+          // return res;
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => DocumentDetails(
-                doc: doc,
+                docs: res,
               ),
             ),
           );
@@ -68,7 +73,7 @@ class Documents extends StatelessWidget {
                     ),
                     child: Image.file(
                       File(
-                        images[0],
+                        image,
                       ),
                     ),
                   ),
@@ -86,13 +91,13 @@ class Documents extends StatelessWidget {
                                 color: ColorShades.textPrimaryDark,
                               ),
                         ),
-                        Text(
-                          delta.toString(),
-                          style:
-                              Theme.of(context).textTheme.body2Medium.copyWith(
-                                    color: ColorShades.textPrimaryDark,
-                                  ),
-                        ),
+                        // Text(
+                        //   'delta'.toString(),
+                        //   style:
+                        //       Theme.of(context).textTheme.body2Medium.copyWith(
+                        //             color: ColorShades.textPrimaryDark,
+                        //           ),
+                        // ),
                       ],
                     ),
                   ),

@@ -24,6 +24,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
+import static android.os.Environment.DIRECTORY_MUSIC;
+
 /**
  * Created by jhansi on 04/04/15.
  */
@@ -119,29 +121,24 @@ public class PickImageFragment extends Fragment {
         boolean isDirectoryCreated = file.getParentFile().mkdirs();
         Log.d("", "openCamera: isDirectoryCreated: " + isDirectoryCreated);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//            Uri tempFileUri =FileProvider.getUriForFile(Objects.requireNonNull(getActivity().getApplicationContext()),
-//                    BuildConfig.APPLICATION_ID + ".provider", file);
-             Uri tempFileUri = FileProvider.getUriForFile(getActivity().getApplicationContext(), "com.scanlibrary.provider", // As
-                                                                                                                      // defined
-                                                                                                                      // in
-                                                                                                                      // Manifest
-                     file);
-            cameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-//            getActivity().getApplicationContext().grantUriPermission(packageName, tempFileUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//            getActivity().getApplicationContext().grantUriPermission(packageName, tempFileUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-//            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempFileUri);
+            Uri tempFileUri = FileProvider.getUriForFile(getActivity().getApplicationContext(),
+                    "com.scanlibrary.provider", // As defined in Manifest
+                    file);
+            getActivity().getApplicationContext().grantUriPermission("com.scanlibrary.provider",tempFileUri,cameraIntent.FLAG_GRANT_READ_URI_PERMISSION);
+            getActivity().getApplicationContext().grantUriPermission("com.scanlibrary.provider",tempFileUri,cameraIntent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempFileUri);
         } else {
             Uri tempFileUri = Uri.fromFile(file);
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempFileUri);
         }
         startActivityForResult(cameraIntent, ScanConstants.START_CAMERA_REQUEST_CODE);
+
     }
 
     private File createImageFile() {
         clearTempImages();
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        File file = new File(ScanConstants.IMAGE_PATH, "IMG_" + timeStamp + ".jpg");
+        File file = new File(getActivity().getApplicationContext().getExternalFilesDir(DIRECTORY_MUSIC).getPath(), "IMG_" + timeStamp + ".jpg");
         fileUri = Uri.fromFile(file);
         return file;
     }

@@ -89,7 +89,7 @@ class _EditDocState extends State<EditDoc> {
           context,
           MaterialPageRoute(
               builder: (context) => DocumentDetails(
-                    doc: existingDoc,
+                    docs: existingDoc,
                   )));
     }
   }
@@ -139,7 +139,7 @@ class _EditDocState extends State<EditDoc> {
 
   Future<void> _shareImage(name) async {
     try {
-      var path = widget.doc['images'][_currentPage];
+      var path = widget.doc[_currentPage];
       var splitedPath = path.split(".");
       var docType = splitedPath[splitedPath.length - 1];
       final ByteData bytes = await rootBundle.load(path);
@@ -153,14 +153,11 @@ class _EditDocState extends State<EditDoc> {
 
   @override
   Widget build(BuildContext context) {
-    var timestamp = widget.doc['timestamp'];
-    String delta = DateFormatter.readableDelta(timestamp);
-    var name = widget.doc['name'];
-    var path = widget.doc["images"][0];
-    var file = File(
-      path,
-    );
-    var images = widget.doc["images"];
+    // var timestamp = widget.doc['timestamp'];
+    // String delta = DateFormatter.readableDelta(timestamp);
+    var name = widget.doc[0];
+
+    var images = widget.doc;
     return Scaffold(
       backgroundColor: Colors.blueGrey,
       appBar: AppBar(

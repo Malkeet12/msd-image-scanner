@@ -77,6 +77,7 @@ class _PdfViewerState extends State<PdfViewer> {
     }
   }
 
+  Future<String> createFileFromString() async {}
   shareAsPdf() async {
     final ByteData bytes = await rootBundle.load(fullPath);
     await Share.file('File shared by image scanner',
@@ -94,13 +95,17 @@ class _PdfViewerState extends State<PdfViewer> {
         centerTitle: true,
         actions: <Widget>[
           IconButton(
+            icon: Icon(Icons.file_download),
+            onPressed: () => createFileFromString(),
+          ),
+          IconButton(
             icon: Icon(Icons.share),
             onPressed: () => shareAsPdf(),
           ),
         ],
       ),
       body: FutureBuilder<dynamic>(
-          future: share(widget.doc['images']),
+          future: share(widget.doc),
           builder: (context, snapshot) {
             if (!snapshot.hasData) return SizedBox();
             var path = snapshot.data;
