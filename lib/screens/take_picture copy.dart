@@ -9,7 +9,7 @@ import 'package:image_scanner/shared_widgets/my_app_bar.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
-import 'package:permission_handler/permission_handler.dart';
+// import 'package:permission_handler/permission_handler.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 class TakePicture extends StatefulWidget {

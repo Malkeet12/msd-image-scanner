@@ -1,8 +1,9 @@
-import 'package:camera/camera.dart';
+// import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image_scanner/screens/documents/all_documents.dart';
 import 'package:image_scanner/screens/gallery_view.dart';
-import 'package:image_scanner/screens/take_picture.dart';
+// import 'package:image_scanner/screens/take_picture.dart';
+import 'package:image_scanner/services/foreground_service.dart';
 import 'package:image_scanner/theme/style.dart';
 import 'package:image_scanner/util/analytics_service.dart';
 
@@ -19,17 +20,18 @@ class _MyDrawerState extends State<MyDrawer> {
     AnalyticsService().sendEvent(
       name: 'capture_image_click',
     );
+    ForegroundService.start();
     // Obtain a list of the available cameras on the device.
-    final cameras = await availableCameras();
+//     final cameras = await availableCameras();
 
-// Get a specific camera from the list of available cameras.
-    final firstCamera = cameras.first;
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TakePicture(camera: firstCamera),
-      ),
-    );
+// // Get a specific camera from the list of available cameras.
+//     final firstCamera = cameras.first;
+//     Navigator.push(
+//       context,
+//       MaterialPageRoute(
+//         builder: (context) => TakePicture(camera: firstCamera),
+//       ),
+//     );
   }
 
   uploadImage() async {

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:camera/camera.dart';
+// import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image_scanner/screens/documents/documents.dart';
 import 'package:image_scanner/screens/image_scanner.dart';
@@ -79,16 +79,16 @@ class _AllDocumentsState extends State<AllDocuments> {
             ),
             // Provide an onPressed callback.
             onPressed: () async {
-              final cameras = await availableCameras();
+//               final cameras = await availableCameras();
 
-// Get a specific camera from the list of available cameras.
-              final firstCamera = cameras.first;
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ImageScanner(camera: firstCamera),
-                ),
-              );
+// // Get a specific camera from the list of available cameras.
+//               final firstCamera = cameras.first;
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => ImageScanner(camera: firstCamera),
+              //   ),
+              // );
             }),
       ),
     );

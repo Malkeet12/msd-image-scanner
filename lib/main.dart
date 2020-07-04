@@ -1,4 +1,4 @@
-import 'package:camera/camera.dart';
+// import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image_scanner/screens/documents/all_documents.dart';
 import 'package:image_scanner/screens/take_picture.dart';
@@ -33,17 +33,17 @@ class _MyAppState extends State<MyApp> {
     AnalyticsService().sendEvent(
       name: 'capture_image_click',
     );
-    // Obtain a list of the available cameras on the device.
-    final cameras = await availableCameras();
+//     // Obtain a list of the available cameras on the device.
+//     final cameras = await availableCameras();
 
-// Get a specific camera from the list of available cameras.
-    final firstCamera = cameras.first;
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TakePicture(camera: firstCamera),
-      ),
-    );
+// // Get a specific camera from the list of available cameras.
+//     final firstCamera = cameras.first;
+//     Navigator.push(
+//       context,
+//       MaterialPageRoute(
+//         builder: (context) => TakePicture(camera: firstCamera),
+//       ),
+//     );
   }
 
   uploadImage() async {
