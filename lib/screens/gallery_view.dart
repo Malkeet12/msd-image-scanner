@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+// import 'package:image_picker/image_picker.dart';
 import 'package:image_scanner/shared_widgets/blue_button.dart';
 import 'package:image_scanner/shared_widgets/build_list.dart';
 import 'package:image_scanner/shared_widgets/my_app_bar.dart';
@@ -37,57 +37,57 @@ class _GalleryViewState extends State<GalleryView> {
   }
 
   uploadImage() async {
-    try {
-      //var file = await ImagePicker.pickImage(source: ImageSource.camera);
-      final picker = ImagePicker();
-      var pickedFile = await picker.getImage(source: ImageSource.gallery);
-      if (pickedFile != null) {
-        setState(() {
-          _file = File(pickedFile.path);
-        });
-        try {
-          var image = FirebaseVisionImage.fromFilePath(_file.path);
-          final VisionText visionText =
-              await textRecognizer.processImage(image);
-          String text = visionText.text;
-          //reseting labels list before adding new image data
-          labels = [];
-          for (TextBlock block in visionText.blocks) {
-            final Rect boundingBox = block.boundingBox;
-            final List<Offset> cornerPoints = block.cornerPoints;
-            final String text = block.text;
-            final List<RecognizedLanguage> languages =
-                block.recognizedLanguages;
-            print('languages $languages');
-            print('text $text');
-            for (TextLine line in block.lines) {
-              // Same getters as TextBlock
-              labels.add(line);
-              for (TextElement element in line.elements) {
-                // Same getters as TextBlock
-              }
-            }
-          }
-          setState(() {
-            completeDoc = text;
-            labels = labels;
-          });
-        } catch (e) {
-          print(e.toString());
-        }
-      } else {
-        Navigator.pop(context);
-      }
-    } catch (e) {
-      print(e.toString());
-      widget.scaffoldKey.currentState.showSnackBar(SnackBar(
-        content: Text('The user did not allow photo access.'),
-        backgroundColor: Colors.redAccent,
-        duration: Duration(seconds: 2),
-      ));
+    // try {
+    //   //var file = await ImagePicker.pickImage(source: ImageSource.camera);
+    //   final picker = ImagePicker();
+    //   var pickedFile = await picker.getImage(source: ImageSource.gallery);
+    //   if (pickedFile != null) {
+    //     setState(() {
+    //       _file = File(pickedFile.path);
+    //     });
+    //     try {
+    //       var image = FirebaseVisionImage.fromFilePath(_file.path);
+    //       final VisionText visionText =
+    //           await textRecognizer.processImage(image);
+    //       String text = visionText.text;
+    //       //reseting labels list before adding new image data
+    //       labels = [];
+    //       for (TextBlock block in visionText.blocks) {
+    //         final Rect boundingBox = block.boundingBox;
+    //         final List<Offset> cornerPoints = block.cornerPoints;
+    //         final String text = block.text;
+    //         final List<RecognizedLanguage> languages =
+    //             block.recognizedLanguages;
+    //         print('languages $languages');
+    //         print('text $text');
+    //         for (TextLine line in block.lines) {
+    //           // Same getters as TextBlock
+    //           labels.add(line);
+    //           for (TextElement element in line.elements) {
+    //             // Same getters as TextBlock
+    //           }
+    //         }
+    //       }
+    //       setState(() {
+    //         completeDoc = text;
+    //         labels = labels;
+    //       });
+    //     } catch (e) {
+    //       print(e.toString());
+    //     }
+    //   } else {
+    //     Navigator.pop(context);
+    //   }
+    // } catch (e) {
+    //   print(e.toString());
+    //   widget.scaffoldKey.currentState.showSnackBar(SnackBar(
+    //     content: Text('The user did not allow photo access.'),
+    //     backgroundColor: Colors.redAccent,
+    //     duration: Duration(seconds: 2),
+    //   ));
 
-      Navigator.pop(context);
-    }
+    //   Navigator.pop(context);
+    // }
   }
 
   @override

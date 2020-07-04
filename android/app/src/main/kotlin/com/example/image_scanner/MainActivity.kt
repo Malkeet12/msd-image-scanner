@@ -1,5 +1,6 @@
 package msd.image_scanner
 
+//import com.scanlibrary.ScanConstants
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
@@ -9,10 +10,10 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import com.scanlibrary.ScanActivity
-import java.text.SimpleDateFormat;
 import com.scanlibrary.ScanConstants
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -21,7 +22,8 @@ import io.flutter.plugin.common.MethodChannel
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.util.Date
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class MainActivity: FlutterActivity() {
@@ -32,28 +34,32 @@ class MainActivity: FlutterActivity() {
                 .setMethodCallHandler { call: MethodCall, result: MethodChannel.Result ->
                    if(call.method == "camera"){
                         val REQUEST_CODE = 99
-                       val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                       val file: File = createImageFile()
-                       val isDirectoryCreated = file.parentFile.mkdirs()
-                       println("openCamera: isDirectoryCreated: $isDirectoryCreated")
-                       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                           val tempFileUri: Uri = FileProvider.getUriForFile(activity.applicationContext,
-                                   "com.scanlibrary.provider",  // As defined in Manifest
-                                   file)
-                           cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempFileUri)
-                       } else {
-                           val tempFileUri = Uri.fromFile(file)
-                           cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempFileUri)
-                       }
-                       startActivityForResult(cameraIntent, ScanConstants.START_CAMERA_REQUEST_CODE)
-//                        val preference: Int = ScanConstants.OPEN_CAMERA
-//                        val intent = Intent(this, ScanActivity::class.java)
-//                        intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference)
-//                        startActivityForResult(intent, REQUEST_CODE)
-//                        result.success("message")
+//                       val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//                       val file: File = createImageFile()
+//                       val isDirectoryCreated = file.parentFile.mkdirs()
+//                       println("openCamera: isDirectoryCreated: $isDirectoryCreated")
+//                       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                           val tempFileUri: Uri = FileProvider.getUriForFile(activity.applicationContext,
+//                                   "com.scanlibrary.provider",  // As defined in Manifest
+//                                   file)
+//                           cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempFileUri)
+//                       } else {
+//                           val tempFileUri = Uri.fromFile(file)
+//                           cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempFileUri)
+//                       }
+//                       startActivityForResult(cameraIntent, ScanConstants.START_CAMERA_REQUEST_CODE)
+                        val preference: Int = ScanConstants.OPEN_CAMERA
+                        val intent = Intent(this, ScanActivity::class.java)
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                        intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference)
+                        startActivityForResult(intent, REQUEST_CODE)
+//                       openCamera()
+                        result.success("message")
                     }
                     else if(call.method == "gallery"){
                         val REQUEST_CODE = 100
+
                         val preference: Int = ScanConstants.OPEN_MEDIA
                         val intent = Intent(this, ScanActivity::class.java)
                         intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference)
@@ -63,23 +69,48 @@ class MainActivity: FlutterActivity() {
                 }
     }
 
-    private fun createImageFile(): File {
-        clearTempImages()
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val file = File(ScanConstants.IMAGE_PATH, "IMG_" + timeStamp +
-                ".jpg")
-        fileUri = Uri.fromFile(file)
-        return file
-    }
+//     fun openCamera() {
+//         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//         val file = createImageFile()
+//         val isDirectoryCreated = file.parentFile.mkdirs()
+//         Log.d("", "openCamera: isDirectoryCreated: $isDirectoryCreated")
+//         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+// //            Uri tempFileUri =FileProvider.getUriForFile(Objects.requireNonNull(getActivity().getApplicationContext()),
+// //                    BuildConfig.APPLICATION_ID + ".provider", file);
+//             val tempFileUri = FileProvider.getUriForFile(activity.applicationContext, "msd.image_scanner.provider",  // As
+//                     // defined
+//                     // in
+//                     // Manifest
+//                     file)
+//             val packageName = "msd.image_scanner"
+//             cameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+//             cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+//             //            getActivity().getApplicationContext().grantUriPermission(packageName, tempFileUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+// //            getActivity().getApplicationContext().grantUriPermission(packageName, tempFileUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+//             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempFileUri)
+//         } else {
+//             val tempFileUri = Uri.fromFile(file)
+//             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempFileUri)
+//         }
+//         startActivityForResult(cameraIntent, ScanConstants.START_CAMERA_REQUEST_CODE)
+//     }
+//     private fun createImageFile(): File {
+//         clearTempImages()
+//         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+//         val file = File(ScanConstants.IMAGE_PATH, "IMG_" + timeStamp +
+//                 ".jpg")
+//         fileUri = Uri.fromFile(file)
+//         return file
+//     }
 
-    private fun clearTempImages() {
-        try {
-            val tempFolder = File(ScanConstants.IMAGE_PATH)
-            for (f in tempFolder.listFiles()) f.delete()
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-        }
-    }
+//     private fun clearTempImages() {
+//         try {
+//             val tempFolder = File(ScanConstants.IMAGE_PATH)
+//             for (f in tempFolder.listFiles()) f.delete()
+//         } catch (e: java.lang.Exception) {
+//             e.printStackTrace()
+//         }
+//     }
 
     private fun SaveImage(finalBitmap: Bitmap) {
         verifyStoragePermissions(this)
