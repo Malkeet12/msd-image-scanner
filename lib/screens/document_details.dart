@@ -8,7 +8,71 @@ import 'package:image_scanner/screens/pdf_viewer.dart';
 import 'package:image_scanner/services/foreground_service.dart';
 import 'package:image_scanner/theme/style.dart';
 
-class DocumentDetails extends StatelessWidget {
+class DocumentDetails extends StatefulWidget {
+  @override
+  _DocumentDetailsState createState() => _DocumentDetailsState();
+}
+
+class _DocumentDetailsState extends State<DocumentDetails> {
+  TextEditingController _controller = new TextEditingController();
+  var inputValue;
+  void _showDialog(context, name) {
+    _controller.text = name;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text(
+            "Rename",
+            style: Theme.of(context)
+                .textTheme
+                .h3
+                .copyWith(color: ColorShades.textSecGray3),
+          ),
+          content: TextField(
+            autofocus: true,
+            controller: _controller,
+            onChanged: (value) {
+              setState(() {
+                inputValue = value;
+              });
+            },
+            maxLength: 30,
+            style: Theme.of(context).textTheme.body1Medium,
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text(
+                "Close",
+                style: Theme.of(context)
+                    .textTheme
+                    .h4
+                    .copyWith(color: ColorShades.textSecGray3),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              child: new Text(
+                "OK",
+                style: Theme.of(context)
+                    .textTheme
+                    .h3
+                    .copyWith(color: Colors.blueAccent),
+              ),
+              onPressed: () {
+                BlocProvider.of<GlobalBloc>(context)
+                    .add(RenameDocument(name: inputValue));
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GlobalBloc, Map>(builder: (context, currentState) {
@@ -29,7 +93,9 @@ class DocumentDetails extends StatelessWidget {
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.edit),
-              onPressed: () async {},
+              onPressed: () async {
+                _showDialog(context, name);
+              },
             ),
             IconButton(
               icon: Icon(Icons.picture_as_pdf),

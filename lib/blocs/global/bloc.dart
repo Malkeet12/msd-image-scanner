@@ -29,18 +29,31 @@ class GlobalBloc extends Bloc<GlobalEvent, Map> {
       case DeleteFile:
         yield* _mapDeleteFileToState(state, event);
         break;
+      case RenameDocument:
+        yield* _mapRenameDocumentToState(state, event);
+        break;
     }
+  }
+
+  Stream<Map> _mapRenameDocumentToState(state, event) async* {
+    var data = {
+      "currentName": state['doc']['name'],
+      "futureName": event.name,
+    };
+    var res = await ForegroundService.start('renameDocument', data);
+    add(GetCurrentDocument(id: event.name));
+    add(FetchAllDocuments());
+    yield {...state};
   }
 
   Stream<Map> _mapAddToCurrentDocumentToState(state, event) async* {
     ForegroundService.start('gallery', state['doc']['name']);
-    // add(GetCurrentDocument(id: state['doc']['name']));
     yield {...state};
   }
 
   Stream<Map> _mapDeleteFileToState(state, event) async* {
     var data = {"documentName": state['doc']['name'], "fileName": event.file};
-    var res = await ForegroundService.start('deleteFile', data);
+    await ForegroundService.start('deleteFile', data);
     add(GetCurrentDocument(id: state['doc']['name']));
     // yield {...state};
   }

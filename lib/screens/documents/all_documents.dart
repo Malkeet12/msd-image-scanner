@@ -6,6 +6,7 @@ import 'package:image_scanner/screens/documents/documents.dart';
 import 'package:image_scanner/services/foreground_service.dart';
 import 'package:image_scanner/shared_widgets/my_drawer.dart';
 import 'package:image_scanner/theme/style.dart';
+import 'package:image_scanner/util/storage_manager.dart';
 
 class AllDocuments extends StatefulWidget {
   const AllDocuments({
@@ -23,6 +24,7 @@ class _AllDocumentsState extends State<AllDocuments> {
   void initState() {
     super.initState();
     ForegroundService.registerCallBack("refreshUI", getUserImages);
+    StorageManager.setItem("userViewPreference", "grid");
     getUserImages();
   }
 
@@ -50,10 +52,10 @@ class _AllDocumentsState extends State<AllDocuments> {
             return SingleChildScrollView(
               child: Column(
                 children: <Widget>[
-                  Container(
-                    height: 20,
-                    color: ColorShades.textColorOffWhite,
-                  ),
+                  // Container(
+                  //   height: 20,
+                  //   color: ColorShades.textColorOffWhite,
+                  // ),
                   Documents(
                     docs: currentState['allDocsList'],
                   )

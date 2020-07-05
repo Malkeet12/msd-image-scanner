@@ -26,6 +26,11 @@ class AddToCurrentDocument extends GlobalEvent {
   AddToCurrentDocument({@required this.name});
 }
 
+class RenameDocument extends GlobalEvent {
+  var name;
+  RenameDocument({@required this.name});
+}
+
 class DeleteFile extends GlobalEvent {
   var file;
   DeleteFile({@required this.file});

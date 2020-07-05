@@ -6,6 +6,7 @@ import 'package:image_scanner/blocs/global/bloc.dart';
 import 'package:image_scanner/blocs/global/event.dart';
 import 'package:image_scanner/screens/document_details.dart';
 import 'package:image_scanner/theme/style.dart';
+import 'package:image_scanner/util/storage_manager.dart';
 
 class Documents extends StatefulWidget {
   const Documents({
@@ -20,8 +21,21 @@ class Documents extends StatefulWidget {
 }
 
 class _DocumentsState extends State<Documents> {
+  var currentView = "grid";
   setCurrentDocument(id) async {
     BlocProvider.of<GlobalBloc>(context).add(GetCurrentDocument(id: id));
+  }
+
+  getUserViewPref() async {
+    var value = await StorageManager.getItem("userViewPreference");
+    return value;
+  }
+
+  setUserView(value) async {
+    // await StorageManager.setItem("userViewPreference", value);
+    setState(() {
+      currentView = value;
+    });
   }
 
   @override
@@ -97,6 +111,120 @@ class _DocumentsState extends State<Documents> {
         ),
       ));
     }
-    return Column(children: list);
+    if (currentView == 'linear') {
+      return Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                IconButton(
+                  color: Colors.deepOrange,
+                  icon: Icon(Icons.line_style),
+                  onPressed: () => setUserView('grid'),
+                ),
+              ],
+            ),
+          ),
+          MyGridView(
+            widget: widget,
+            setCurrentDocument: setCurrentDocument,
+          )
+        ],
+      );
+    }
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              IconButton(
+                color: Colors.deepOrange,
+                icon: Icon(Icons.grid_on),
+                onPressed: () => setUserView('linear'),
+              ),
+            ],
+          ),
+        ),
+        Column(children: list)
+      ],
+    );
+
+    // return Column(children: list);
+
+    // return MyGridView(widget: widget);
+  }
+}
+
+class MyGridView extends StatelessWidget {
+  const MyGridView({
+    Key key,
+    @required this.widget,
+    this.setCurrentDocument,
+  }) : super(key: key);
+  final setCurrentDocument;
+  final Documents widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.count(
+      reverse: true,
+      scrollDirection: Axis.vertical,
+      physics: const ClampingScrollPhysics(),
+      shrinkWrap: true,
+      crossAxisCount: 2,
+      crossAxisSpacing: 20,
+      mainAxisSpacing: 10,
+      // childAspectRatio: 0.8,
+      children: List.generate(
+        widget.docs.length,
+        (index) {
+          return GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () async {
+              await setCurrentDocument(widget.docs[index]['name']);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DocumentDetails(),
+                ),
+              );
+            },
+            child: Container(
+              margin: EdgeInsets.only(
+                bottom: 10,
+              ),
+              child: Column(
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      color: Colors.lightBlue[200],
+                      alignment: Alignment.center,
+                      width: MediaQuery.of(context).size.width * 0.35,
+                      // height: 150,
+                      child: Image.file(
+                        File(
+                          widget.docs[index]['firstChild'],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 44.0, vertical: 10),
+                    child: Text(
+                      widget.docs[index]['name'],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 }

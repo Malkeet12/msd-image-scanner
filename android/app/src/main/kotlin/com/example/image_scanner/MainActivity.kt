@@ -20,6 +20,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import org.json.JSONObject
 import java.io.*
+import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
@@ -114,6 +115,22 @@ class MainActivity : FlutterActivity() {
 
                            var success= deleteFile("$documentName","$name")
                                 result.success(success)
+                        }
+                        "renameDocument"->{
+                            val currentName = call.argument<String>("currentName")
+                            val futureName = call.argument<String>("futureName")
+                            val root = Environment.getExternalStorageDirectory().absolutePath
+                            var path="$root/ImageScanner/$currentName"
+                            var dest=Paths.get("$root/ImageScanner/$futureName")
+                            val source = Paths.get("$path")
+                            try{
+                                Files.move(source, dest)
+                            }catch (e: FileAlreadyExistsException) {
+                                result.success(false)
+                            } catch (e: java.lang.Exception) {
+                                result.success(false)
+                            }
+                            result.success(true)
                         }
                     }
                 }
