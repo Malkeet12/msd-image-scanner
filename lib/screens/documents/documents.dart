@@ -171,15 +171,6 @@ class MyGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var colors = [
-      Colors.lightBlue,
-      Colors.amberAccent,
-      Colors.redAccent,
-      Colors.greenAccent,
-      Colors.tealAccent,
-      Colors.lightGreenAccent
-    ];
-
     return GridView.count(
       reverse: true,
       // childAspectRatio: 1,
@@ -193,9 +184,6 @@ class MyGridView extends StatelessWidget {
       children: List.generate(
         widget.docs.length,
         (index) {
-          var rng = new Random();
-          var uid = rng.nextInt(pow(5, 1));
-          print(uid);
           return GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: () async {

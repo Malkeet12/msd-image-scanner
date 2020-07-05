@@ -167,7 +167,7 @@ class MainActivity : FlutterActivity() {
             out = null
 
             // delete the original file
-            File(inputPath + inputFile).delete()
+           File(inputPath + inputFile).delete()
         } catch (fnfe1: FileNotFoundException) {
            println("exception");
         } catch (e: java.lang.Exception) {
@@ -288,7 +288,7 @@ class MainActivity : FlutterActivity() {
             myDir.mkdirs()
         }
         var currentFolder=""
-        currentFolder = if(currentGroupId!=""){
+        currentFolder = if(currentGroupId!="" && currentGroupId!=null){
             currentGroupId as String
         }else{
             "ImageScanner${System.currentTimeMillis().toString()}"
