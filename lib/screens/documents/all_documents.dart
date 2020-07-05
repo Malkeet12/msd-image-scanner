@@ -24,7 +24,6 @@ class _AllDocumentsState extends State<AllDocuments> {
   void initState() {
     super.initState();
     ForegroundService.registerCallBack("refreshUI", getUserImages);
-    StorageManager.setItem("userViewPreference", "grid");
     getUserImages();
   }
 
@@ -70,7 +69,7 @@ class _AllDocumentsState extends State<AllDocuments> {
               Icons.camera_alt,
             ),
             onPressed: () async {
-              ForegroundService.start('camera', '');
+              ForegroundService.start('gallery', '');
             }),
       ),
     );

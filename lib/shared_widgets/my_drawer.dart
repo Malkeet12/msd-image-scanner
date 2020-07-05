@@ -1,4 +1,6 @@
 // import 'package:camera/camera.dart';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:image_scanner/screens/documents/all_documents.dart';
 import 'package:image_scanner/screens/gallery_view.dart';
@@ -65,6 +67,19 @@ class _MyDrawerState extends State<MyDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    var colors = [
+      Colors.deepPurpleAccent,
+      Colors.pinkAccent,
+      Colors.lightGreenAccent,
+      Colors.lightBlue,
+      Colors.amberAccent,
+      Colors.redAccent,
+      Colors.greenAccent,
+      Colors.tealAccent,
+    ];
+    var rng = new Random();
+    var uid = rng.nextInt(pow(5, 1));
+    print(uid);
     return SafeArea(
         child: Container(
       width: 282.0,
@@ -72,68 +87,80 @@ class _MyDrawerState extends State<MyDrawer> {
         // Add a ListView to the drawer. This ensures the user can scroll
         // through the options in the drawer if there isn't enough vertical
         // space to fit everything.
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            // DrawerHeader(
-            //   child: Text('Drawer Header'),
-            //   decoration: BoxDecoration(
-            //     color: Colors.blue,
-            //   ),
-            // ),
-            SizedBox(
-              height: 24,
-            ),
-            listItem(
-              context,
-              Icon(
-                Icons.folder,
-                color: Colors.deepOrange,
+        child: Container(
+          // color: Colors.white60,
+          child: ListView(
+            // Important: Remove any padding from the ListView.
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              Container(
+                height: 100,
+                child: DrawerHeader(
+                  padding: EdgeInsets.only(left: 20, top: 30),
+                  child: Text(
+                    'Image Scanner',
+                    style: Theme.of(context)
+                        .textTheme
+                        .h2
+                        .copyWith(color: ColorShades.textSecGray3),
+                  ),
+                  decoration: BoxDecoration(
+                      // color: Colors.white60,
+                      ),
+                ),
               ),
-              "All Documents",
-              () => allDocuments(),
-            ),
-
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 20,
-                right: 16,
-                top: 32,
+              // SizedBox(
+              //   height: 24,
+              // ),
+              listItem(
+                context,
+                Icon(
+                  Icons.folder,
+                  color: colors[uid],
+                ),
+                "All Documents",
+                () => allDocuments(),
               ),
-              child: Text(
-                'Extract Text',
-                softWrap: true,
-                style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      color: Colors.lightBlue,
-                      // fontFamily: 'Rounded Mplus 1c',
-                      fontSize: 16.0,
-                      // fontWeight: FontWeight.bold,
-                    ),
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 20,
+                  right: 16,
+                  top: 24,
+                ),
+                child: Text(
+                  'Extract Text',
+                  softWrap: true,
+                  style: Theme.of(context).textTheme.bodyText2.copyWith(
+                        color: Colors.green,
+                        // fontFamily: 'Rounded Mplus 1c',
+                        fontSize: 16.0,
+                        // fontWeight: FontWeight.bold,
+                      ),
+                ),
               ),
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            listItem(
-              context,
-              Icon(
-                Icons.camera_alt,
-                color: Colors.deepOrange,
+              SizedBox(
+                height: 8,
               ),
-              "Capture Image",
-              () => capureImage(),
-            ),
-            listItem(
-              context,
-              Icon(
-                Icons.image,
-                color: Colors.deepOrange,
+              listItem(
+                context,
+                Icon(
+                  Icons.camera_alt,
+                  color: colors[uid + 1],
+                ),
+                "Capture Image",
+                () => capureImage(),
               ),
-              "Pick From Gallery",
-              () => uploadImage(),
-            ),
-          ],
+              listItem(
+                context,
+                Icon(
+                  Icons.image,
+                  color: colors[uid + 2],
+                ),
+                "Pick From Gallery",
+                () => uploadImage(),
+              ),
+            ],
+          ),
         ),
       ),
     ));
@@ -154,7 +181,7 @@ InkWell listItem(BuildContext context, icon, String text, Function onTap) {
         text,
         softWrap: true,
         style: Theme.of(context).textTheme.h4.copyWith(
-            color: Colors.deepOrange,
+            color: ColorShades.textSecGray3,
             fontFamily: 'Rounded Mplus 1c',
             fontSize: 16.0,
             fontWeight: FontWeight.bold),

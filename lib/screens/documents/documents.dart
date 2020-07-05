@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,13 +27,7 @@ class _DocumentsState extends State<Documents> {
     BlocProvider.of<GlobalBloc>(context).add(GetCurrentDocument(id: id));
   }
 
-  getUserViewPref() async {
-    var value = await StorageManager.getItem("userViewPreference");
-    return value;
-  }
-
   setUserView(value) async {
-    // await StorageManager.setItem("userViewPreference", value);
     setState(() {
       currentView = value;
     });
@@ -111,8 +106,35 @@ class _DocumentsState extends State<Documents> {
         ),
       ));
     }
-    if (currentView == 'linear') {
-      return Column(
+    if (currentView == 'grid') {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 48.0),
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  IconButton(
+                    color: Colors.deepOrange,
+                    icon: Icon(Icons.line_style),
+                    onPressed: () => setUserView('linear'),
+                  ),
+                ],
+              ),
+            ),
+            MyGridView(
+              widget: widget,
+              setCurrentDocument: setCurrentDocument,
+            )
+          ],
+        ),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 48.0),
+      child: Column(
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(10.0),
@@ -121,36 +143,15 @@ class _DocumentsState extends State<Documents> {
               children: <Widget>[
                 IconButton(
                   color: Colors.deepOrange,
-                  icon: Icon(Icons.line_style),
+                  icon: Icon(Icons.grid_on),
                   onPressed: () => setUserView('grid'),
                 ),
               ],
             ),
           ),
-          MyGridView(
-            widget: widget,
-            setCurrentDocument: setCurrentDocument,
-          )
+          Column(children: list)
         ],
-      );
-    }
-    return Column(
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              IconButton(
-                color: Colors.deepOrange,
-                icon: Icon(Icons.grid_on),
-                onPressed: () => setUserView('linear'),
-              ),
-            ],
-          ),
-        ),
-        Column(children: list)
-      ],
+      ),
     );
 
     // return Column(children: list);
@@ -170,8 +171,18 @@ class MyGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var colors = [
+      Colors.lightBlue,
+      Colors.amberAccent,
+      Colors.redAccent,
+      Colors.greenAccent,
+      Colors.tealAccent,
+      Colors.lightGreenAccent
+    ];
+
     return GridView.count(
       reverse: true,
+      // childAspectRatio: 1,
       scrollDirection: Axis.vertical,
       physics: const ClampingScrollPhysics(),
       shrinkWrap: true,
@@ -182,6 +193,9 @@ class MyGridView extends StatelessWidget {
       children: List.generate(
         widget.docs.length,
         (index) {
+          var rng = new Random();
+          var uid = rng.nextInt(pow(5, 1));
+          print(uid);
           return GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: () async {
@@ -194,14 +208,20 @@ class MyGridView extends StatelessWidget {
               );
             },
             child: Container(
+              alignment: Alignment.topCenter,
               margin: EdgeInsets.only(
                 bottom: 10,
               ),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Expanded(
+                  Flexible(
                     child: Container(
-                      color: Colors.lightBlue[200],
+                      decoration: BoxDecoration(
+                          // color: colors[uid],
+                          border: Border.all(
+                              color: ColorShades.textSecGray3, width: 3.0)),
                       alignment: Alignment.center,
                       width: MediaQuery.of(context).size.width * 0.35,
                       // height: 150,
