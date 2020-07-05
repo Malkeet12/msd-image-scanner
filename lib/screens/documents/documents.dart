@@ -5,11 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_scanner/blocs/global/bloc.dart';
 import 'package:image_scanner/blocs/global/event.dart';
 import 'package:image_scanner/screens/document_details.dart';
-import 'package:image_scanner/screens/edit_document/edit_document.dart';
-import 'package:image_scanner/services/foreground_service.dart';
-import 'package:image_scanner/shared_widgets/my_pdf_view.dart';
 import 'package:image_scanner/theme/style.dart';
-import 'package:image_scanner/util/date_formater.dart';
 
 class Documents extends StatefulWidget {
   const Documents({
@@ -33,25 +29,14 @@ class _DocumentsState extends State<Documents> {
     if (widget.docs.length == 0) return SizedBox();
 
     List<Widget> list = new List<Widget>();
-    // docs.sort((a, b) {
-    //   return a['timestamp']
-    //       .toString()
-    //       .toLowerCase()
-    //       .compareTo(b['timestamp'].toString().toLowerCase());
-    // });
     for (var i = widget.docs.length - 1; i >= 0; i--) {
       var doc = widget.docs[i];
-      // var timestamp = doc['timestamp'];
-      // String delta = DateFormatter.readableDelta(timestamp);
       var name = doc["name"];
       var image = doc["firstChild"];
 
       list.add(GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () async {
-          // var res = await ForegroundService.start(
-          //     'getGroupImages', path[path.length - 2]);
-          // return res;
           await setCurrentDocument(name);
           Navigator.push(
             context,
@@ -63,9 +48,6 @@ class _DocumentsState extends State<Documents> {
         child: Container(
           color: ColorShades.textColorOffWhite,
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          // margin: EdgeInsets.only(
-          //   bottom: 8,
-          // ),
           child: Column(
             children: <Widget>[
               Row(
@@ -101,13 +83,6 @@ class _DocumentsState extends State<Documents> {
                                 color: ColorShades.textPrimaryDark,
                               ),
                         ),
-                        // Text(
-                        //   'delta'.toString(),
-                        //   style:
-                        //       Theme.of(context).textTheme.body2Medium.copyWith(
-                        //             color: ColorShades.textPrimaryDark,
-                        //           ),
-                        // ),
                       ],
                     ),
                   ),
@@ -116,7 +91,6 @@ class _DocumentsState extends State<Documents> {
               SizedBox(
                 height: 8,
               ),
-              // if (i > 0)
               Divider(color: Colors.black),
             ],
           ),

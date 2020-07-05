@@ -1,6 +1,4 @@
 import 'dart:io';
-import 'dart:math';
-
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -61,8 +59,6 @@ class _PdfViewerState extends State<PdfViewer> {
     try {
       final pdf = pw.Document();
       writeOnPdf(pdf, images);
-      var rng = new Random();
-      var uid = rng.nextInt(pow(10, 6));
       Directory documentDirectory = await getApplicationDocumentsDirectory();
 
       String documentPath = documentDirectory.path;
@@ -70,10 +66,6 @@ class _PdfViewerState extends State<PdfViewer> {
       File file = File(fullPath);
       file.writeAsBytesSync(pdf.save());
       return fullPath;
-      // final ByteData bytes = await rootBundle.load(fullPath);
-      // await Share.file('File shared by image scanner',
-      //     'Image scanner document.pdf', bytes.buffer.asUint8List(), 'text/csv',
-      //     text: 'File shared by image scanner.');
     } catch (e) {
       print('error: $e');
     }

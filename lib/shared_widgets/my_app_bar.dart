@@ -24,25 +24,6 @@ class MyAppBar extends StatelessWidget with PreferredSizeWidget {
           color: ColorShades.textColorOffWhite,
         ),
       ),
-      // leading: hideBack != true
-      //     ? GestureDetector(
-      //         onTap: () =>
-      //             onBackTap != null ? onBackTap() : Navigator.pop(context),
-      //         child: Container(
-      //           margin: EdgeInsets.all(5.0),
-      //           decoration: new BoxDecoration(
-      //             color: Color.fromRGBO(33, 35, 39, 1),
-      //             shape: BoxShape.circle,
-      //           ),
-      //           alignment: Alignment.center,
-      //           child: Icon(
-      //             Icons.keyboard_arrow_left,
-      //             color: Color.fromRGBO(102, 106, 110, 1),
-      //             size: 36.0,
-      //           ),
-      //         ),
-      //       )
-      //     : null,
     );
   }
 

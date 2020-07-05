@@ -15,8 +15,6 @@ import 'package:image_scanner/util/common_util.dart';
 import 'package:share/share.dart';
 
 class GalleryView extends StatefulWidget {
-  // final scaffoldKey;
-
   const GalleryView({
     Key key,
   }) : super(key: key);
@@ -138,19 +136,6 @@ class _GalleryViewState extends State<GalleryView> {
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                // if (_file == null)
-                //   Column(
-                //     children: <Widget>[
-                //       PrimaryButton(
-                //         onPressed: capureImage,
-                //         text: 'Capture image',
-                //       ),
-                //       PrimaryButton(
-                //         onPressed: uploadImage,
-                //         text: 'Pick from gallery',
-                //       ),
-                //     ],
-                //   ),
                 if (_file != null)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -159,9 +144,7 @@ class _GalleryViewState extends State<GalleryView> {
                       text: 'Upload another',
                     ),
                   ),
-
-                if (_file != null)
-                  _buildImage(),
+                if (_file != null) _buildImage(),
                 if (_file != null)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12.0),

@@ -1,16 +1,12 @@
 import 'dart:io';
-
-// import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_scanner/blocs/global/bloc.dart';
 import 'package:image_scanner/blocs/global/event.dart';
 import 'package:image_scanner/screens/edit_document/edit_document.dart';
-import 'package:image_scanner/screens/image_scanner.dart';
 import 'package:image_scanner/screens/pdf_viewer.dart';
 import 'package:image_scanner/services/foreground_service.dart';
 import 'package:image_scanner/theme/style.dart';
-import 'package:image_scanner/util/storage_manager.dart';
 
 class DocumentDetails extends StatelessWidget {
   @override
@@ -121,22 +117,12 @@ class DocumentDetails extends StatelessWidget {
               ),
               // Provide an onPressed callback.
               onPressed: () async {
-                var documentPath = docs[0].split("/");
-                var groupId = documentPath[documentPath.length - 2];
-                ForegroundService.start('gallery', name);
+                // var documentPath = docs[0].split("/");
+                // var groupId = documentPath[documentPath.length - 2];
+                // ForegroundService.start('gallery', name);
 
-                // BlocProvider.of<GlobalBloc>(context)
-                //     .add(AddToCurrentDocument(name: name));
-                // final cameras = await availableCameras();
-                // final firstCamera = cameras.first;
-                // await StorageManager.setItem(
-                //     "currentDocumentId", doc["documentId"]);
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => ImageScanner(camera: firstCamera),
-                //   ),
-                // );
+                BlocProvider.of<GlobalBloc>(context)
+                    .add(AddToCurrentDocument(name: name));
               }),
         ),
       );
