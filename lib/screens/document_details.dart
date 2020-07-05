@@ -2,6 +2,9 @@ import 'dart:io';
 
 // import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_scanner/blocs/global/bloc.dart';
+import 'package:image_scanner/blocs/global/event.dart';
 import 'package:image_scanner/screens/edit_document/edit_document.dart';
 import 'package:image_scanner/screens/image_scanner.dart';
 import 'package:image_scanner/screens/pdf_viewer.dart';
@@ -10,141 +13,133 @@ import 'package:image_scanner/theme/style.dart';
 import 'package:image_scanner/util/storage_manager.dart';
 
 class DocumentDetails extends StatelessWidget {
-  final docs;
-
-  DocumentDetails({this.docs});
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ColorShades.textColorOffWhite,
-      appBar: AppBar(
-        elevation: 0.0,
-        backgroundColor: Colors.deepOrange,
-        centerTitle: true,
-        title: Text(
-          'name',
-          style: TextStyle(
-            color: ColorShades.textColorOffWhite,
+    return BlocBuilder<GlobalBloc, Map>(builder: (context, currentState) {
+      var docs = currentState['doc']['data'];
+      var name = currentState['doc']['name'];
+      return Scaffold(
+        backgroundColor: ColorShades.textColorOffWhite,
+        appBar: AppBar(
+          elevation: 0.0,
+          backgroundColor: Colors.deepOrange,
+          centerTitle: true,
+          title: Text(
+            name,
+            style: TextStyle(
+              color: ColorShades.textColorOffWhite,
+            ),
           ),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () async {},
+            ),
+            IconButton(
+              icon: Icon(Icons.picture_as_pdf),
+              onPressed: () async {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PdfViewer(doc: docs, name: name),
+                  ),
+                );
+              },
+            ),
+          ],
         ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: () async {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => PdfViewer(
-                    doc: docs,
-                  ),
+        body: SingleChildScrollView(
+          child: Container(
+            margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 90.0),
+            child: Column(
+              children: <Widget>[
+                SizedBox(
+                  height: 20,
                 ),
-              );
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.picture_as_pdf),
-            onPressed: () async {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => PdfViewer(
-                    doc: docs,
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 10.0),
-          child: Column(
-            children: <Widget>[
-              SizedBox(
-                height: 20,
-              ),
-              GridView.count(
-                scrollDirection: Axis.vertical,
-                physics: const ClampingScrollPhysics(),
-                shrinkWrap: true,
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                // childAspectRatio: 0.8,
-                children: List.generate(
-                  docs.length,
-                  (index) {
-                    return Stack(
-                      children: <Widget>[
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => EditDoc(
-                                  doc: docs,
-                                  carouselInitialPage: index,
+                GridView.count(
+                  scrollDirection: Axis.vertical,
+                  physics: const ClampingScrollPhysics(),
+                  shrinkWrap: true,
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  // childAspectRatio: 0.8,
+                  children: List.generate(
+                    docs.length,
+                    (index) {
+                      return Stack(
+                        children: <Widget>[
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => EditDoc(
+                                    carouselInitialPage: index,
+                                  ),
                                 ),
+                              );
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              child: Image.file(
+                                File(
+                                  docs[index],
+                                ),
+                                fit: BoxFit.fill,
+                                // width: double.maxFinite,
                               ),
-                            );
-                          },
-                          child: Container(
-                            width: double.infinity,
-                            child: Image.file(
-                              File(
-                                docs[index],
-                              ),
-                              fit: BoxFit.fill,
-                              // width: double.maxFinite,
                             ),
                           ),
-                        ),
-                        Positioned(
-                          child: Text(
-                            (index + 1).toString(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText2
-                                .copyWith(color: ColorShades.textColorOffWhite),
-                          ),
-                          bottom: 4,
-                          left: 4,
-                        )
-                      ],
-                    );
-                  },
+                          Positioned(
+                            child: Text(
+                              (index + 1).toString(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  .copyWith(
+                                      color: ColorShades.textColorOffWhite),
+                            ),
+                            bottom: 4,
+                            left: 4,
+                          )
+                        ],
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: FloatingActionButton(
-            backgroundColor: Colors.deepOrange,
-            child: Icon(
-              Icons.camera_alt,
-            ),
-            // Provide an onPressed callback.
-            onPressed: () async {
-              var documentPath = docs[0].split("/");
-              var groupId = documentPath[documentPath.length - 2];
-              ForegroundService.start('gallery', groupId);
-              // final cameras = await availableCameras();
-              // final firstCamera = cameras.first;
-              // await StorageManager.setItem(
-              //     "currentDocumentId", doc["documentId"]);
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => ImageScanner(camera: firstCamera),
-              //   ),
-              // );
-            }),
-      ),
-    );
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: FloatingActionButton(
+              backgroundColor: Colors.deepOrange,
+              child: Icon(
+                Icons.camera_alt,
+              ),
+              // Provide an onPressed callback.
+              onPressed: () async {
+                var documentPath = docs[0].split("/");
+                var groupId = documentPath[documentPath.length - 2];
+                ForegroundService.start('gallery', name);
+
+                // BlocProvider.of<GlobalBloc>(context)
+                //     .add(AddToCurrentDocument(name: name));
+                // final cameras = await availableCameras();
+                // final firstCamera = cameras.first;
+                // await StorageManager.setItem(
+                //     "currentDocumentId", doc["documentId"]);
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => ImageScanner(camera: firstCamera),
+                //   ),
+                // );
+              }),
+        ),
+      );
+    });
   }
 }

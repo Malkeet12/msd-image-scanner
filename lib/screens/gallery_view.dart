@@ -15,9 +15,11 @@ import 'package:image_scanner/util/common_util.dart';
 import 'package:share/share.dart';
 
 class GalleryView extends StatefulWidget {
-  final scaffoldKey;
+  // final scaffoldKey;
 
-  const GalleryView({Key key, this.scaffoldKey}) : super(key: key);
+  const GalleryView({
+    Key key,
+  }) : super(key: key);
   @override
   _GalleryViewState createState() => _GalleryViewState();
 }

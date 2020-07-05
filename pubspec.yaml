@@ -26,6 +26,8 @@ dependencies:
   # image_picker:
   flutter_share: ^1.0.2+1
   pull_to_refresh: ^1.6.0
+  photo_view: ^0.9.2
+  flutter_bloc:
   # permission_handler: ^3.0.0
   share: ^0.6.3+6
   # simple_permissions: ^0.1.9

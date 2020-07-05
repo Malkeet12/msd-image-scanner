@@ -22,6 +22,7 @@ class _MyDrawerState extends State<MyDrawer> {
     );
     ForegroundService.start('camera', '');
     ForegroundService.registerCallBack("saveImage", handleImageBitMap);
+    Navigator.pop(context);
     // Obtain a list of the available cameras on the device.
 //     final cameras = await availableCameras();
 
@@ -41,6 +42,7 @@ class _MyDrawerState extends State<MyDrawer> {
 
   uploadImage() async {
     ForegroundService.start('gallery', '');
+    Navigator.pop(context);
     // AnalyticsService().sendEvent(
     //   name: 'upload_image_click',
     // );

@@ -1,5 +1,8 @@
 // import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_scanner/blocs/global/bloc.dart';
+import 'package:image_scanner/blocs/global/state.dart';
 import 'package:image_scanner/screens/documents/all_documents.dart';
 // import 'package:image_scanner/screens/take_picture.dart';
 import 'package:image_scanner/screens/gallery_view.dart';
@@ -10,15 +13,35 @@ import 'package:image_scanner/util/analytics_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MaterialApp(
-    title: 'Image Scanner',
-    // Start the app with the "/" named route. In our case, the app will start
-    // on the FirstScreen Widget
-    initialRoute: '/',
-    routes: {
-      '/': (context) => AllDocuments(),
-    },
-  ));
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider<GlobalBloc>(
+          create: (BuildContext context) => GlobalBloc(GlobalState.appState),
+        ),
+      ],
+      child: App(),
+    ),
+  );
+}
+
+class App extends StatelessWidget {
+  const App({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: MaterialApp(
+        title: 'Image Scanner',
+        // Start the app with the "/" named route. In our case, the app will start
+        // on the FirstScreen Widget
+        initialRoute: '/',
+        routes: {
+          '/': (context) => AllDocuments(),
+        },
+      ),
+    );
+  }
 }
 
 class MyApp extends StatefulWidget {
@@ -53,7 +76,7 @@ class _MyAppState extends State<MyApp> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => GalleryView(scaffoldKey: _scaffoldKey),
+        builder: (context) => GalleryView(),
       ),
     );
   }
@@ -67,12 +90,10 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: MyDrawer(),
-      key: _scaffoldKey,
       backgroundColor: ColorShades.backgroundColorPrimary,
       appBar: AppBar(
         elevation: 0.0,

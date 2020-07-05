@@ -13,7 +13,8 @@ import 'package:pdf/widgets.dart' as pw;
 
 class PdfViewer extends StatefulWidget {
   final doc;
-  PdfViewer({Key key, this.doc}) : super(key: key);
+  final name;
+  PdfViewer({Key key, this.doc, this.name}) : super(key: key);
 
   @override
   _PdfViewerState createState() => _PdfViewerState();
@@ -65,7 +66,7 @@ class _PdfViewerState extends State<PdfViewer> {
       Directory documentDirectory = await getApplicationDocumentsDirectory();
 
       String documentPath = documentDirectory.path;
-      fullPath = "$documentPath/msd12$uid.pdf";
+      fullPath = "$documentPath/${widget.name}.pdf";
       File file = File(fullPath);
       file.writeAsBytesSync(pdf.save());
       return fullPath;

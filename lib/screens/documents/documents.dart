@@ -1,6 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_scanner/blocs/global/bloc.dart';
+import 'package:image_scanner/blocs/global/event.dart';
 import 'package:image_scanner/screens/document_details.dart';
 import 'package:image_scanner/screens/edit_document/edit_document.dart';
 import 'package:image_scanner/services/foreground_service.dart';
@@ -8,7 +11,7 @@ import 'package:image_scanner/shared_widgets/my_pdf_view.dart';
 import 'package:image_scanner/theme/style.dart';
 import 'package:image_scanner/util/date_formater.dart';
 
-class Documents extends StatelessWidget {
+class Documents extends StatefulWidget {
   const Documents({
     Key key,
     @required this.docs,
@@ -17,8 +20,17 @@ class Documents extends StatelessWidget {
   final docs;
 
   @override
+  _DocumentsState createState() => _DocumentsState();
+}
+
+class _DocumentsState extends State<Documents> {
+  setCurrentDocument(id) async {
+    BlocProvider.of<GlobalBloc>(context).add(GetCurrentDocument(id: id));
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (docs.length == 0) return SizedBox();
+    if (widget.docs.length == 0) return SizedBox();
 
     List<Widget> list = new List<Widget>();
     // docs.sort((a, b) {
@@ -27,26 +39,24 @@ class Documents extends StatelessWidget {
     //       .toLowerCase()
     //       .compareTo(b['timestamp'].toString().toLowerCase());
     // });
-    for (var i = docs.length - 1; i >= 0; i--) {
-      var doc = docs[i];
+    for (var i = widget.docs.length - 1; i >= 0; i--) {
+      var doc = widget.docs[i];
       // var timestamp = doc['timestamp'];
       // String delta = DateFormatter.readableDelta(timestamp);
-      var path = doc["firstChild"].split("/");
-      var name = path[path.length - 1];
+      var name = doc["name"];
       var image = doc["firstChild"];
 
       list.add(GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () async {
-          var res = await ForegroundService.start(
-              'getGroupImages', path[path.length - 2]);
+          // var res = await ForegroundService.start(
+          //     'getGroupImages', path[path.length - 2]);
           // return res;
+          await setCurrentDocument(name);
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => DocumentDetails(
-                docs: res,
-              ),
+              builder: (context) => DocumentDetails(),
             ),
           );
         },

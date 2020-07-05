@@ -2,6 +2,11 @@ import 'dart:convert';
 
 // import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_scanner/blocs/global/bloc.dart';
+import 'package:image_scanner/blocs/global/event.dart';
+import 'package:image_scanner/blocs/global/state.dart';
+import 'package:image_scanner/blocs/global_bloc_states.dart';
 import 'package:image_scanner/screens/documents/documents.dart';
 import 'package:image_scanner/screens/image_scanner.dart';
 import 'package:image_scanner/services/foreground_service.dart';
@@ -22,15 +27,16 @@ class AllDocuments extends StatefulWidget {
 
 class _AllDocumentsState extends State<AllDocuments> {
   var userImages;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    ForegroundService.registerCallBack("refreshUI", getUserImages);
+    getUserImages();
   }
 
   getUserImages() async {
-    var res = await ForegroundService.start('getImages', '');
-    return jsonDecode(res);
+    BlocProvider.of<GlobalBloc>(context).add(FetchAllDocuments());
   }
 
   @override
@@ -49,37 +55,27 @@ class _AllDocumentsState extends State<AllDocuments> {
           title: Text("All docs"),
           backgroundColor: Colors.deepOrange,
           centerTitle: true,
-          actions: <Widget>[
-            FlatButton(
-              child: Text(
-                'Refresh',
-                style: Theme.of(context).textTheme.body1Medium.copyWith(
-                      color: Colors.white,
-                    ),
-              ),
-              onPressed: () {
-                setState(() {});
-              },
-            )
-          ],
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Container(
-                height: 20,
-                color: ColorShades.textColorOffWhite,
+        body: BlocBuilder<GlobalBloc, Map>(
+          builder: (context, currentState) {
+            // currentState = currentState['allDocsList'];
+            // if (currentState is AllDocumentsFetechedState) {
+            return SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    height: 20,
+                    color: ColorShades.textColorOffWhite,
+                  ),
+                  Documents(
+                    docs: currentState['allDocsList'],
+                  )
+                ],
               ),
-              FutureBuilder(
-                  future: getUserImages(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) return SizedBox();
-                    return Documents(
-                      docs: snapshot.data,
-                    );
-                  }),
-            ],
-          ),
+            );
+            // }
+            // return SizedBox();
+          },
         ),
         floatingActionButton: FloatingActionButton(
             backgroundColor: Colors.deepOrange,

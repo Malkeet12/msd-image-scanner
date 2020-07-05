@@ -5,6 +5,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_scanner/blocs/global/bloc.dart';
+import 'package:image_scanner/blocs/global/event.dart';
 // import 'package:image_cropper/image_cropper.dart';
 import 'package:image_scanner/screens/document_details.dart';
 import 'package:image_scanner/screens/documents/all_documents.dart';
@@ -15,10 +18,8 @@ import 'package:image_scanner/util/date_formater.dart';
 import 'package:image_scanner/util/storage_manager.dart';
 
 class EditDoc extends StatefulWidget {
-  final doc;
   final carouselInitialPage;
-  const EditDoc({Key key, this.doc, this.carouselInitialPage})
-      : super(key: key);
+  const EditDoc({Key key, this.carouselInitialPage}) : super(key: key);
 
   @override
   _EditDocState createState() => _EditDocState();
@@ -26,9 +27,14 @@ class EditDoc extends StatefulWidget {
 
 class _EditDocState extends State<EditDoc> {
   int _currentPage = 0;
+  @override
+  void initState() {
+    super.initState();
+    _currentPage = widget.carouselInitialPage;
+  }
 
   Choice _selectedChoice = choices[0]; // The app's "state".
-  void _showDialog() {
+  void _showDialog(doc) {
     // flutter defined function
     showDialog(
       context: context,
@@ -49,7 +55,16 @@ class _EditDocState extends State<EditDoc> {
               child: new Text(
                 "Delete",
               ),
-              onPressed: deleteImage,
+              onPressed: () {
+                var path = doc[_currentPage];
+                BlocProvider.of<GlobalBloc>(context)
+                    .add(DeleteFile(file: path));
+                Navigator.of(context).pop();
+                if (doc.length == 1) {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                }
+              },
             ),
           ],
         );
@@ -57,48 +72,48 @@ class _EditDocState extends State<EditDoc> {
     );
   }
 
-  void deleteImage() async {
-    var userDocs = await StorageManager.getItem('userDocs') ?? "[]";
-    userDocs = jsonDecode(userDocs);
-    var currentDocumentId = widget.doc['documentId'];
-    var index;
-    for (var i = 0; i < userDocs.length; i++) {
-      if (userDocs[i]['documentId'] == currentDocumentId) index = i;
-    }
-    var existingDoc = userDocs[index];
-    if (existingDoc['images'].length == 1) {
-      userDocs.removeAt(index);
-      await StorageManager.setItem("userDocs", userDocs);
-      Navigator.of(context).pop();
-      Navigator.of(context).pop();
-      Navigator.of(context).pop();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => AllDocuments(),
-        ),
-      );
-    } else {
-      existingDoc['images'].removeAt(_currentPage);
-      userDocs[index] = existingDoc;
-      existingDoc["timestamp"] = DateTime.now().millisecondsSinceEpoch;
-      await StorageManager.setItem("userDocs", userDocs);
-      Navigator.of(context).pop();
-      Navigator.of(context).pop();
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => DocumentDetails(
-                    docs: existingDoc,
-                  )));
-    }
-  }
+  // void deleteImage() async {
+  //   var userDocs = await StorageManager.getItem('userDocs') ?? "[]";
+  //   userDocs = jsonDecode(userDocs);
+  //   var currentDocumentId = widget.doc['documentId'];
+  //   var index;
+  //   for (var i = 0; i < userDocs.length; i++) {
+  //     if (userDocs[i]['documentId'] == currentDocumentId) index = i;
+  //   }
+  //   var existingDoc = userDocs[index];
+  //   if (existingDoc['images'].length == 1) {
+  //     userDocs.removeAt(index);
+  //     await StorageManager.setItem("userDocs", userDocs);
+  //     Navigator.of(context).pop();
+  //     Navigator.of(context).pop();
+  //     Navigator.of(context).pop();
+  //     Navigator.pushReplacement(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => AllDocuments(),
+  //       ),
+  //     );
+  //   } else {
+  //     existingDoc['images'].removeAt(_currentPage);
+  //     userDocs[index] = existingDoc;
+  //     existingDoc["timestamp"] = DateTime.now().millisecondsSinceEpoch;
+  //     await StorageManager.setItem("userDocs", userDocs);
+  //     Navigator.of(context).pop();
+  //     Navigator.of(context).pop();
+  //     Navigator.pushReplacement(
+  //         context,
+  //         MaterialPageRoute(
+  //             builder: (context) => DocumentDetails(
+  //                   id: id,
+  //                 )));
+  //   }
+  // }
 
-  void _select(Choice choice) async {
+  void _select(doc, Choice choice) async {
     if (choice.title == 'Delete') {
-      _showDialog();
+      _showDialog(doc);
     } else if (choice.title == 'Edit') {
-      var path = widget.doc['images'][_currentPage];
+      var path = doc['images'][_currentPage];
       // File croppedFile = await ImageCropper.cropImage(
       //     sourcePath: path,
       //     aspectRatioPresets: [
@@ -137,9 +152,9 @@ class _EditDocState extends State<EditDoc> {
     // Causes the app to rebuild with the new _selectedChoice.
   }
 
-  Future<void> _shareImage(name) async {
+  Future<void> _shareImage(doc, name) async {
     try {
-      var path = widget.doc[_currentPage];
+      var path = doc[_currentPage];
       var splitedPath = path.split(".");
       var docType = splitedPath[splitedPath.length - 1];
       final ByteData bytes = await rootBundle.load(path);
@@ -155,112 +170,118 @@ class _EditDocState extends State<EditDoc> {
   Widget build(BuildContext context) {
     // var timestamp = widget.doc['timestamp'];
     // String delta = DateFormatter.readableDelta(timestamp);
-    var name = widget.doc[0];
+    // var name = widget.doc[0];
 
-    var images = widget.doc;
-    return Scaffold(
-      backgroundColor: Colors.blueGrey,
-      appBar: AppBar(
-        backgroundColor: Colors.deepOrange,
-        centerTitle: true,
-        title: Text(name),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.share),
-            onPressed: () => _shareImage(name),
-          ),
-          PopupMenuButton<Choice>(
-            onSelected: _select,
-            itemBuilder: (BuildContext context) {
-              return choices.map((Choice choice) {
-                return PopupMenuItem<Choice>(
-                  value: choice,
-                  child: Text(choice.title),
-                );
-              }).toList();
-            },
-          ),
-        ],
-      ),
-      body: Center(
-        child: Container(
-          // color: Colors.deepOrange,
-
-          child: CarouselSlider(
-              options: CarouselOptions(
-                  height: MediaQuery.of(context).size.height,
-                  viewportFraction: 1,
-                  initialPage: widget.carouselInitialPage,
-                  enableInfiniteScroll: false,
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      _currentPage = index;
-                    });
-                  },
-                  scrollDirection: Axis.horizontal),
-              items: images
-                  .map<Widget>((item) => Container(
-                        child: Container(
-                          margin: EdgeInsets.all(5.0),
-                          child: ClipRRect(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
-                              child: Stack(
-                                children: <Widget>[
-                                  Image.file(
-                                    File(
-                                      item,
-                                    ),
-                                    fit: BoxFit.fill,
-                                  ),
-                                  Positioned(
-                                    bottom: 0.0,
-                                    left: 0.0,
-                                    right: 0.0,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            Color.fromARGB(200, 0, 0, 0),
-                                            Color.fromARGB(0, 0, 0, 0)
-                                          ],
-                                          begin: Alignment.bottomCenter,
-                                          end: Alignment.topCenter,
-                                        ),
-                                      ),
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 10.0, horizontal: 20.0),
-                                      child: Text(
-                                        "${images.indexOf(item) + 1}/${images.length}"
-                                            .toString(),
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20.0,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              )),
-                        ),
-                      ))
-                  .toList()
-              //           child: Image.file(
-              //             File(
-              //               path,
-              //             ),
-              //             fit: BoxFit.fill,
-              //             // width: double.maxFinite,
-              //           ),
-              //         ),
-              //       ),
-              //       color: Colors.green,
-              //     ))
-              // .toList(),
+    // var images = widget.doc;
+    return BlocBuilder<GlobalBloc, Map>(
+      builder: (context, currentState) {
+        var images = currentState['doc']['data'];
+        var name = currentState['doc']['name'];
+        return Scaffold(
+          backgroundColor: Colors.blueGrey,
+          appBar: AppBar(
+            backgroundColor: Colors.deepOrange,
+            centerTitle: true,
+            title: Text(name),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.share),
+                onPressed: () => _shareImage(images, name),
               ),
-        ),
-      ),
+              PopupMenuButton<Choice>(
+                onSelected: (choice) => _select(images, choice),
+                itemBuilder: (BuildContext context) {
+                  return choices.map((Choice choice) {
+                    return PopupMenuItem<Choice>(
+                      value: choice,
+                      child: Text(choice.title),
+                    );
+                  }).toList();
+                },
+              ),
+            ],
+          ),
+          body: Center(
+            child: Container(
+              // color: Colors.deepOrange,
+
+              child: CarouselSlider(
+                  options: CarouselOptions(
+                      height: MediaQuery.of(context).size.height,
+                      viewportFraction: 1,
+                      initialPage: widget.carouselInitialPage,
+                      enableInfiniteScroll: false,
+                      onPageChanged: (index, reason) {
+                        setState(() {
+                          _currentPage = index;
+                        });
+                      },
+                      scrollDirection: Axis.horizontal),
+                  items: images
+                      .map<Widget>((item) => Container(
+                            child: Container(
+                              margin: EdgeInsets.all(5.0),
+                              child: ClipRRect(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0)),
+                                  child: Stack(
+                                    children: <Widget>[
+                                      Image.file(
+                                        File(
+                                          item,
+                                        ),
+                                        fit: BoxFit.fill,
+                                      ),
+                                      Positioned(
+                                        bottom: 0.0,
+                                        left: 0.0,
+                                        right: 0.0,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Color.fromARGB(200, 0, 0, 0),
+                                                Color.fromARGB(0, 0, 0, 0)
+                                              ],
+                                              begin: Alignment.bottomCenter,
+                                              end: Alignment.topCenter,
+                                            ),
+                                          ),
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 10.0, horizontal: 20.0),
+                                          child: Text(
+                                            "${images.indexOf(item) + 1}/${images.length}"
+                                                .toString(),
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20.0,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )),
+                            ),
+                          ))
+                      .toList()
+                  //           child: Image.file(
+                  //             File(
+                  //               path,
+                  //             ),
+                  //             fit: BoxFit.fill,
+                  //             // width: double.maxFinite,
+                  //           ),
+                  //         ),
+                  //       ),
+                  //       color: Colors.green,
+                  //     ))
+                  // .toList(),
+                  ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -24,11 +24,15 @@ import java.nio.file.Path
 import java.nio.file.Paths
 
 class MainActivity : FlutterActivity() {
+    companion object {
+        var channel: MethodChannel? = null
+    }
     private var currentGroupId: Any? = null
     private var fileUri: Uri? = null
     @RequiresApi(Build.VERSION_CODES.O)
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        channel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "nativeToFlutter")
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "flutterToNative")
                 .setMethodCallHandler { call: MethodCall, result: MethodChannel.Result ->
                     when (call.method) {
@@ -64,11 +68,13 @@ class MainActivity : FlutterActivity() {
                             val intent = Intent(this, ScanActivity::class.java)
                             intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference)
                             startActivityForResult(intent, REQUEST_CODE)
+                            
                         }
                         "getImages" -> {
                             val imgs = getImages()
                             if (imgs.isEmpty()) {
-                                result.error("Empty", "No Images.", null)
+                                val list: MutableList<JSONObject> = ArrayList()
+                                result.success(list.toString())
                             } else {
                                 result.success(imgs.toString())
                             }
@@ -76,7 +82,8 @@ class MainActivity : FlutterActivity() {
                         "getGroupImages" -> {
                             val imgs = getGroupImages(call.arguments as String)
                             if (imgs!!.isEmpty()) {
-                                result.error("Empty", "No Images.", null)
+                                val list: MutableList<JSONObject> = ArrayList()
+                                result.success(list.toString())
                             } else {
                                 result.success(imgs)
                             }
@@ -92,15 +99,30 @@ class MainActivity : FlutterActivity() {
                         "saveAsPdf"->{
                             var path: Path = Paths.get("${call.arguments}")
                             val fileName: Path = path.fileName
-                            val f = File("$path")
-                            var src=f.absolutePath.substring(1,f.absolutePath.lastIndexOf("/"))
+//                            val f = File("$path")
+                            var src=path.toString().substring(1,path.toString().lastIndexOf("/"))
                             val root = Environment.getExternalStorageDirectory().absolutePath
                             var dest="$root/ImageScanner/"
-                            moveFile("$src","$fileName","$dest")
+                            moveFile("$src/","$fileName","$dest")
                             result.success("$dest$fileName")
+                        }
+                        "deleteFile"->{
+                            val documentName = call.argument<String>("documentName")
+                            val fileName = call.argument<String>("fileName")
+                            var path: Path = Paths.get("$fileName")
+                            val name: Path = path.fileName
+
+                           var success= deleteFile("$documentName","$name")
+                                result.success(success)
                         }
                     }
                 }
+    }
+    private fun deleteFile(documentName: String, fileName: String): Boolean {
+        val root = Environment.getExternalStorageDirectory().absolutePath
+        var dir = filesDir
+        var file = File("$root/ImageScanner/$documentName", "$fileName")
+        return file.delete()
     }
     private fun moveFile(inputPath: String, inputFile: String, outputPath: String) {
         var `in`: InputStream? = null
@@ -150,7 +172,9 @@ class MainActivity : FlutterActivity() {
                         first = false
                         if (file.isFile) {
                             val item = JSONObject()
-                            item.put("id", child.toString())
+                            var path= file.absolutePath.split("/")
+                            val id=path[path.size-2]
+                            item.put("name", id)
                             item.put("firstChild", file.toString())
                             list.add(item)
                         }
@@ -250,7 +274,7 @@ class MainActivity : FlutterActivity() {
         currentFolder = if(currentGroupId!=""){
             currentGroupId as String
         }else{
-            System.currentTimeMillis().toString()
+            "ImageScanner${System.currentTimeMillis().toString()}"
         }
           val imageGroupDir = File("$root/ImageScanner/$currentFolder")
         if (!imageGroupDir.exists()) {
@@ -263,6 +287,19 @@ class MainActivity : FlutterActivity() {
         try {
             val out = FileOutputStream(file)
             finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
+            channel?.invokeMethod("refreshUI", "",
+                            object : MethodChannel.Result {
+                                override fun success(result: Any?) {
+                                    println("successfully went to dart")
+                                }
+                                override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                                    println(errorDetails)
+                                }
+                                override fun notImplemented() {
+                                    println("not implememted")
+                                }
+                            }
+                    )
             out.flush()
             out.close()
         } catch (e: Exception) {
