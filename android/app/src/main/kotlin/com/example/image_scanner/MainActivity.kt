@@ -7,8 +7,10 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import com.scanlibrary.ScanActivity
 import com.scanlibrary.ScanConstants
@@ -17,20 +19,21 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import org.json.JSONObject
-import java.io.File
-import java.io.FileOutputStream
-import java.io.FilenameFilter
-import java.io.IOException
+import java.io.*
+import java.nio.file.Path
+import java.nio.file.Paths
 
-
-class MainActivity: FlutterActivity() {
+class MainActivity : FlutterActivity() {
+    private var currentGroupId: Any? = null
     private var fileUri: Uri? = null
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "flutterToNative")
                 .setMethodCallHandler { call: MethodCall, result: MethodChannel.Result ->
-                   if(call.method == "camera"){
-                        val REQUEST_CODE = 99
+                    when (call.method) {
+                        "camera" -> {
+                            val REQUEST_CODE = 99
 //                       val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 //                       val file: File = createImageFile()
 //                       val isDirectoryCreated = file.parentFile.mkdirs()
@@ -45,39 +48,92 @@ class MainActivity: FlutterActivity() {
 //                           cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempFileUri)
 //                       }
 //                       startActivityForResult(cameraIntent, ScanConstants.START_CAMERA_REQUEST_CODE)
-                        val preference: Int = ScanConstants.OPEN_CAMERA
-                        val intent = Intent(this, ScanActivity::class.java)
-                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                        intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference)
-                        startActivityForResult(intent, REQUEST_CODE)
+                            val preference: Int = ScanConstants.OPEN_CAMERA
+                            val intent = Intent(this, ScanActivity::class.java)
+                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                            intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference)
+                            startActivityForResult(intent, REQUEST_CODE)
 //                       openCamera()
-                        result.success("message")
+                            result.success("message")
+                        }
+                        "gallery" -> {
+                            val REQUEST_CODE = 100
+                            currentGroupId=call.arguments
+                            val preference: Int = ScanConstants.OPEN_MEDIA
+                            val intent = Intent(this, ScanActivity::class.java)
+                            intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference)
+                            startActivityForResult(intent, REQUEST_CODE)
+                        }
+                        "getImages" -> {
+                            val imgs = getImages()
+                            if (imgs.isEmpty()) {
+                                result.error("Empty", "No Images.", null)
+                            } else {
+                                result.success(imgs.toString())
+                            }
+                        }
+                        "getGroupImages" -> {
+                            val imgs = getGroupImages(call.arguments as String)
+                            if (imgs!!.isEmpty()) {
+                                result.error("Empty", "No Images.", null)
+                            } else {
+                                result.success(imgs)
+                            }
+                        }
+                        "addImageToGroup" -> {
+                            val imgs = updateGroup(call.arguments as String)
+                            if (imgs!!.isEmpty()) {
+                                result.error("Empty", "No Images.", null)
+                            } else {
+                                result.success(imgs)
+                            }
+                        }
+                        "saveAsPdf"->{
+                            var path: Path = Paths.get("${call.arguments}")
+                            val fileName: Path = path.fileName
+                            val f = File("$path")
+                            var src=f.absolutePath.substring(1,f.absolutePath.lastIndexOf("/"))
+                            val root = Environment.getExternalStorageDirectory().absolutePath
+                            var dest="$root/ImageScanner/"
+                            moveFile("$src","$fileName","$dest")
+                            result.success("$dest$fileName")
+                        }
                     }
-                    else if(call.method == "gallery"){
-                        val REQUEST_CODE = 100
-
-                        val preference: Int = ScanConstants.OPEN_MEDIA
-                        val intent = Intent(this, ScanActivity::class.java)
-                        intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference)
-                        startActivityForResult(intent, REQUEST_CODE)
-                    }else if(call.method=="getImages"){
-                       val imgs = getImages()
-                       if (imgs.isEmpty()) {
-                           result.error("Empty", "No Images.", null)
-                       } else {
-                           result.success(imgs.toString())
-                       }
-                   }else if(call.method =="getGroupImages"){
-                       val imgs = getGroupImages(call.arguments as String)
-                       if (imgs!!.isEmpty()) {
-                           result.error("Empty", "No Images.", null)
-                       } else {
-                           result.success(imgs)
-                       }
-                   }
-
                 }
+    }
+    private fun moveFile(inputPath: String, inputFile: String, outputPath: String) {
+        var `in`: InputStream? = null
+        var out: OutputStream? = null
+        try {
+
+            //create output directory if it doesn't exist
+            val dir = File(outputPath)
+            if (!dir.exists()) {
+                dir.mkdirs()
+            }
+            `in` = FileInputStream(inputPath + inputFile)
+            out = FileOutputStream(outputPath + inputFile)
+            val buffer = ByteArray(1024)
+            var read: Int
+            while (`in`.read(buffer).also { read = it } != -1) {
+                out.write(buffer, 0, read)
+            }
+            `in`.close()
+            `in` = null
+
+            // write the output file
+            out.flush()
+            out.close()
+            out = null
+
+            // delete the original file
+            File(inputPath + inputFile).delete()
+        } catch (fnfe1: FileNotFoundException) {
+           println("exception");
+        } catch (e: java.lang.Exception) {
+            println(e.message)
+        }
     }
     private fun getImages(): MutableList<JSONObject> {
         val root = Environment.getExternalStorageDirectory().absolutePath
@@ -106,10 +162,27 @@ class MainActivity: FlutterActivity() {
         return list
     }
 
-    private fun getGroupImages(groupName: String): List<String>? {
+    private fun updateGroup(groupId: String): List<String>? {
+        val root = Environment.getExternalStorageDirectory().absolutePath
+        val folder = File("$root/ImageScanner/$groupId")
+//        folder.mkdirs()
+        val allFiles: Array<File> = folder.listFiles(object : FilenameFilter {
+            override fun accept(dir: File?, name: String): Boolean {
+                return name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png")
+            }
+        })
+
+        val item: MutableList<String> = ArrayList()
+        for (file in allFiles) {
+            item.add(file.toString() + "")
+        }
+        return item
+    }
+
+    private fun getGroupImages(groupId: String): List<String>? {
         val root = Environment.getExternalStorageDirectory().absolutePath
 //        val folder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/ImageScanner/")
-        val folder = File("$root/ImageScanner/$groupName")
+        val folder = File("$root/ImageScanner/$groupId")
 //        folder.mkdirs()
         val allFiles: Array<File> = folder.listFiles(object : FilenameFilter {
             override fun accept(dir: File?, name: String): Boolean {
@@ -173,11 +246,17 @@ class MainActivity: FlutterActivity() {
         if (!myDir.exists()) {
             myDir.mkdirs()
         }
-        val imageGroupDir = File("$root/ImageScanner/${System.currentTimeMillis()}")
+        var currentFolder=""
+        currentFolder = if(currentGroupId!=""){
+            currentGroupId as String
+        }else{
+            System.currentTimeMillis().toString()
+        }
+          val imageGroupDir = File("$root/ImageScanner/$currentFolder")
         if (!imageGroupDir.exists()) {
             imageGroupDir.mkdirs()
         }
-        var time=	System.currentTimeMillis()
+        var time = System.currentTimeMillis()
         val fname = "$time.jpg"
         val file = File(imageGroupDir, fname)
         if (file.exists()) file.delete()
@@ -190,11 +269,13 @@ class MainActivity: FlutterActivity() {
             e.printStackTrace()
         }
     }
+
     private val REQUEST_EXTERNAL_STORAGE = 1
     private val PERMISSIONS_STORAGE = arrayOf(
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
+
     fun verifyStoragePermissions(activity: Activity?) {
         // Check if we have write permission
         val permission: Int = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -207,6 +288,7 @@ class MainActivity: FlutterActivity() {
             )
         }
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {

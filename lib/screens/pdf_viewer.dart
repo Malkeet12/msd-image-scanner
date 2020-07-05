@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_scanner/services/foreground_service.dart';
 import 'package:image_scanner/shared_widgets/my_pdf_view.dart';
 import 'package:image_scanner/theme/style.dart';
 import 'package:path_provider/path_provider.dart';
@@ -20,7 +21,7 @@ class PdfViewer extends StatefulWidget {
 
 class _PdfViewerState extends State<PdfViewer> {
   var fullPath;
-
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   writeOnPdf(pdf, images) {
     for (var index = 0; index < images.length; index++) {
       File file = File(images[index]);
@@ -77,7 +78,14 @@ class _PdfViewerState extends State<PdfViewer> {
     }
   }
 
-  Future<String> createFileFromString() async {}
+  Future<String> downloadPdf(ctx) async {
+    var result = await ForegroundService.start("saveAsPdf", fullPath);
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text('File saved at $result'),
+      duration: const Duration(seconds: 2),
+    ));
+  }
+
   shareAsPdf() async {
     final ByteData bytes = await rootBundle.load(fullPath);
     await Share.file('File shared by image scanner',
@@ -89,6 +97,7 @@ class _PdfViewerState extends State<PdfViewer> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorShades.textPrimaryDark,
+      key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: Colors.deepOrange,
         title: Text('Pdf view'),
@@ -96,7 +105,7 @@ class _PdfViewerState extends State<PdfViewer> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.file_download),
-            onPressed: () => createFileFromString(),
+            onPressed: () => downloadPdf(context),
           ),
           IconButton(
             icon: Icon(Icons.share),
