@@ -6,7 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_scanner/blocs/global/bloc.dart';
 import 'package:image_scanner/blocs/global/event.dart';
 import 'package:image_scanner/screens/document_details.dart';
+import 'package:image_scanner/shared_widgets/modal.dart';
 import 'package:image_scanner/theme/style.dart';
+import 'package:image_scanner/util/common_util.dart';
 import 'package:image_scanner/util/storage_manager.dart';
 
 class Documents extends StatefulWidget {
@@ -22,7 +24,7 @@ class Documents extends StatefulWidget {
 }
 
 class _DocumentsState extends State<Documents> {
-  var currentView = "grid";
+  var currentView = "linear";
   setCurrentDocument(id) async {
     BlocProvider.of<GlobalBloc>(context).add(GetCurrentDocument(id: id));
   }
@@ -33,9 +35,18 @@ class _DocumentsState extends State<Documents> {
     });
   }
 
+  openBottomSheet(context, name) async {
+    Modal modal = new Modal();
+    modal.mainBottomSheet(context, name);
+  }
+
   @override
   Widget build(BuildContext context) {
     if (widget.docs.length == 0) return SizedBox();
+    openBottomSheet(context, name) async {
+      Modal modal = new Modal();
+      modal.mainBottomSheet(context, name);
+    }
 
     List<Widget> list = new List<Widget>();
     for (var i = widget.docs.length - 1; i >= 0; i--) {
@@ -62,21 +73,26 @@ class _DocumentsState extends State<Documents> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Container(
-                    // height: 72.0,
-                    width: 72.0,
-                    decoration: BoxDecoration(
-                      // borderRadius: BorderRadius.circular(20),
-                      // color: Colors.black,
-                      boxShadow: [
-                        BoxShadow(spreadRadius: 2),
-                      ],
-                    ),
-                    child: Image.file(
-                      File(
-                        image,
-                      ),
-                    ),
+                  // Container(
+                  //   // height: 72.0,
+                  //   width: 72.0,
+                  //   decoration: BoxDecoration(
+                  //     // borderRadius: BorderRadius.circular(20),
+                  //     // color: Colors.black,
+                  //     boxShadow: [
+                  //       BoxShadow(spreadRadius: 2),
+                  //     ],
+                  //   ),
+                  //   child:
+                  //   Image.file(
+                  //     File(
+                  //       image,
+                  //     ),
+                  //   ),
+                  // ),
+                  Icon(
+                    Icons.folder,
+                    color: CommonUtil.getRandomColor(),
                   ),
                   SizedBox(
                     width: 12,
@@ -93,6 +109,17 @@ class _DocumentsState extends State<Documents> {
                               ),
                         ),
                       ],
+                    ),
+                  ),
+                  GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () => openBottomSheet(context, name),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0, right: 12.0),
+                      child: Icon(
+                        Icons.more_vert,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                 ],
@@ -127,6 +154,7 @@ class _DocumentsState extends State<Documents> {
             MyGridView(
               widget: widget,
               setCurrentDocument: setCurrentDocument,
+              openBottomSheet: openBottomSheet,
             )
           ],
         ),
@@ -165,21 +193,27 @@ class MyGridView extends StatelessWidget {
     Key key,
     @required this.widget,
     this.setCurrentDocument,
+    this.openBottomSheet,
   }) : super(key: key);
   final setCurrentDocument;
+  final openBottomSheet;
   final Documents widget;
+  // openBottomSheet(context, name) async {
+  //   Modal modal = new Modal();
+  //   modal.mainBottomSheet(context, name);
+  // }
 
   @override
   Widget build(BuildContext context) {
     return GridView.count(
-      reverse: true,
+      // reverse: true,
       // childAspectRatio: 1,
       scrollDirection: Axis.vertical,
       physics: const ClampingScrollPhysics(),
       shrinkWrap: true,
       crossAxisCount: 2,
-      crossAxisSpacing: 20,
-      mainAxisSpacing: 10,
+      crossAxisSpacing: 10,
+      // mainAxisSpacing: 10,
       // childAspectRatio: 0.8,
       children: List.generate(
         widget.docs.length,
@@ -197,12 +231,12 @@ class MyGridView extends StatelessWidget {
             },
             child: Container(
               alignment: Alignment.topCenter,
-              margin: EdgeInsets.only(
-                bottom: 10,
-              ),
+              // margin: EdgeInsets.only(
+              //   bottom: 10,
+              // ),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                // crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Flexible(
                     child: Container(
@@ -211,7 +245,8 @@ class MyGridView extends StatelessWidget {
                           border: Border.all(
                               color: ColorShades.textSecGray3, width: 3.0)),
                       alignment: Alignment.center,
-                      width: MediaQuery.of(context).size.width * 0.35,
+                      width: 150,
+                      height: 120,
                       // height: 150,
                       child: Image.file(
                         File(
@@ -220,11 +255,39 @@ class MyGridView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 44.0, vertical: 10),
-                    child: Text(
-                      widget.docs[index]['name'],
+                  GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () =>
+                        openBottomSheet(context, widget.docs[index]['name']),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 18.0, vertical: 12.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Icon(
+                            Icons.folder,
+                            color: Colors.lightBlue,
+                          ),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          Expanded(
+                            child: Text(
+                              widget.docs[index]['name'],
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          Icon(
+                            Icons.more_vert,
+                            color: Colors.black,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],

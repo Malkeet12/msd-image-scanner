@@ -4,8 +4,10 @@ import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:image_scanner/blocs/global/bloc.dart';
 import 'package:image_scanner/blocs/global/event.dart';
+import 'package:image_scanner/theme/style.dart';
 
 class EditDoc extends StatefulWidget {
   final carouselInitialPage;
@@ -87,7 +89,7 @@ class _EditDocState extends State<EditDoc> {
         var images = currentState['doc']['data'];
         var name = currentState['doc']['name'];
         return Scaffold(
-          backgroundColor: Colors.blueGrey,
+          // backgroundColor: Colors.blueGrey,
           appBar: AppBar(
             backgroundColor: Colors.deepOrange,
             centerTitle: true,
@@ -135,39 +137,26 @@ class _EditDocState extends State<EditDoc> {
                               child: ClipRRect(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(5.0)),
-                                  child: Stack(
+                                  child: Column(
                                     children: <Widget>[
-                                      Image.file(
-                                        File(
-                                          item,
-                                        ),
-                                        fit: BoxFit.fill,
-                                      ),
-                                      Positioned(
-                                        bottom: 0.0,
-                                        left: 0.0,
-                                        right: 0.0,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                              colors: [
-                                                Color.fromARGB(200, 0, 0, 0),
-                                                Color.fromARGB(0, 0, 0, 0)
-                                              ],
-                                              begin: Alignment.bottomCenter,
-                                              end: Alignment.topCenter,
-                                            ),
+                                      Expanded(
+                                        child: Image.file(
+                                          File(
+                                            item,
                                           ),
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 10.0, horizontal: 20.0),
-                                          child: Text(
-                                            "${images.indexOf(item) + 1}/${images.length}"
-                                                .toString(),
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 20.0,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                          fit: BoxFit.fill,
+                                        ),
+                                      ),
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 10.0, horizontal: 20.0),
+                                        child: Text(
+                                          "${images.indexOf(item) + 1}/${images.length}"
+                                              .toString(),
+                                          style: TextStyle(
+                                            color: ColorShades.textSecGray3,
+                                            fontSize: 20.0,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                       ),

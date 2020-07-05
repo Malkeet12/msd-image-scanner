@@ -6,6 +6,7 @@ import 'package:image_scanner/blocs/global/event.dart';
 import 'package:image_scanner/screens/edit_document/edit_document.dart';
 import 'package:image_scanner/screens/pdf_viewer.dart';
 import 'package:image_scanner/services/foreground_service.dart';
+import 'package:image_scanner/shared_widgets/edit_name_dialog.dart';
 import 'package:image_scanner/theme/style.dart';
 
 class DocumentDetails extends StatefulWidget {
@@ -15,60 +16,13 @@ class DocumentDetails extends StatefulWidget {
 
 class _DocumentDetailsState extends State<DocumentDetails> {
   TextEditingController _controller = new TextEditingController();
-  var inputValue;
+
   void _showDialog(context, name) {
     _controller.text = name;
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: new Text(
-            "Rename",
-            style: Theme.of(context)
-                .textTheme
-                .h3
-                .copyWith(color: ColorShades.textSecGray3),
-          ),
-          content: TextField(
-            autofocus: true,
-            controller: _controller,
-            onChanged: (value) {
-              setState(() {
-                inputValue = value;
-              });
-            },
-            maxLength: 30,
-            style: Theme.of(context).textTheme.body1Medium,
-          ),
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text(
-                "Close",
-                style: Theme.of(context)
-                    .textTheme
-                    .h4
-                    .copyWith(color: ColorShades.textSecGray3),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            new FlatButton(
-              child: new Text(
-                "OK",
-                style: Theme.of(context)
-                    .textTheme
-                    .h3
-                    .copyWith(color: Colors.blueAccent),
-              ),
-              onPressed: () {
-                BlocProvider.of<GlobalBloc>(context)
-                    .add(RenameDocument(name: inputValue));
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
+        return EditNameDialog(controller: _controller);
       },
     );
   }
@@ -185,7 +139,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
               onPressed: () async {
                 // var documentPath = docs[0].split("/");
                 // var groupId = documentPath[documentPath.length - 2];
-                // ForegroundService.start('gallery', name);
+                // ForegroundService.start('camers', name);
 
                 BlocProvider.of<GlobalBloc>(context)
                     .add(AddToCurrentDocument(name: name));

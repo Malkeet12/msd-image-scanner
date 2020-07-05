@@ -8,6 +8,8 @@ import 'package:image_scanner/screens/gallery_view.dart';
 import 'package:image_scanner/services/foreground_service.dart';
 import 'package:image_scanner/theme/style.dart';
 import 'package:image_scanner/util/analytics_service.dart';
+import 'package:image_scanner/util/common_util.dart';
+import 'package:image_scanner/util/constants.dart';
 
 class MyDrawer extends StatefulWidget {
   static String className = 'MyDrawer';
@@ -67,19 +69,8 @@ class _MyDrawerState extends State<MyDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    var colors = [
-      Colors.deepPurpleAccent,
-      Colors.pinkAccent,
-      Colors.lightGreenAccent,
-      Colors.lightBlue,
-      Colors.amberAccent,
-      Colors.redAccent,
-      Colors.greenAccent,
-      Colors.tealAccent,
-    ];
-    var rng = new Random();
-    var uid = rng.nextInt(pow(5, 1));
-    print(uid);
+    var colors = Constants.MY_COLORS;
+    var uid = CommonUtil.getRandomNumber(5);
     return SafeArea(
         child: Container(
       width: 282.0,
