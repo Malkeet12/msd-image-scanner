@@ -27,6 +27,7 @@ class Documents extends StatefulWidget {
 
 class _DocumentsState extends State<Documents> {
   var currentView = "linear";
+  var reverseSorting = false;
   setCurrentDocument(id) async {
     BlocProvider.of<GlobalBloc>(context).add(GetCurrentDocument(id: id));
   }
@@ -48,12 +49,24 @@ class _DocumentsState extends State<Documents> {
     return value ?? 'linear';
   }
 
+  changeSorting(flag) {
+    setState(() {
+      reverseSorting = flag;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     if (widget.docs.length == 0) return SizedBox();
+    var docs = widget.docs;
+    if (reverseSorting) {
+      var reversedSortedDocs = new List.from(docs.reversed);
+      docs = reversedSortedDocs;
+    }
     List<Widget> list = new List<Widget>();
-    for (var i = widget.docs.length - 1; i >= 0; i--) {
-      var doc = widget.docs[i];
+
+    for (var i = docs.length - 1; i >= 0; i--) {
+      var doc = docs[i];
       var name = doc["name"];
       var lastUpdated = doc["lastUpdated"];
 
@@ -144,21 +157,29 @@ class _DocumentsState extends State<Documents> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Text(
-                            'Last modified by me',
-                            style:
-                                Theme.of(context).textTheme.body1Bold.copyWith(
-                                      color: ColorShades.textSecGray3,
-                                    ),
-                          ),
-                          Icon(
-                            Icons.arrow_downward,
-                            size: 20,
-                            color: ColorShades.textSecGray3,
-                          )
-                        ],
+                      GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        onTap: () => changeSorting(!reverseSorting),
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              'Last modified by me',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .body1Bold
+                                  .copyWith(
+                                    color: ColorShades.textSecGray3,
+                                  ),
+                            ),
+                            Icon(
+                              reverseSorting
+                                  ? Icons.arrow_upward
+                                  : Icons.arrow_downward,
+                              size: 20,
+                              color: ColorShades.textSecGray3,
+                            )
+                          ],
+                        ),
                       ),
                       IconButton(
                         color: Colors.deepOrange,
@@ -174,7 +195,7 @@ class _DocumentsState extends State<Documents> {
                 ),
                 isGrdiView
                     ? MyGridView(
-                        widget: widget,
+                        docs: docs,
                         setCurrentDocument: setCurrentDocument,
                         openBottomSheet: openBottomSheet,
                       )
@@ -189,13 +210,13 @@ class _DocumentsState extends State<Documents> {
 class MyGridView extends StatelessWidget {
   const MyGridView({
     Key key,
-    @required this.widget,
+    @required this.docs,
     this.setCurrentDocument,
     this.openBottomSheet,
   }) : super(key: key);
   final setCurrentDocument;
   final openBottomSheet;
-  final Documents widget;
+  final docs;
   // openBottomSheet(context, name) async {
   //   Modal modal = new Modal();
   //   modal.mainBottomSheet(context, name);
@@ -211,12 +232,12 @@ class MyGridView extends StatelessWidget {
       crossAxisSpacing: 10,
       mainAxisSpacing: 25,
       children: List.generate(
-        widget.docs.length,
+        docs.length,
         (index) {
           return GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: () async {
-              await setCurrentDocument(widget.docs[index]['name']);
+              await setCurrentDocument(docs[index]['name']);
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -227,12 +248,11 @@ class MyGridView extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 Flexible(
-                  child: ImgPreview(path: widget.docs[index]["firstChild"]),
+                  child: ImgPreview(path: docs[index]["firstChild"]),
                 ),
                 GestureDetector(
                   behavior: HitTestBehavior.translucent,
-                  onTap: () =>
-                      openBottomSheet(context, widget.docs[index]['name']),
+                  onTap: () => openBottomSheet(context, docs[index]['name']),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 18.0, vertical: 12.0),
@@ -249,7 +269,7 @@ class MyGridView extends StatelessWidget {
                         ),
                         Expanded(
                           child: Text(
-                            widget.docs[index]['name'],
+                            docs[index]['name'],
                             style:
                                 Theme.of(context).textTheme.body1Bold.copyWith(
                                       color: ColorShades.textSecGray3,

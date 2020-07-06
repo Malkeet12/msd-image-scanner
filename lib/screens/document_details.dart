@@ -92,48 +92,15 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                   mainAxisSpacing: 10,
                   // childAspectRatio: 0.8,
                   children: List.generate(
-                    docs.length,
+                    docs.length + 1,
                     (index) {
-                      return Stack(
-                        children: <Widget>[
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => EditDoc(
-                                    carouselInitialPage: index,
-                                  ),
-                                ),
-                              );
-                            },
-                            child: ImgPreview(
-                              path: docs[index]["path"],
-                              margin: EdgeInsets.symmetric(horizontal: 0),
-                              height: 170.0,
-                            ),
-                          ),
-                          Positioned(
-                            child: Container(
-                              padding: EdgeInsets.all(8),
-                              decoration: new BoxDecoration(
-                                color: Colors.blue,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Text(
-                                (index + 1).toString(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2
-                                    .copyWith(
-                                        color: ColorShades.textColorOffWhite),
-                              ),
-                            ),
-                            bottom: 14,
-                            left: 14,
-                          )
-                        ],
-                      );
+                      if (index == docs.length)
+                        return TapToAddContainer(name: name);
+                      else
+                        return SinglePage(
+                          docs: docs,
+                          index: index,
+                        );
                     },
                   ),
                 ),
@@ -155,5 +122,121 @@ class _DocumentDetailsState extends State<DocumentDetails> {
         ),
       );
     });
+  }
+}
+
+class SinglePage extends StatelessWidget {
+  const SinglePage({
+    Key key,
+    @required this.docs,
+    this.index,
+  }) : super(key: key);
+
+  final docs;
+  final index;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EditDoc(
+                  carouselInitialPage: index,
+                ),
+              ),
+            );
+          },
+          child: ImgPreview(
+            path: docs[index]["path"],
+            margin: EdgeInsets.symmetric(horizontal: 0),
+            height: 170.0,
+          ),
+        ),
+        Positioned(
+          child: Container(
+            padding: EdgeInsets.all(8),
+            decoration: new BoxDecoration(
+              color: Colors.blue,
+              shape: BoxShape.circle,
+            ),
+            child: Text(
+              (index + 1).toString(),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText2
+                  .copyWith(color: ColorShades.textColorOffWhite),
+            ),
+          ),
+          bottom: 14,
+          left: 14,
+        )
+      ],
+    );
+  }
+}
+
+class TapToAddContainer extends StatelessWidget {
+  const TapToAddContainer({
+    Key key,
+    @required this.name,
+  }) : super(key: key);
+
+  final name;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () async {
+        BlocProvider.of<GlobalBloc>(context)
+            .add(AddToCurrentDocument(name: name));
+      },
+      child: Container(
+        width: double.infinity,
+        height: 170.0,
+        decoration: BoxDecoration(
+          color: ColorShades.lightBackground,
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  "Tap",
+                  style: Theme.of(context).textTheme.h4.copyWith(
+                        color: ColorShades.textPrimaryDark,
+                      ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(
+                  width: 4,
+                ),
+                Icon(
+                  Icons.camera_alt,
+                  color: Colors.deepOrange,
+                ),
+                SizedBox(
+                  width: 4,
+                ),
+              ],
+            ),
+            Text(
+              "to add new pages",
+              style: Theme.of(context).textTheme.h4.copyWith(
+                    color: ColorShades.textPrimaryDark,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

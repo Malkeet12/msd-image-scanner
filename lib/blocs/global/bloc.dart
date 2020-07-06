@@ -55,6 +55,7 @@ class GlobalBloc extends Bloc<GlobalEvent, Map> {
     var data = {"documentName": state['doc']['name'], "fileName": event.file};
     await ForegroundService.start('deleteFile', data);
     add(GetCurrentDocument(id: state['doc']['name']));
+    add(FetchAllDocuments());
     // yield {...state};
   }
 
@@ -80,7 +81,8 @@ class GlobalBloc extends Bloc<GlobalEvent, Map> {
   Stream<Map> _mapFetchDocumentsToState(state, event) async* {
     var res = await ForegroundService.start('getImages', '');
     var list = jsonDecode(res);
-
+    list.sort((a, b) =>
+        a["lastUpdated"].toString().compareTo(b["lastUpdated"].toString()));
     state['allDocsList'] = list;
     // if (event.refreshDoc) {
     //   add(GetCurrentDocument(id: state['doc']['name']));
