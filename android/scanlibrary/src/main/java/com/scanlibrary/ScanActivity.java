@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.ComponentCallbacks2;
+import android.content.ComponentName;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -33,6 +35,12 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
 
     protected int getPreferenceContent() {
         return getIntent().getIntExtra(ScanConstants.OPEN_INTENT_PREFERENCE, 0);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+
     }
 
     @Override

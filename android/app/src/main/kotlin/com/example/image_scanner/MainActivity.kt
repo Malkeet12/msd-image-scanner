@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.os.Environment
 import android.os.StrictMode
 import android.os.StrictMode.VmPolicy
@@ -27,7 +28,6 @@ import java.io.*
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -57,6 +57,7 @@ class MainActivity : FlutterActivity() {
                             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                             intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference)
                             startActivityForResult(intent, REQUEST_CODE)
+
 //                       openCamera()
                             result.success("message")
                         }
@@ -144,11 +145,55 @@ class MainActivity : FlutterActivity() {
                             val type = call.argument<String>("type")
                             shareFile("$path", "$type")
                         }
+//                        "capture" -> {
+//                            openCamera();
+//                        }
                     }
                 }
     }
 
-    private fun shareFile(filePath: String,type:String) {
+    // fun openCamera() {
+    //     val builder = VmPolicy.Builder()
+    //     StrictMode.setVmPolicy(builder.build())
+    //     val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+    //     val file = createImageFile()
+    //     val isDirectoryCreated = file.parentFile.mkdirs()
+    //     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+    //         val tempFileUri1 = Uri.fromFile(file)
+    //         cameraIntent.clipData = ClipData.newRawUri("", tempFileUri1)
+    //         val root = Environment.getExternalStorageDirectory().absolutePath
+    //         val dest = "\$root/ImageScanner/"
+    //         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempFileUri1)
+    //         cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    //         val packageName = "msd.image_scanner"
+    //         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempFileUri1)
+    //     } else {
+    //         val tempFileUri = Uri.fromFile(file)
+    //         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempFileUri)
+    //     }
+    //     startActivityForResult(cameraIntent, ScanConstants.START_CAMERA_REQUEST_CODE)
+
+    // }
+
+    // private fun createImageFile(): File {
+    //     clearTempImages()
+    //     val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+    //     val file = File(ScanConstants.IMAGE_PATH, "IMG_" + timeStamp +
+    //             ".jpg")
+    //     fileUri = Uri.fromFile(file)
+    //     return file
+    // }
+
+    // private fun clearTempImages() {
+    //     try {
+    //         val tempFolder = File(ScanConstants.IMAGE_PATH)
+    //         for (f in tempFolder.listFiles()) f.delete()
+    //     } catch (e: java.lang.Exception) {
+    //         e.printStackTrace()
+    //     }
+    // }
+
+    private fun shareFile(filePath: String, type: String) {
         val builder = VmPolicy.Builder()
         StrictMode.setVmPolicy(builder.build())
         val outputFile = File(filePath)
@@ -161,7 +206,7 @@ class MainActivity : FlutterActivity() {
         share.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
         share.action = Intent.ACTION_SEND
 //        share.type = "application/pdf"
-        share.type=type
+        share.type = type
         share.putExtra(Intent.EXTRA_STREAM, uri)
         startActivity(Intent.createChooser(share, "Share"));
     }
@@ -383,6 +428,7 @@ class MainActivity : FlutterActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             val uri: Uri = data.extras.getParcelable(ScanConstants.SCANNED_RESULT)

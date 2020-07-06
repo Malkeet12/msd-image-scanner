@@ -111,7 +111,7 @@ class _DocumentsState extends State<Documents> {
                           height: 4,
                         ),
                         Text(
-                          "Last edited ${DateFormatter.readableDelta(lastUpdated)}",
+                          "${DateFormatter.readableDelta(lastUpdated)}",
                           style:
                               Theme.of(context).textTheme.body2Medium.copyWith(
                                     color: ColorShades.textSecGray3,

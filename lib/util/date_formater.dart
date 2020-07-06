@@ -72,8 +72,8 @@ class DateFormatter {
     }
 
     if (n != 1 && type != 'now' && type != null) type += 's'; // handle plural
-    if (type == 'now') return 'few seconds ago';
-    formattedDelta = " $n $type ago ";
+    if (type == 'now') return 'Created few seconds ago';
+    formattedDelta = "Last modified $n $type ago ";
     return formattedDelta;
   }
 }

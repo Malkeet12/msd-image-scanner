@@ -108,7 +108,8 @@ public class PickImageFragment extends Fragment {
     private class GalleryClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            openMediaContent();
+           openMediaContent();
+
         }
     }
 
@@ -127,21 +128,18 @@ public class PickImageFragment extends Fragment {
         boolean isDirectoryCreated = file.getParentFile().mkdirs();
         Log.d("", "openCamera: isDirectoryCreated: " + isDirectoryCreated);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//            Uri tempFileUri = FileProvider.getUriForFile(getActivity().getApplicationContext(),
-//                    "com.scanlibrary.provider", // As defined in Manifest
-//                    file);
-          Uri tempFileUri=  FileProvider.getUriForFile(Objects.requireNonNull(getActivity().getApplicationContext()),
-                    "com.scanlibrary.provider", file);
-
+            Uri tempFileUri = FileProvider.getUriForFile(getActivity().getApplicationContext(),
+                    "com.scanlibrary.provider", // As defined in Manifest
+                    file);
 //        getActivity().getApplicationContext().grantUriPermission("msd.image_scanner", tempFileUri,  Intent.FLAG_GRANT_READ_URI_PERMISSION);
             // getActivity().getApplicationContext().grantUriPermission("com.scanlibrary.provider",tempFileUri,cameraIntent.FLAG_GRANT_READ_URI_PERMISSION);
             // getActivity().getApplicationContext().grantUriPermission("com.scanlibrary.provider",tempFileUri,cameraIntent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
-//            Uri tempFileUri1 = Uri.fromFile(file);
-//            cameraIntent.setClipData(ClipData.newRawUri("", tempFileUri1));
+            Uri tempFileUri1 = Uri.fromFile(file);
+            cameraIntent.setClipData(ClipData.newRawUri("", tempFileUri1));
             String root = Environment.getExternalStorageDirectory().getAbsolutePath();
             String dest="$root/ImageScanner/";
-            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempFileUri);
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempFileUri1);
             cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_READ_URI_PERMISSION);
 //            cameraIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 //            cameraIntent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
@@ -180,7 +178,14 @@ public class PickImageFragment extends Fragment {
                 e.printStackTrace();
             }
         } else {
-            getActivity().finish();
+
+//            getActivity().runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    // dismissDialog();
+//                    getActivity().finish();
+//                }
+//            });
         }
         if (bitmap != null) {
             postImagePick(bitmap);
