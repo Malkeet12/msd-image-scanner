@@ -40,17 +40,17 @@ class _EditDocState extends State<EditDoc> {
           ),
           actions: <Widget>[
             new FlatButton(
-              child: new Text("Close"),
+              child: new Text("CLOSE"),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             new FlatButton(
               child: new Text(
-                "Delete",
+                "DELETE",
               ),
               onPressed: () {
-                var path = doc[_currentPage];
+                var path = doc[_currentPage]["path"];
                 BlocProvider.of<GlobalBloc>(context)
                     .add(DeleteFile(file: path));
                 Navigator.of(context).pop();
@@ -65,14 +65,6 @@ class _EditDocState extends State<EditDoc> {
       },
     );
   }
-
-  // void _select(doc, Choice choice) async {
-  //   if (choice.title == 'Delete') {
-  //     _showDialog(doc);
-  //   } else if (choice.title == 'Edit') {
-  //     var path = doc['images'][_currentPage];
-  //   }
-  // }
 
   Future<void> _shareImage(doc, name) async {
     try {
@@ -126,10 +118,13 @@ class _EditDocState extends State<EditDoc> {
             child: Container(
               child: CarouselSlider(
                   options: CarouselOptions(
+                      enlargeCenterPage: true,
+                      // autoPlay: true,
                       height: MediaQuery.of(context).size.height,
+                      // width: MediaQuery.of(context).size.width,
                       viewportFraction: 1,
                       initialPage: widget.carouselInitialPage,
-                      enableInfiniteScroll: false,
+                      enableInfiniteScroll: true,
                       onPageChanged: (index, reason) {
                         setState(() {
                           _currentPage = index;
@@ -148,7 +143,7 @@ class _EditDocState extends State<EditDoc> {
                                       Expanded(
                                         child: Image.file(
                                           File(
-                                            item,
+                                            item["path"],
                                           ),
                                           fit: BoxFit.fill,
                                         ),

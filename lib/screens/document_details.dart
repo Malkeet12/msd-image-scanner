@@ -7,6 +7,7 @@ import 'package:image_scanner/screens/edit_document/edit_document.dart';
 import 'package:image_scanner/screens/pdf_viewer.dart';
 import 'package:image_scanner/services/foreground_service.dart';
 import 'package:image_scanner/shared_widgets/edit_name_dialog.dart';
+import 'package:image_scanner/shared_widgets/img_preview.dart';
 import 'package:image_scanner/theme/style.dart';
 
 class DocumentDetails extends StatefulWidget {
@@ -87,7 +88,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                   physics: const ClampingScrollPhysics(),
                   shrinkWrap: true,
                   crossAxisCount: 2,
-                  crossAxisSpacing: 10,
+                  crossAxisSpacing: 20,
                   mainAxisSpacing: 10,
                   // childAspectRatio: 0.8,
                   children: List.generate(
@@ -106,28 +107,30 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                                 ),
                               );
                             },
-                            child: Container(
-                              width: double.infinity,
-                              child: Image.file(
-                                File(
-                                  docs[index],
-                                ),
-                                fit: BoxFit.fill,
-                                // width: double.maxFinite,
-                              ),
+                            child: ImgPreview(
+                              path: docs[index]["path"],
+                              margin: EdgeInsets.symmetric(horizontal: 0),
+                              height: 170.0,
                             ),
                           ),
                           Positioned(
-                            child: Text(
-                              (index + 1).toString(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText2
-                                  .copyWith(
-                                      color: ColorShades.textColorOffWhite),
+                            child: Container(
+                              padding: EdgeInsets.all(8),
+                              decoration: new BoxDecoration(
+                                color: Colors.blue,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Text(
+                                (index + 1).toString(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText2
+                                    .copyWith(
+                                        color: ColorShades.textColorOffWhite),
+                              ),
                             ),
-                            bottom: 4,
-                            left: 4,
+                            bottom: 14,
+                            left: 14,
                           )
                         ],
                       );
@@ -145,12 +148,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
               child: Icon(
                 Icons.camera_alt,
               ),
-              // Provide an onPressed callback.
               onPressed: () async {
-                // var documentPath = docs[0].split("/");
-                // var groupId = documentPath[documentPath.length - 2];
-                // ForegroundService.start('camers', name);
-
                 BlocProvider.of<GlobalBloc>(context)
                     .add(AddToCurrentDocument(name: name));
               }),

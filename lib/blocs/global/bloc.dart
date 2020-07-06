@@ -61,9 +61,11 @@ class GlobalBloc extends Bloc<GlobalEvent, Map> {
   Stream<Map> _mapGetCurrentDocumentToState(state, event) async* {
     var currentDocId = event.id ?? state['doc']['name'];
     var res = await ForegroundService.start('getGroupImages', currentDocId);
-
+    var list = jsonDecode(res);
+    list.sort((a, b) =>
+        a["lastUpdated"].toString().compareTo(b["lastUpdated"].toString()));
     state['doc']['name'] = event.id ?? state['doc']['name'];
-    state['doc']['data'] = res;
+    state['doc']['data'] = list;
     yield {...state};
   }
 

@@ -36,8 +36,10 @@ class MainActivity : FlutterActivity() {
     companion object {
         var channel: MethodChannel? = null
     }
+
     private var currentGroupId: Any? = null
     private var fileUri: Uri? = null
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -48,7 +50,7 @@ class MainActivity : FlutterActivity() {
                         "camera" -> {
                             val REQUEST_CODE = 99
 
-                            currentGroupId=call.arguments
+                            currentGroupId = call.arguments
                             val preference: Int = ScanConstants.OPEN_CAMERA
                             val intent = Intent(this, ScanActivity::class.java)
                             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -60,29 +62,29 @@ class MainActivity : FlutterActivity() {
                         }
                         "gallery" -> {
                             val REQUEST_CODE = 100
-                            currentGroupId=call.arguments
+                            currentGroupId = call.arguments
                             val preference: Int = ScanConstants.OPEN_MEDIA
                             val intent = Intent(this, ScanActivity::class.java)
                             intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference)
                             startActivityForResult(intent, REQUEST_CODE)
-                            
+
                         }
                         "getImages" -> {
-                            val imgs = getImages()
-                            if (imgs.isEmpty()) {
+                            val images = getImages()
+                            if (images.isEmpty()) {
                                 val list: MutableList<JSONObject> = ArrayList()
                                 result.success(list.toString())
                             } else {
-                                result.success(imgs.toString())
+                                result.success(images.toString())
                             }
                         }
                         "getGroupImages" -> {
-                            val imgs = getGroupImages(call.arguments as String)
-                            if (imgs!!.isEmpty()) {
+                            val images = getGroupImages(call.arguments as String)
+                            if (images!!.isEmpty()) {
                                 val list: MutableList<JSONObject> = ArrayList()
                                 result.success(list.toString())
                             } else {
-                                result.success(imgs)
+                                result.success(images.toString())
                             }
                         }
                         "addImageToGroup" -> {
@@ -93,43 +95,43 @@ class MainActivity : FlutterActivity() {
                                 result.success(imgs)
                             }
                         }
-                        "saveAsPdf"->{
+                        "saveAsPdf" -> {
                             var path: Path = Paths.get("${call.arguments}")
                             val fileName: Path = path.fileName
 //                            val f = File("$path")
-                            var src=path.toString().substring(1,path.toString().lastIndexOf("/"))
+                            var src = path.toString().substring(1, path.toString().lastIndexOf("/"))
                             val root = Environment.getExternalStorageDirectory().absolutePath
-                            var dest="$root/ImageScanner/"
-                            moveFile("$src/","$fileName","$dest")
+                            var dest = "$root/ImageScanner/"
+                            moveFile("$src/", "$fileName", "$dest")
                             result.success("$dest$fileName")
                         }
-                        "deleteFile"->{
+                        "deleteFile" -> {
                             val documentName = call.argument<String>("documentName")
                             val fileName = call.argument<String>("fileName")
                             var path: Path = Paths.get("$fileName")
                             val name: Path = path.fileName
 
-                           var success= deleteFile("$documentName","$name")
-                                result.success(success)
+                            var success = deleteFile("$documentName", "$name")
+                            result.success(success)
                         }
-                        "deleteFolder"->{
+                        "deleteFolder" -> {
                             val documentName = call.arguments as String
                             val root = Environment.getExternalStorageDirectory().absolutePath
-                            var path="$root/ImageScanner/$documentName"
-                            var success= FileUtils.deleteDirectory( File(path));
+                            var path = "$root/ImageScanner/$documentName"
+                            var success = FileUtils.deleteDirectory(File(path));
                             refreshUI()
                             result.success(true)
                         }
-                        "renameDocument"->{
+                        "renameDocument" -> {
                             val currentName = call.argument<String>("currentName")
                             val futureName = call.argument<String>("futureName")
                             val root = Environment.getExternalStorageDirectory().absolutePath
-                            var path="$root/ImageScanner/$currentName"
-                            var dest=Paths.get("$root/ImageScanner/$futureName")
+                            var path = "$root/ImageScanner/$currentName"
+                            var dest = Paths.get("$root/ImageScanner/$futureName")
                             val source = Paths.get("$path")
-                            try{
+                            try {
                                 Files.move(source, dest)
-                            }catch (e: FileAlreadyExistsException) {
+                            } catch (e: FileAlreadyExistsException) {
                                 result.success(false)
                             } catch (e: java.lang.Exception) {
                                 result.success(false)
@@ -137,7 +139,7 @@ class MainActivity : FlutterActivity() {
                             refreshUI()
                             result.success(true)
                         }
-                        "shareAsPdf"->{
+                        "shareAsPdf" -> {
 //                            val root = Environment.getExternalStorageDirectory().absolutePath
 //                            val dest = "$root/ImageScanner/jj.pdf"
                             shareAsPdf("${call.arguments}")
@@ -145,7 +147,8 @@ class MainActivity : FlutterActivity() {
                     }
                 }
     }
-    private fun shareAsPdf(filePath:String){
+
+    private fun shareAsPdf(filePath: String) {
         val builder = VmPolicy.Builder()
         StrictMode.setVmPolicy(builder.build())
         val outputFile = File(filePath)
@@ -165,6 +168,7 @@ class MainActivity : FlutterActivity() {
 
 //        activity.startActivity(share)
     }
+
     private fun deleteFile(documentName: String, fileName: String): Boolean {
         val root = Environment.getExternalStorageDirectory().absolutePath
         var dir = filesDir
@@ -198,13 +202,14 @@ class MainActivity : FlutterActivity() {
             out = null
 
             // delete the original file
-           File(inputPath + inputFile).delete()
+            File(inputPath + inputFile).delete()
         } catch (fnfe1: FileNotFoundException) {
-           println("exception");
+            println("exception");
         } catch (e: java.lang.Exception) {
             println(e.message)
         }
     }
+
     private fun getImages(): MutableList<JSONObject> {
         val root = Environment.getExternalStorageDirectory().absolutePath
         val folder = File("$root/ImageScanner/")
@@ -222,15 +227,11 @@ class MainActivity : FlutterActivity() {
                     item.put("lastUpdated", lastUpdatedTime)
                 }
                 for (file in child.listFiles()) {
-
-
                     if (first) {
                         first = false
-
                         if (file.isFile) {
-
-                            var path= file.absolutePath.split("/")
-                            val id=path[path.size-2]
+                            var path = file.absolutePath.split("/")
+                            val id = path[path.size - 2]
                             item.put("name", id)
                             item.put("firstChild", file.toString())
                             list.add(item)
@@ -272,9 +273,8 @@ class MainActivity : FlutterActivity() {
         return item
     }
 
-    private fun getGroupImages(groupId: String): List<String>? {
+    private fun getGroupImages(groupId: String): MutableList<JSONObject> {
         val root = Environment.getExternalStorageDirectory().absolutePath
-//        val folder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/ImageScanner/")
         val folder = File("$root/ImageScanner/$groupId")
 //        folder.mkdirs()
         val allFiles: Array<File> = folder.listFiles(object : FilenameFilter {
@@ -283,13 +283,17 @@ class MainActivity : FlutterActivity() {
             }
         })
 
-        val item: MutableList<String> = ArrayList()
+        val list: MutableList<JSONObject> = ArrayList()
         for (file in allFiles) {
-            item.add(file.toString() + "")
+            val item = JSONObject()
+            item.put("path", file.toString())
+            item.put("lastUpdated", file.lastModified())
+            list.add(item)
         }
-        return item
+        return list
     }
-//
+
+    //
     private fun SaveImage(finalBitmap: Bitmap) {
         verifyStoragePermissions(this)
         val root = Environment.getExternalStorageDirectory().absolutePath
@@ -297,13 +301,13 @@ class MainActivity : FlutterActivity() {
         if (!myDir.exists()) {
             myDir.mkdirs()
         }
-        var currentFolder=""
-        currentFolder = if(currentGroupId!="" && currentGroupId!=null){
+        var currentFolder = ""
+        currentFolder = if (currentGroupId != "" && currentGroupId != null) {
             currentGroupId as String
-        }else{
+        } else {
             "ImageScanner${System.currentTimeMillis().toString()}"
         }
-          val imageGroupDir = File("$root/ImageScanner/$currentFolder")
+        val imageGroupDir = File("$root/ImageScanner/$currentFolder")
         if (!imageGroupDir.exists()) {
             imageGroupDir.mkdirs()
         }
@@ -314,7 +318,9 @@ class MainActivity : FlutterActivity() {
         try {
             val out = FileOutputStream(file)
             finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
-            refreshCurrentDoc()
+            if (currentGroupId != "" && currentGroupId != null) {
+                refreshCurrentDoc()
+            }
             refreshUI()
 
             out.flush()
@@ -329,15 +335,18 @@ class MainActivity : FlutterActivity() {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
-    fun refreshCurrentDoc(){
+
+    fun refreshCurrentDoc() {
         channel?.invokeMethod("refreshCurrentDoc", "",
                 object : MethodChannel.Result {
                     override fun success(result: Any?) {
                         println("successfully went to dart")
                     }
+
                     override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
                         println(errorDetails)
                     }
+
                     override fun notImplemented() {
                         println("not implememted")
                     }
@@ -345,21 +354,24 @@ class MainActivity : FlutterActivity() {
         )
     }
 
-    fun refreshUI(){
+    fun refreshUI() {
         channel?.invokeMethod("refreshUI", "",
                 object : MethodChannel.Result {
                     override fun success(result: Any?) {
                         println("successfully went to dart")
                     }
+
                     override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
                         println(errorDetails)
                     }
+
                     override fun notImplemented() {
                         println("not implememted")
                     }
                 }
         )
     }
+
     fun verifyStoragePermissions(activity: Activity?) {
         // Check if we have write permission
         val permission: Int = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)

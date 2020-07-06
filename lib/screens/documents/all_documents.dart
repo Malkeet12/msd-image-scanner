@@ -74,16 +74,19 @@ class _AllDocumentsState extends State<AllDocuments> {
             );
           },
         ),
-        floatingActionButton: FloatingActionButton(
-            backgroundColor: Colors.deepOrange,
-            child: Icon(
-              Icons.camera_alt,
-            ),
-            onPressed: () async {
-              var isPermissionGranted = await handlePermissions();
-              if (isPermissionGranted == false) return;
-              ForegroundService.start('camera', '');
-            }),
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: FloatingActionButton(
+              backgroundColor: Colors.deepOrange,
+              child: Icon(
+                Icons.camera_alt,
+              ),
+              onPressed: () async {
+                var isPermissionGranted = await handlePermissions();
+                if (isPermissionGranted == false) return;
+                ForegroundService.start('camera', '');
+              }),
+        ),
       ),
     );
   }

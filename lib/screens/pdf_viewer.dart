@@ -24,7 +24,7 @@ class _PdfViewerState extends State<PdfViewer> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   writeOnPdf(pdf, images) {
     for (var index = 0; index < images.length; index++) {
-      File file = File(images[index]);
+      File file = File(images[index]["path"]);
       final image = PdfImage.file(
         pdf.document,
         bytes: file.readAsBytesSync(),
@@ -61,7 +61,8 @@ class _PdfViewerState extends State<PdfViewer> {
       final pdf = pw.Document();
       writeOnPdf(pdf, images);
       Directory documentDirectory = await getApplicationDocumentsDirectory();
-
+      Directory tempDir = await getTemporaryDirectory();
+      String tempPath = tempDir.path;
       String documentPath = documentDirectory.path;
       fullPath = "$documentPath/${widget.name}.pdf";
       File file = File(fullPath);

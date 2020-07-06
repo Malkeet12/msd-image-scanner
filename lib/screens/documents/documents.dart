@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_scanner/blocs/global/bloc.dart';
 import 'package:image_scanner/blocs/global/event.dart';
 import 'package:image_scanner/screens/document_details.dart';
+import 'package:image_scanner/shared_widgets/img_preview.dart';
 import 'package:image_scanner/shared_widgets/modal.dart';
 import 'package:image_scanner/theme/style.dart';
 import 'package:image_scanner/util/common_util.dart';
@@ -213,15 +214,12 @@ class MyGridView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.count(
-      // reverse: true,
-      // childAspectRatio: 1,
       scrollDirection: Axis.vertical,
       physics: const ClampingScrollPhysics(),
       shrinkWrap: true,
       crossAxisCount: 2,
       crossAxisSpacing: 10,
-      // mainAxisSpacing: 10,
-      // childAspectRatio: 0.8,
+      mainAxisSpacing: 25,
       children: List.generate(
         widget.docs.length,
         (index) {
@@ -236,69 +234,52 @@ class MyGridView extends StatelessWidget {
                 ),
               );
             },
-            child: Container(
-              alignment: Alignment.topCenter,
-              // margin: EdgeInsets.only(
-              //   bottom: 10,
-              // ),
-              child: Column(
-                // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                // crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Flexible(
-                    child: Container(
-                      decoration: BoxDecoration(
-                          // color: colors[uid],
-                          border: Border.all(
-                              color: ColorShades.textSecGray3, width: 3.0)),
-                      alignment: Alignment.center,
-                      width: 150,
-                      height: 120,
-                      // height: 150,
-                      child: Image.file(
-                        File(
-                          widget.docs[index]['firstChild'],
+            child: Column(
+              children: <Widget>[
+                Flexible(
+                  child: ImgPreview(path: widget.docs[index]["firstChild"]),
+                ),
+                GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onTap: () =>
+                      openBottomSheet(context, widget.docs[index]['name']),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 18.0, vertical: 12.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Icon(
+                          Icons.folder,
+                          color: CommonUtil.getRandomColor(),
                         ),
-                      ),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Expanded(
+                          child: Text(
+                            widget.docs[index]['name'],
+                            style:
+                                Theme.of(context).textTheme.body1Bold.copyWith(
+                                      color: ColorShades.textSecGray3,
+                                    ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Icon(
+                          Icons.more_vert,
+                          color: Colors.black,
+                        ),
+                      ],
                     ),
                   ),
-                  GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () =>
-                        openBottomSheet(context, widget.docs[index]['name']),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 18.0, vertical: 12.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Icon(
-                            Icons.folder,
-                            color: Colors.lightBlue,
-                          ),
-                          SizedBox(
-                            width: 8,
-                          ),
-                          Expanded(
-                            child: Text(
-                              widget.docs[index]['name'],
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 8,
-                          ),
-                          Icon(
-                            Icons.more_vert,
-                            color: Colors.black,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           );
         },
