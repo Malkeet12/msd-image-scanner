@@ -4,10 +4,10 @@ import 'package:image_scanner/blocs/global/bloc.dart';
 import 'package:image_scanner/blocs/global/event.dart';
 import 'package:image_scanner/screens/documents/documents.dart';
 import 'package:image_scanner/services/foreground_service.dart';
+import 'package:image_scanner/shared_widgets/empty_state.dart';
 import 'package:image_scanner/shared_widgets/my_drawer.dart';
 import 'package:image_scanner/theme/style.dart';
 import 'package:image_scanner/util/permission.dart';
-import 'package:image_scanner/util/storage_manager.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class AllDocuments extends StatefulWidget {
@@ -21,12 +21,10 @@ class AllDocuments extends StatefulWidget {
 
 class _AllDocumentsState extends State<AllDocuments> {
   var userImages;
-
   @override
   void initState() {
     super.initState();
     ForegroundService.registerCallBack("refreshUI", getUserImages);
-
     getUserImages();
   }
 
@@ -40,6 +38,14 @@ class _AllDocumentsState extends State<AllDocuments> {
 
   getUserImages() async {
     BlocProvider.of<GlobalBloc>(context).add(FetchAllDocuments());
+  }
+
+  onCameraClick() async {
+    var isPermissionGranted = await handlePermissions();
+    if (isPermissionGranted == false) {
+      return;
+    }
+    ForegroundService.start('camera', '');
   }
 
   @override
@@ -59,19 +65,15 @@ class _AllDocumentsState extends State<AllDocuments> {
         ),
         body: BlocBuilder<GlobalBloc, Map>(
           builder: (context, currentState) {
-            return SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  // Container(
-                  //   height: 20,
-                  //   color: ColorShades.textColorOffWhite,
-                  // ),
-                  Documents(
-                    docs: currentState['allDocsList'],
-                  )
-                ],
-              ),
-            );
+            var docs = currentState['allDocsList'];
+            if (docs.length == 0)
+              return EmptyState(onCameraClick: onCameraClick);
+            else
+              return SingleChildScrollView(
+                child: Documents(
+                  docs: currentState['allDocsList'],
+                ),
+              );
           },
         ),
         floatingActionButton: Padding(
@@ -81,11 +83,7 @@ class _AllDocumentsState extends State<AllDocuments> {
               child: Icon(
                 Icons.camera_alt,
               ),
-              onPressed: () async {
-                var isPermissionGranted = await handlePermissions();
-                if (isPermissionGranted == false) return;
-                ForegroundService.start('camera', '');
-              }),
+              onPressed: () => onCameraClick()),
         ),
       ),
     );

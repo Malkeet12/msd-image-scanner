@@ -32,6 +32,7 @@ class _DocumentsState extends State<Documents> {
   }
 
   setUserView(value) async {
+    await StorageManager.setItem("userSelectedView", value);
     setState(() {
       currentView = value;
     });
@@ -42,10 +43,14 @@ class _DocumentsState extends State<Documents> {
     modal.mainBottomSheet(context, name);
   }
 
+  getUserSelectedView() async {
+    var value = await StorageManager.getItem("userSelectedView");
+    return value ?? 'linear';
+  }
+
   @override
   Widget build(BuildContext context) {
     if (widget.docs.length == 0) return SizedBox();
-
     List<Widget> list = new List<Widget>();
     for (var i = widget.docs.length - 1; i >= 0; i--) {
       var doc = widget.docs[i];
@@ -71,23 +76,6 @@ class _DocumentsState extends State<Documents> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  // Container(
-                  //   // height: 72.0,
-                  //   width: 72.0,
-                  //   decoration: BoxDecoration(
-                  //     // borderRadius: BorderRadius.circular(20),
-                  //     // color: Colors.black,
-                  //     boxShadow: [
-                  //       BoxShadow(spreadRadius: 2),
-                  //     ],
-                  //   ),
-                  //   child:
-                  //   Image.file(
-                  //     File(
-                  //       image,
-                  //     ),
-                  //   ),
-                  // ),
                   Icon(
                     Icons.folder,
                     color: CommonUtil.getRandomColor(),
@@ -141,58 +129,60 @@ class _DocumentsState extends State<Documents> {
         ),
       ));
     }
-    if (currentView == 'grid') {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 48.0),
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  IconButton(
-                    color: Colors.deepOrange,
-                    icon: Icon(Icons.line_style),
-                    onPressed: () => setUserView('linear'),
-                  ),
-                ],
-              ),
-            ),
-            MyGridView(
-              widget: widget,
-              setCurrentDocument: setCurrentDocument,
-              openBottomSheet: openBottomSheet,
-            )
-          ],
-        ),
-      );
-    }
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 48.0),
-      child: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+    return FutureBuilder<dynamic>(
+        future: getUserSelectedView(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return SizedBox();
+          var isGrdiView = snapshot.data == 'grid';
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 48.0),
+            child: Column(
               children: <Widget>[
-                IconButton(
-                  color: Colors.deepOrange,
-                  icon: Icon(Icons.grid_on),
-                  onPressed: () => setUserView('grid'),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16, vertical: 10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Text(
+                            'Last modified by me',
+                            style:
+                                Theme.of(context).textTheme.body1Bold.copyWith(
+                                      color: ColorShades.textSecGray3,
+                                    ),
+                          ),
+                          Icon(
+                            Icons.arrow_downward,
+                            size: 20,
+                            color: ColorShades.textSecGray3,
+                          )
+                        ],
+                      ),
+                      IconButton(
+                        color: Colors.deepOrange,
+                        icon: isGrdiView
+                            ? Icon(Icons.line_style)
+                            : Icon(Icons.grid_on),
+                        onPressed: () => isGrdiView
+                            ? setUserView('linear')
+                            : setUserView('grid'),
+                      ),
+                    ],
+                  ),
                 ),
+                isGrdiView
+                    ? MyGridView(
+                        widget: widget,
+                        setCurrentDocument: setCurrentDocument,
+                        openBottomSheet: openBottomSheet,
+                      )
+                    : Column(children: list)
               ],
             ),
-          ),
-          Column(children: list)
-        ],
-      ),
-    );
-
-    // return Column(children: list);
-
-    // return MyGridView(widget: widget);
+          );
+        });
   }
 }
 
