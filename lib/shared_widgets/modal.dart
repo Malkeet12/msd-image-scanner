@@ -81,20 +81,15 @@ class Modal {
                         .copyWith(color: ColorShades.textSecGray3),
                   ),
                   TextSpan(
-                      text: name,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: ColorShades.textSecGray3)),
+                    text: name,
+                    style: Theme.of(context)
+                        .textTheme
+                        .h3
+                        .copyWith(color: ColorShades.textSecGray3),
+                  ),
                 ],
               ),
             ),
-            //  new Text(
-            //   "Are you sure you want to delete this document ($name)",
-            //   style: Theme.of(context)
-            //       .textTheme
-            //       .h4
-            //       .copyWith(color: ColorShades.textSecGray3),
-            // ),
             actions: <Widget>[
               new FlatButton(
                 child: new Text("CLOSE"),

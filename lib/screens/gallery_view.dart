@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 // import 'package:image_picker/image_picker.dart';
 import 'package:image_scanner/shared_widgets/blue_button.dart';
 import 'package:image_scanner/shared_widgets/build_list.dart';
@@ -12,6 +13,8 @@ import 'package:image_scanner/shared_widgets/text_decoration.dart';
 import 'package:image_scanner/theme/style.dart';
 import 'package:image_scanner/util/analytics_service.dart';
 import 'package:image_scanner/util/common_util.dart';
+import 'package:image_scanner/util/permission.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:share/share.dart';
 
 class GalleryView extends StatefulWidget {
@@ -23,6 +26,7 @@ class GalleryView extends StatefulWidget {
 }
 
 class _GalleryViewState extends State<GalleryView> {
+  final GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
   File _file;
   List labels = [];
   var completeDoc;
@@ -37,63 +41,69 @@ class _GalleryViewState extends State<GalleryView> {
   }
 
   uploadImage() async {
-    // try {
-    //   //var file = await ImagePicker.pickImage(source: ImageSource.camera);
-    //   final picker = ImagePicker();
-    //   var pickedFile = await picker.getImage(source: ImageSource.gallery);
-    //   if (pickedFile != null) {
-    //     setState(() {
-    //       _file = File(pickedFile.path);
-    //     });
-    //     try {
-    //       var image = FirebaseVisionImage.fromFilePath(_file.path);
-    //       final VisionText visionText =
-    //           await textRecognizer.processImage(image);
-    //       String text = visionText.text;
-    //       //reseting labels list before adding new image data
-    //       labels = [];
-    //       for (TextBlock block in visionText.blocks) {
-    //         final Rect boundingBox = block.boundingBox;
-    //         final List<Offset> cornerPoints = block.cornerPoints;
-    //         final String text = block.text;
-    //         final List<RecognizedLanguage> languages =
-    //             block.recognizedLanguages;
-    //         print('languages $languages');
-    //         print('text $text');
-    //         for (TextLine line in block.lines) {
-    //           // Same getters as TextBlock
-    //           labels.add(line);
-    //           for (TextElement element in line.elements) {
-    //             // Same getters as TextBlock
-    //           }
-    //         }
-    //       }
-    //       setState(() {
-    //         completeDoc = text;
-    //         labels = labels;
-    //       });
-    //     } catch (e) {
-    //       print(e.toString());
-    //     }
-    //   } else {
-    //     Navigator.pop(context);
-    //   }
-    // } catch (e) {
-    //   print(e.toString());
-    //   widget.scaffoldKey.currentState.showSnackBar(SnackBar(
-    //     content: Text('The user did not allow photo access.'),
-    //     backgroundColor: Colors.redAccent,
-    //     duration: Duration(seconds: 2),
-    //   ));
+    try {
+      //var file = await ImagePicker.pickImage(source: ImageSource.camera);
+      var granted = await Permission.request(PermissionGroup.photos);
+      if (!granted) {
+        _key.currentState.showSnackBar(SnackBar(
+          content: Text('The user did not allow photo access.'),
+          backgroundColor: Colors.redAccent,
+          duration: Duration(seconds: 2),
+        ));
+        return;
+      }
 
-    //   Navigator.pop(context);
-    // }
+      final picker = ImagePicker();
+      var pickedFile = await picker.getImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          _file = File(pickedFile.path);
+        });
+        try {
+          var image = FirebaseVisionImage.fromFilePath(_file.path);
+          final VisionText visionText =
+              await textRecognizer.processImage(image);
+          String text = visionText.text;
+          //reseting labels list before adding new image data
+          labels = [];
+          for (TextBlock block in visionText.blocks) {
+            final Rect boundingBox = block.boundingBox;
+            final List<Offset> cornerPoints = block.cornerPoints;
+            final String text = block.text;
+            final List<RecognizedLanguage> languages =
+                block.recognizedLanguages;
+            print('languages $languages');
+            print('text $text');
+            for (TextLine line in block.lines) {
+              // Same getters as TextBlock
+              labels.add(line);
+              for (TextElement element in line.elements) {
+                // Same getters as TextBlock
+              }
+            }
+          }
+          setState(() {
+            completeDoc = text;
+            labels = labels;
+          });
+        } catch (e) {
+          print(e.toString());
+        }
+      } else {
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      print(e.toString());
+
+      Navigator.pop(context);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        key: _key,
         drawer: MyDrawer(),
         backgroundColor: ColorShades.backgroundColorPrimary,
         appBar: MyAppBar(

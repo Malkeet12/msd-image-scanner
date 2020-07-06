@@ -21,7 +21,7 @@ class ImgPreview extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(16, 20, 16, 0),
       margin: margin ?? EdgeInsets.symmetric(horizontal: 20.0),
       width: double.infinity,
-      height: height ?? 150.0,
+      height: height ?? 150,
       decoration: BoxDecoration(
         color: ColorShades.lightBackground,
         borderRadius: BorderRadius.circular(12.0),

@@ -45,17 +45,15 @@ class _MyDrawerState extends State<MyDrawer> {
   }
 
   uploadImage() async {
-    ForegroundService.start('gallery', '');
-    Navigator.pop(context);
-    // AnalyticsService().sendEvent(
-    //   name: 'upload_image_click',
-    // );
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => GalleryView(scaffoldKey: _scaffoldKey),
-    //   ),
-    // );
+    AnalyticsService().sendEvent(
+      name: 'upload_image_click',
+    );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => GalleryView(),
+      ),
+    );
   }
 
   allDocuments() async {
@@ -93,7 +91,7 @@ class _MyDrawerState extends State<MyDrawer> {
                     style: Theme.of(context)
                         .textTheme
                         .h2
-                        .copyWith(color: ColorShades.textSecGray3),
+                        .copyWith(color: ColorShades.textPrimaryDark),
                   ),
                   decoration: BoxDecoration(
                       // color: Colors.white60,
@@ -105,6 +103,7 @@ class _MyDrawerState extends State<MyDrawer> {
               // ),
               listItem(
                 context,
+                false,
                 Icon(
                   Icons.folder,
                   color: colors[uid],
@@ -112,6 +111,46 @@ class _MyDrawerState extends State<MyDrawer> {
                 "All Documents",
                 () => allDocuments(),
               ),
+              // Padding(
+              //   padding: const EdgeInsets.only(
+              //     left: 20,
+              //     right: 16,
+              //     top: 24,
+              //   ),
+              //   child: Text(
+              //     'Extract text from image',
+              //     softWrap: true,
+              //     style: Theme.of(context).textTheme.body2Medium.copyWith(
+              //           color: Colors.blueAccent,
+              //           // fontFamily: 'Rounded Mplus 1c',
+              //           fontSize: 16.0,
+              //           fontWeight: FontWeight.bold,
+              //         ),
+              //   ),
+              // ),
+              // SizedBox(
+              //   height: 8,
+              // ),
+              // listItem(
+              //   context,
+              //   false,
+              //   Icon(
+              //     Icons.camera_alt,
+              //     color: colors[uid + 1],
+              //   ),
+              //   "Capture Image",
+              //   () => capureImage(),
+              // ),
+              // listItem(
+              //   context,
+              //   false,
+              //   Icon(
+              //     Icons.image,
+              //     color: colors[uid + 2],
+              //   ),
+              //   "Pick From Gallery",
+              //   () => uploadImage(),
+              // ),
               Padding(
                 padding: const EdgeInsets.only(
                   left: 20,
@@ -119,35 +158,34 @@ class _MyDrawerState extends State<MyDrawer> {
                   top: 24,
                 ),
                 child: Text(
-                  'Extract Text',
+                  'Coming Soon',
                   softWrap: true,
-                  style: Theme.of(context).textTheme.bodyText2.copyWith(
+                  style: Theme.of(context).textTheme.body2Medium.copyWith(
                         color: Colors.green,
                         // fontFamily: 'Rounded Mplus 1c',
                         fontSize: 16.0,
-                        // fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.bold,
                       ),
                 ),
               ),
-              SizedBox(
-                height: 8,
-              ),
               listItem(
                 context,
+                true,
                 Icon(
-                  Icons.camera_alt,
-                  color: colors[uid + 1],
-                ),
-                "Capture Image",
-                () => capureImage(),
-              ),
-              listItem(
-                context,
-                Icon(
-                  Icons.image,
+                  Icons.cloud,
                   color: colors[uid + 2],
                 ),
-                "Pick From Gallery",
+                "Save files to cloud",
+                () => uploadImage(),
+              ),
+              listItem(
+                context,
+                true,
+                Icon(
+                  Icons.find_in_page,
+                  color: colors[uid + 2],
+                ),
+                "Copy text from image",
                 () => uploadImage(),
               ),
             ],
@@ -158,7 +196,8 @@ class _MyDrawerState extends State<MyDrawer> {
   }
 }
 
-InkWell listItem(BuildContext context, icon, String text, Function onTap) {
+InkWell listItem(
+    BuildContext context, disabled, icon, String text, Function onTap) {
   List<Widget> children = <Widget>[];
   children.add(
     Padding(
@@ -172,7 +211,9 @@ InkWell listItem(BuildContext context, icon, String text, Function onTap) {
         text,
         softWrap: true,
         style: Theme.of(context).textTheme.h4.copyWith(
-            color: ColorShades.textSecGray3,
+            color: disabled == true
+                ? ColorShades.textSecGray2
+                : ColorShades.textSecGray3,
             fontFamily: 'Rounded Mplus 1c',
             fontSize: 16.0,
             fontWeight: FontWeight.bold),

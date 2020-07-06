@@ -10,7 +10,7 @@ class ColorShades {
   static const textSecGray2 = const Color(0xffb1bad4);
   static const textSecGray3 = const Color(0xff647093);
   static const textSecNeon = const Color(0xff426bff);
-  static const lightBackground = const Color(0xffccd6db);
+  static const lightBackground = const Color(0xffe4e9ec);
   static const hover = const Color(0xff3755c1);
   static const disabled = const Color(0xffd9dfee);
 }
