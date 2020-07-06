@@ -9,6 +9,7 @@ import 'package:image_scanner/screens/document_details.dart';
 import 'package:image_scanner/shared_widgets/modal.dart';
 import 'package:image_scanner/theme/style.dart';
 import 'package:image_scanner/util/common_util.dart';
+import 'package:image_scanner/util/date_formater.dart';
 import 'package:image_scanner/util/storage_manager.dart';
 
 class Documents extends StatefulWidget {
@@ -43,16 +44,12 @@ class _DocumentsState extends State<Documents> {
   @override
   Widget build(BuildContext context) {
     if (widget.docs.length == 0) return SizedBox();
-    openBottomSheet(context, name) async {
-      Modal modal = new Modal();
-      modal.mainBottomSheet(context, name);
-    }
 
     List<Widget> list = new List<Widget>();
     for (var i = widget.docs.length - 1; i >= 0; i--) {
       var doc = widget.docs[i];
       var name = doc["name"];
-      var image = doc["firstChild"];
+      var lastUpdated = doc["lastUpdated"];
 
       list.add(GestureDetector(
         behavior: HitTestBehavior.translucent,
@@ -107,6 +104,16 @@ class _DocumentsState extends State<Documents> {
                           style: Theme.of(context).textTheme.h4.copyWith(
                                 color: ColorShades.textPrimaryDark,
                               ),
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Text(
+                          "Last edited ${DateFormatter.readableDelta(lastUpdated)}",
+                          style:
+                              Theme.of(context).textTheme.body2Medium.copyWith(
+                                    color: ColorShades.textSecGray3,
+                                  ),
                         ),
                       ],
                     ),

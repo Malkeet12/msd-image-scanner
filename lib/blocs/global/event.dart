@@ -18,7 +18,7 @@ class FetchAllDocuments extends GlobalEvent {
 
 class GetCurrentDocument extends GlobalEvent {
   var id;
-  GetCurrentDocument({@required this.id});
+  GetCurrentDocument({this.id});
 }
 
 class AddToCurrentDocument extends GlobalEvent {
@@ -28,7 +28,8 @@ class AddToCurrentDocument extends GlobalEvent {
 
 class RenameDocument extends GlobalEvent {
   var name;
-  RenameDocument({@required this.name});
+  var oldName;
+  RenameDocument({@required this.name, @required this.oldName});
 }
 
 class DeleteFile extends GlobalEvent {

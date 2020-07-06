@@ -109,7 +109,7 @@ class Modal {
                 onPressed: () async {
                   ForegroundService.start("deleteFolder", name);
                   Navigator.pop(context);
-                  BlocProvider.of<GlobalBloc>(context).add(FetchAllDocuments());
+                  // BlocProvider.of<GlobalBloc>(context).add(FetchAllDocuments());
                 },
               ),
             ],

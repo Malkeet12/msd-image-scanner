@@ -72,7 +72,7 @@ class DateFormatter {
     }
 
     if (n != 1 && type != 'now' && type != null) type += 's'; // handle plural
-    if (type == 'now') return 'now';
+    if (type == 'now') return 'few seconds ago';
     formattedDelta = " $n $type ago ";
     return formattedDelta;
   }

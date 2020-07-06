@@ -37,12 +37,12 @@ class GlobalBloc extends Bloc<GlobalEvent, Map> {
 
   Stream<Map> _mapRenameDocumentToState(state, event) async* {
     var data = {
-      "currentName": state['doc']['name'],
+      "currentName": event.oldName,
       "futureName": event.name,
     };
-    var res = await ForegroundService.start('renameDocument', data);
-    add(GetCurrentDocument(id: event.name));
-    add(FetchAllDocuments());
+    await ForegroundService.start('renameDocument', data);
+    // add(GetCurrentDocument(id: event.name));
+    // add(FetchAllDocuments());
     yield {...state};
   }
 
@@ -59,9 +59,10 @@ class GlobalBloc extends Bloc<GlobalEvent, Map> {
   }
 
   Stream<Map> _mapGetCurrentDocumentToState(state, event) async* {
-    var res = await ForegroundService.start('getGroupImages', event.id);
+    var currentDocId = event.id ?? state['doc']['name'];
+    var res = await ForegroundService.start('getGroupImages', currentDocId);
 
-    state['doc']['name'] = event.id;
+    state['doc']['name'] = event.id ?? state['doc']['name'];
     state['doc']['data'] = res;
     yield {...state};
   }
@@ -79,9 +80,9 @@ class GlobalBloc extends Bloc<GlobalEvent, Map> {
     var list = jsonDecode(res);
 
     state['allDocsList'] = list;
-    if (state['doc'].isNotEmpty) {
-      add(GetCurrentDocument(id: state['doc']['name']));
-    }
+    // if (event.refreshDoc) {
+    //   add(GetCurrentDocument(id: state['doc']['name']));
+    // }
     yield {...state};
   }
 

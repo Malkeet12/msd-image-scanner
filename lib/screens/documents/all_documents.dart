@@ -26,6 +26,7 @@ class _AllDocumentsState extends State<AllDocuments> {
   void initState() {
     super.initState();
     ForegroundService.registerCallBack("refreshUI", getUserImages);
+
     getUserImages();
   }
 

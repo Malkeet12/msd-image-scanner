@@ -31,7 +31,13 @@ class _EditDocState extends State<EditDoc> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: new Text("Are you sure you want to remove this image"),
+          title: new Text(
+            "Are you sure you want to remove this image",
+            style: Theme.of(context)
+                .textTheme
+                .h4
+                .copyWith(color: ColorShades.textSecGray3),
+          ),
           actions: <Widget>[
             new FlatButton(
               child: new Text("Close"),

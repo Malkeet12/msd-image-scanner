@@ -16,6 +16,16 @@ class DocumentDetails extends StatefulWidget {
 
 class _DocumentDetailsState extends State<DocumentDetails> {
   TextEditingController _controller = new TextEditingController();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    ForegroundService.registerCallBack("refreshCurrentDoc", refreshCurrentDoc);
+  }
+
+  refreshCurrentDoc() async {
+    BlocProvider.of<GlobalBloc>(context).add(GetCurrentDocument());
+  }
 
   void _showDialog(context, name) {
     _controller.text = name;
@@ -39,7 +49,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
           backgroundColor: Colors.deepOrange,
           centerTitle: true,
           title: Text(
-            name,
+            name.toString(),
             style: TextStyle(
               color: ColorShades.textColorOffWhite,
             ),

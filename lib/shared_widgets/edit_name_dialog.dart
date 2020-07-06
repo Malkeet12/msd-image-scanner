@@ -19,6 +19,14 @@ class EditNameDialog extends StatefulWidget {
 
 class _EditNameDialogState extends State<EditNameDialog> {
   var inputValue;
+  var oldName;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    oldName = widget._controller.text;
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -62,8 +70,10 @@ class _EditNameDialogState extends State<EditNameDialog> {
                 .copyWith(color: Colors.blueAccent),
           ),
           onPressed: () {
-            BlocProvider.of<GlobalBloc>(context)
-                .add(RenameDocument(name: inputValue));
+            BlocProvider.of<GlobalBloc>(context).add(RenameDocument(
+              name: inputValue,
+              oldName: oldName,
+            ));
             Navigator.of(context).pop();
           },
         ),

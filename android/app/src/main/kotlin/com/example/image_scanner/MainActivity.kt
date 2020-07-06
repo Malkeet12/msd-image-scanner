@@ -27,6 +27,10 @@ import java.io.*
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MainActivity : FlutterActivity() {
     companion object {
@@ -113,6 +117,7 @@ class MainActivity : FlutterActivity() {
                             val root = Environment.getExternalStorageDirectory().absolutePath
                             var path="$root/ImageScanner/$documentName"
                             var success= FileUtils.deleteDirectory( File(path));
+                            refreshUI()
                             result.success(true)
                         }
                         "renameDocument"->{
@@ -129,6 +134,7 @@ class MainActivity : FlutterActivity() {
                             } catch (e: java.lang.Exception) {
                                 result.success(false)
                             }
+                            refreshUI()
                             result.success(true)
                         }
                         "shareAsPdf"->{
@@ -165,12 +171,7 @@ class MainActivity : FlutterActivity() {
         var file = File("$root/ImageScanner/$documentName", "$fileName")
         return file.delete()
     }
-    private fun deleteFolder(documentName: String, fileName: String): Boolean {
-        val root = Environment.getExternalStorageDirectory().absolutePath
-        var dir = filesDir
-        var file = File("$root/ImageScanner/$documentName", "$fileName")
-        return file.delete()
-    }
+
     private fun moveFile(inputPath: String, inputFile: String, outputPath: String) {
         var `in`: InputStream? = null
         var out: OutputStream? = null
@@ -214,11 +215,20 @@ class MainActivity : FlutterActivity() {
         for (child in directoryListing) {
             if (child.isDirectory) {
                 var first = true
+                val item = JSONObject()
+                if (child.isDirectory) {
+                    val file = File("${child.absolutePath}")
+                    var lastUpdatedTime = getLatestModifiedDate(file)
+                    item.put("lastUpdated", lastUpdatedTime)
+                }
                 for (file in child.listFiles()) {
+
+
                     if (first) {
                         first = false
+
                         if (file.isFile) {
-                            val item = JSONObject()
+
                             var path= file.absolutePath.split("/")
                             val id=path[path.size-2]
                             item.put("name", id)
@@ -231,6 +241,18 @@ class MainActivity : FlutterActivity() {
             }
         }
         return list
+    }
+
+    private fun getLatestModifiedDate(dir: File): Long {
+        val files = dir.listFiles()
+        var latestDate: Long = 0
+        for (file in files) {
+            val fileModifiedDate = if (file.isDirectory) getLatestModifiedDate(file) else file.lastModified()
+            if (fileModifiedDate > latestDate) {
+                latestDate = fileModifiedDate
+            }
+        }
+        return Math.max(latestDate, dir.lastModified())
     }
 
     private fun updateGroup(groupId: String): List<String>? {
@@ -292,19 +314,9 @@ class MainActivity : FlutterActivity() {
         try {
             val out = FileOutputStream(file)
             finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
-            channel?.invokeMethod("refreshUI", "",
-                            object : MethodChannel.Result {
-                                override fun success(result: Any?) {
-                                    println("successfully went to dart")
-                                }
-                                override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
-                                    println(errorDetails)
-                                }
-                                override fun notImplemented() {
-                                    println("not implememted")
-                                }
-                            }
-                    )
+            refreshCurrentDoc()
+            refreshUI()
+
             out.flush()
             out.close()
         } catch (e: Exception) {
@@ -317,7 +329,37 @@ class MainActivity : FlutterActivity() {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
+    fun refreshCurrentDoc(){
+        channel?.invokeMethod("refreshCurrentDoc", "",
+                object : MethodChannel.Result {
+                    override fun success(result: Any?) {
+                        println("successfully went to dart")
+                    }
+                    override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                        println(errorDetails)
+                    }
+                    override fun notImplemented() {
+                        println("not implememted")
+                    }
+                }
+        )
+    }
 
+    fun refreshUI(){
+        channel?.invokeMethod("refreshUI", "",
+                object : MethodChannel.Result {
+                    override fun success(result: Any?) {
+                        println("successfully went to dart")
+                    }
+                    override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                        println(errorDetails)
+                    }
+                    override fun notImplemented() {
+                        println("not implememted")
+                    }
+                }
+        )
+    }
     fun verifyStoragePermissions(activity: Activity?) {
         // Check if we have write permission
         val permission: Int = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
