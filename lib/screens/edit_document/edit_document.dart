@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:image_scanner/blocs/global/bloc.dart';
 import 'package:image_scanner/blocs/global/event.dart';
+import 'package:image_scanner/services/foreground_service.dart';
 import 'package:image_scanner/theme/style.dart';
 
 class EditDoc extends StatefulWidget {
@@ -67,17 +68,22 @@ class _EditDocState extends State<EditDoc> {
   }
 
   Future<void> _shareImage(doc, name) async {
-    try {
-      var path = doc[_currentPage];
-      var splitedPath = path.split(".");
-      var docType = splitedPath[splitedPath.length - 1];
-      final ByteData bytes = await rootBundle.load(path);
-      await Share.file('Pdf genegerated by image scanner', '$name.$docType',
-          bytes.buffer.asUint8List(), '*/*',
-          text: 'Pdf genegerated by image scanner');
-    } catch (e) {
-      print('error: $e');
-    }
+    var data={
+      "path":doc[_currentPage]["path"],
+      "type":"image/*"
+    };
+    ForegroundService.start("shareFile", data);
+    // try {
+    //   var dict = doc[_currentPage];
+    //   var splitedPath = dict["path"].split(".");
+    //   var docType = splitedPath[splitedPath.length - 1];
+    //   final ByteData bytes = await rootBundle.load(dict["path"]);
+    //   await Share.file('Pdf genegerated by image scanner', '$name.$docType',
+    //       bytes.buffer.asUint8List(), '*/*',
+    //       text: 'Pdf genegerated by image scanner');
+    // } catch (e) {
+    //   print('error: $e');
+    // }
   }
 
   @override

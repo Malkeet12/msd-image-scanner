@@ -139,16 +139,16 @@ class MainActivity : FlutterActivity() {
                             refreshUI()
                             result.success(true)
                         }
-                        "shareAsPdf" -> {
-//                            val root = Environment.getExternalStorageDirectory().absolutePath
-//                            val dest = "$root/ImageScanner/jj.pdf"
-                            shareAsPdf("${call.arguments}")
+                        "shareFile" -> {
+                            val path = call.argument<String>("path")
+                            val type = call.argument<String>("type")
+                            shareFile("$path", "$type")
                         }
                     }
                 }
     }
 
-    private fun shareAsPdf(filePath: String) {
+    private fun shareFile(filePath: String,type:String) {
         val builder = VmPolicy.Builder()
         StrictMode.setVmPolicy(builder.build())
         val outputFile = File(filePath)
@@ -156,17 +156,14 @@ class MainActivity : FlutterActivity() {
 
         val share = Intent()
         share.setClipData(ClipData.newRawUri("", uri))
-        val root = Environment.getExternalStorageDirectory().absolutePath
-        val dest = "\$root/ImageScanner/"
+
         share.putExtra(MediaStore.EXTRA_OUTPUT, uri)
         share.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
         share.action = Intent.ACTION_SEND
-        share.type = "application/pdf"
+//        share.type = "application/pdf"
+        share.type=type
         share.putExtra(Intent.EXTRA_STREAM, uri)
         startActivity(Intent.createChooser(share, "Share"));
-//        share.setPackage("com.whatsapp")
-
-//        activity.startActivity(share)
     }
 
     private fun deleteFile(documentName: String, fileName: String): Boolean {

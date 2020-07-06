@@ -1,8 +1,6 @@
 import 'dart:io';
 
-import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:image_scanner/services/foreground_service.dart';
 import 'package:image_scanner/shared_widgets/my_pdf_view.dart';
 import 'package:image_scanner/theme/style.dart';
@@ -81,12 +79,10 @@ class _PdfViewerState extends State<PdfViewer> {
     ));
   }
 
-  shareAsPdf() async {
-    ForegroundService.start("shareAsPdf", fullPath);
-    // final ByteData bytes = await rootBundle.load(fullPath);
-    // await Share.file('File shared by image scanner',
-    //     'Image scanner document.pdf', bytes.buffer.asUint8List(), 'text/csv',
-    //     text: 'File shared by image scanner.');
+  shareFile() async {
+    var result = await ForegroundService.start("saveAsPdf", fullPath);
+    var data = {"path": result, "type": "application/pdf"};
+    ForegroundService.start("shareFile", data);
   }
 
   @override
@@ -105,7 +101,7 @@ class _PdfViewerState extends State<PdfViewer> {
           ),
           IconButton(
             icon: Icon(Icons.share),
-            onPressed: () => shareAsPdf(),
+            onPressed: () => shareFile(),
           ),
         ],
       ),
