@@ -39,7 +39,15 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
 
     @Override
     public void onBackPressed() {
-        finish();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Intent data = new Intent();
+                data.putExtra(ScanConstants.SCANNED_RESULT, "");
+                setResult(Activity.RESULT_CANCELED, data);
+                finish();
+            }
+        });
 
     }
 
