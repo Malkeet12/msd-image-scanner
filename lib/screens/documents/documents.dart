@@ -260,10 +260,10 @@ class MyGridView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Image(
-                          height: 28,
-                          image: AssetImage("assets/images/pdf.png"),
-                        ),
+                        // Image(
+                        //   height: 28,
+                        //   image: AssetImage("assets/images/pdf.png"),
+                        // ),
                         SizedBox(
                           width: 8,
                         ),

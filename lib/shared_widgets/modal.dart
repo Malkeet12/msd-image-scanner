@@ -17,7 +17,8 @@ class Modal {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              _createTile(context, name, Icons.folder, null),
+              _createTile(context, name, Icons.picture_as_pdf, null,
+                  showIcon: true, iconColor: Colors.red),
               SizedBox(
                 height: 12,
               ),
@@ -26,9 +27,11 @@ class Modal {
                 height: 5,
               ),
               _createTile(
-                  context, 'Rename', Icons.edit, () => _rename(context, name)),
+                  context, 'Rename', Icons.edit, () => _rename(context, name),
+                  showIcon: true, iconColor: Colors.green),
               _createTile(context, 'Delete', Icons.delete_forever,
-                  () => _deleteFolder(context, name)),
+                  () => _deleteFolder(context, name),
+                  showIcon: true, iconColor: Colors.red),
               SizedBox(
                 height: 12,
               ),
@@ -38,14 +41,15 @@ class Modal {
   }
 
   ListTile _createTile(
-      BuildContext context, String name, IconData icon, Function action) {
-    var colors = Constants.MY_COLORS;
-    var uid = CommonUtil.getRandomNumber(5);
+      BuildContext context, String name, IconData icon, Function action,
+      {bool showIcon = true, Color iconColor = Colors.green}) {
     return ListTile(
-      leading: Icon(
-        icon,
-        color: colors[uid],
-      ),
+      leading: showIcon == true
+          ? Icon(
+              icon,
+              color: iconColor,
+            )
+          : SizedBox(),
       title: Text(name),
       onTap: () {
         Navigator.pop(context);
