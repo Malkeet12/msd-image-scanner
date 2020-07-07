@@ -256,6 +256,7 @@ class MainActivity : FlutterActivity() {
         val root = Environment.getExternalStorageDirectory().absolutePath
         val folder = File("$root/ImageScanner/")
         folder.mkdirs()
+        if(folder.listFiles()==null) return ArrayList()
         val directoryListing: Array<File> = folder.listFiles()
         val list: MutableList<JSONObject> = ArrayList()
 //        val list: List<String> = MutableList()
