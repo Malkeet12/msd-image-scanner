@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ public class ResultFragment extends Fragment {
     private View view;
     private ImageView scannedImageView;
     private Button doneButton;
+    private Button rotateButton;
     private Bitmap original;
     private Button originalButton;
     private Button MagicColorButton;
@@ -47,6 +49,8 @@ public class ResultFragment extends Fragment {
         scannedImageView = (ImageView) view.findViewById(R.id.scannedImage);
         originalButton = (Button) view.findViewById(R.id.original);
         originalButton.setOnClickListener(new OriginalButtonClickListener());
+        rotateButton = (Button) view.findViewById(R.id.rotateButton);
+        rotateButton.setOnClickListener(new RotateButtonClickListener());
         MagicColorButton = (Button) view.findViewById(R.id.magicColor);
         MagicColorButton.setOnClickListener(new MagicColorButtonClickListener());
         grayModeButton = (Button) view.findViewById(R.id.grayMode);
@@ -83,7 +87,7 @@ public class ResultFragment extends Fragment {
     private class DoneButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            showProgressDialog(getResources().getString(R.string.loading));
+//            showProgressDialog(getResources().getString(R.string.loading));
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -116,7 +120,7 @@ public class ResultFragment extends Fragment {
     private class BWButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(final View v) {
-            showProgressDialog(getResources().getString(R.string.applying_filter));
+//            showProgressDialog(getResources().getString(R.string.applying_filter));
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -149,7 +153,7 @@ public class ResultFragment extends Fragment {
     private class MagicColorButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(final View v) {
-            showProgressDialog(getResources().getString(R.string.applying_filter));
+//            showProgressDialog(getResources().getString(R.string.applying_filter));
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -178,12 +182,49 @@ public class ResultFragment extends Fragment {
             });
         }
     }
+    private class RotateButtonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(final View v) {
+            showProgressDialog(getResources().getString(R.string.applying_filter));
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+//                        showProgressDialog(getResources().getString(R.string.applying_filter));
+                        Matrix matrix = new Matrix();
+                        matrix.postRotate(90);
+                        Bitmap rotatedBitmap = Bitmap.createBitmap(original, 0, 0, original.getWidth(), original.getHeight(), matrix, true);
+                        transformed = rotatedBitmap;
+                        original = rotatedBitmap;
+                    } catch (final OutOfMemoryError e) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                transformed = original;
+                                scannedImageView.setImageBitmap(original);
+                                e.printStackTrace();
+                                dismissDialog();
+                                onClick(v);
+                            }
+                        });
+                    }
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            scannedImageView.setImageBitmap(transformed);
+                            dismissDialog();
+                        }
+                    });
+                }
+            });
+        }
 
+    }
     private class OriginalButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
             try {
-                showProgressDialog(getResources().getString(R.string.applying_filter));
+//                showProgressDialog(getResources().getString(R.string.applying_filter));
                 transformed = original;
                 scannedImageView.setImageBitmap(original);
                 dismissDialog();
@@ -197,7 +238,7 @@ public class ResultFragment extends Fragment {
     private class GrayButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(final View v) {
-            showProgressDialog(getResources().getString(R.string.applying_filter));
+//            showProgressDialog(getResources().getString(R.string.applying_filter));
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
