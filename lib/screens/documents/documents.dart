@@ -89,9 +89,9 @@ class _DocumentsState extends State<Documents> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Icon(
-                    Icons.folder,
-                    color: CommonUtil.getRandomColor(),
+                  Image(
+                    height: 32,
+                    image: AssetImage("assets/images/pdf.png"),
                   ),
                   SizedBox(
                     width: 12,
@@ -260,9 +260,9 @@ class MyGridView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Icon(
-                          Icons.folder,
-                          color: CommonUtil.getRandomColor(),
+                        Image(
+                          height: 28,
+                          image: AssetImage("assets/images/pdf.png"),
                         ),
                         SizedBox(
                           width: 8,
