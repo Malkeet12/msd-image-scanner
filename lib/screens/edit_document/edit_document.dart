@@ -68,9 +68,9 @@ class _EditDocState extends State<EditDoc> {
   }
 
   Future<void> _shareImage(doc, name) async {
-    var data={
-      "path":doc[_currentPage]["path"],
-      "type":"image/*"
+    var data = {
+      "str": doc[_currentPage]["path"],
+      "type": "image/*",
     };
     ForegroundService.start("shareFile", data);
     // try {

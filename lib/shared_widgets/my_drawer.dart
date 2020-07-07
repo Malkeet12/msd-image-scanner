@@ -65,21 +65,28 @@ class _MyDrawerState extends State<MyDrawer> {
     );
   }
 
+  shareWithFirends() {
+    var myText =
+        """I am using Image Scanner App to scan my documents and share them as pdf. Install now to support indian products
+        
+        https://play.google.com/store/apps/details?id=msd.image_scanner """;
+
+    var data = {"str": myText, "type": "text/plain"};
+    ForegroundService.start("shareFile", data);
+  }
+
+  contactDeveloper() {
+    ForegroundService.start('sendEmail', '');
+  }
+
   @override
   Widget build(BuildContext context) {
-    var colors = Constants.MY_COLORS;
-    var uid = CommonUtil.getRandomNumber(5);
     return SafeArea(
         child: Container(
       width: 282.0,
       child: Drawer(
-        // Add a ListView to the drawer. This ensures the user can scroll
-        // through the options in the drawer if there isn't enough vertical
-        // space to fit everything.
         child: Container(
-          // color: Colors.white60,
           child: ListView(
-            // Important: Remove any padding from the ListView.
             padding: EdgeInsets.zero,
             children: <Widget>[
               Container(
@@ -93,23 +100,37 @@ class _MyDrawerState extends State<MyDrawer> {
                         .h2
                         .copyWith(color: ColorShades.textPrimaryDark),
                   ),
-                  decoration: BoxDecoration(
-                      // color: Colors.white60,
-                      ),
                 ),
               ),
-              // SizedBox(
-              //   height: 24,
-              // ),
               listItem(
                 context,
                 false,
                 Icon(
                   Icons.folder,
-                  color: colors[uid],
+                  color: Colors.lightBlue,
                 ),
                 "All Documents",
                 () => allDocuments(),
+              ),
+              listItem(
+                context,
+                false,
+                Icon(
+                  Icons.share,
+                  color: Colors.lightBlue,
+                ),
+                "Share with your friends",
+                () => shareWithFirends(),
+              ),
+              listItem(
+                context,
+                false,
+                Icon(
+                  Icons.contact_mail,
+                  color: Colors.lightBlue,
+                ),
+                "Contact developer",
+                () => contactDeveloper(),
               ),
               // Padding(
               //   padding: const EdgeInsets.only(
@@ -146,7 +167,7 @@ class _MyDrawerState extends State<MyDrawer> {
               //   false,
               //   Icon(
               //     Icons.image,
-              //     color: colors[uid + 2],
+              //     color: Colors.lightBlue,
               //   ),
               //   "Pick From Gallery",
               //   () => uploadImage(),
@@ -162,7 +183,6 @@ class _MyDrawerState extends State<MyDrawer> {
                   softWrap: true,
                   style: Theme.of(context).textTheme.body2Medium.copyWith(
                         color: Colors.green,
-                        // fontFamily: 'Rounded Mplus 1c',
                         fontSize: 16.0,
                         fontWeight: FontWeight.bold,
                       ),
@@ -173,7 +193,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 true,
                 Icon(
                   Icons.cloud,
-                  color: colors[uid + 2],
+                  color: Colors.lightBlue,
                 ),
                 "Save files to cloud",
                 () => uploadImage(),
@@ -183,7 +203,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 true,
                 Icon(
                   Icons.find_in_page,
-                  color: colors[uid + 2],
+                  color: Colors.lightBlue,
                 ),
                 "Copy text from image",
                 () => uploadImage(),
@@ -214,7 +234,6 @@ InkWell listItem(
             color: disabled == true
                 ? ColorShades.textSecGray2
                 : ColorShades.textSecGray3,
-            fontFamily: 'Rounded Mplus 1c',
             fontSize: 16.0,
             fontWeight: FontWeight.bold),
       ),

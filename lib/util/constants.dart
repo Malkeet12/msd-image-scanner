@@ -6,7 +6,6 @@ class Constants {
     Colors.pinkAccent,
     Colors.lightGreenAccent,
     Colors.lightBlue,
-    Colors.amberAccent,
     Colors.redAccent,
     Colors.greenAccent,
     Colors.tealAccent,

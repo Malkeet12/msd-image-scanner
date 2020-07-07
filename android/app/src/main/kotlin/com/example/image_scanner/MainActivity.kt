@@ -9,7 +9,6 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
-import android.os.Bundle
 import android.os.Environment
 import android.os.StrictMode
 import android.os.StrictMode.VmPolicy
@@ -28,9 +27,6 @@ import java.io.*
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.ArrayList
 
 class MainActivity : FlutterActivity() {
     companion object {
@@ -141,9 +137,15 @@ class MainActivity : FlutterActivity() {
                             result.success(true)
                         }
                         "shareFile" -> {
-                            val path = call.argument<String>("path")
+                            val path = call.argument<String>("str")
                             val type = call.argument<String>("type")
                             shareFile("$path", "$type")
+                        }
+                        "sendEmail"->{
+                            val emailIntent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:12malkeet@gmail.com"))
+                            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Image scanner")
+                            emailIntent.putExtra(Intent.EXTRA_TEXT, "")
+                            startActivity(Intent.createChooser(emailIntent, "Chooser Title"))
                         }
 //                        "capture" -> {
 //                            openCamera();
@@ -152,68 +154,26 @@ class MainActivity : FlutterActivity() {
                 }
     }
 
-    // fun openCamera() {
-    //     val builder = VmPolicy.Builder()
-    //     StrictMode.setVmPolicy(builder.build())
-    //     val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-    //     val file = createImageFile()
-    //     val isDirectoryCreated = file.parentFile.mkdirs()
-    //     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-    //         val tempFileUri1 = Uri.fromFile(file)
-    //         cameraIntent.clipData = ClipData.newRawUri("", tempFileUri1)
-    //         val root = Environment.getExternalStorageDirectory().absolutePath
-    //         val dest = "\$root/ImageScanner/"
-    //         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempFileUri1)
-    //         cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
-    //         val packageName = "msd.image_scanner"
-    //         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempFileUri1)
-    //     } else {
-    //         val tempFileUri = Uri.fromFile(file)
-    //         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempFileUri)
-    //     }
-    //     startActivityForResult(cameraIntent, ScanConstants.START_CAMERA_REQUEST_CODE)
 
-    // }
-
-    // private fun createImageFile(): File {
-    //     clearTempImages()
-    //     val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-    //     val file = File(ScanConstants.IMAGE_PATH, "IMG_" + timeStamp +
-    //             ".jpg")
-    //     fileUri = Uri.fromFile(file)
-    //     return file
-    // }
-
-    // private fun clearTempImages() {
-    //     try {
-    //         val tempFolder = File(ScanConstants.IMAGE_PATH)
-    //         for (f in tempFolder.listFiles()) f.delete()
-    //     } catch (e: java.lang.Exception) {
-    //         e.printStackTrace()
-    //     }
-    // }
-
-    private fun shareFile(filePath: String, type: String) {
+    private fun shareFile(str: String, type: String) {
         val builder = VmPolicy.Builder()
         StrictMode.setVmPolicy(builder.build())
-        val outputFile = File(filePath)
-        val uri = Uri.fromFile(outputFile)
-
         val share = Intent()
-        share.setClipData(ClipData.newRawUri("", uri))
-
-        share.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-        share.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
         share.action = Intent.ACTION_SEND
-//        share.type = "application/pdf"
         share.type = type
-        share.putExtra(Intent.EXTRA_STREAM, uri)
+        if(type!="text/plain"){
+            val outputFile = File(str)
+            var uri = Uri.fromFile(outputFile)
+            share.setClipData(ClipData.newRawUri("", uri))
+            share.putExtra(Intent.EXTRA_STREAM, uri)
+        }else{
+            share.putExtra(Intent.EXTRA_TEXT, str);
+        }
         startActivity(Intent.createChooser(share, "Share"));
     }
 
     private fun deleteFile(documentName: String, fileName: String): Boolean {
         val root = Environment.getExternalStorageDirectory().absolutePath
-        var dir = filesDir
         var file = File("$root/ImageScanner/$documentName", "$fileName")
         return file.delete()
     }
@@ -256,7 +216,7 @@ class MainActivity : FlutterActivity() {
         val root = Environment.getExternalStorageDirectory().absolutePath
         val folder = File("$root/ImageScanner/")
         folder.mkdirs()
-        if(folder.listFiles()==null) return ArrayList()
+        if (folder.listFiles() == null) return ArrayList()
         val directoryListing: Array<File> = folder.listFiles()
         val list: MutableList<JSONObject> = ArrayList()
 //        val list: List<String> = MutableList()

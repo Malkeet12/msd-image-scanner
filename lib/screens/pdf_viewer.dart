@@ -81,7 +81,7 @@ class _PdfViewerState extends State<PdfViewer> {
 
   shareFile() async {
     var result = await ForegroundService.start("saveAsPdf", fullPath);
-    var data = {"path": result, "type": "application/pdf"};
+    var data = {"str": result, "type": "application/pdf"};
     ForegroundService.start("shareFile", data);
   }
 
