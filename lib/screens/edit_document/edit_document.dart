@@ -131,7 +131,6 @@ class _EditDocState extends State<EditDoc> {
                       // width: MediaQuery.of(context).size.width,
                       viewportFraction: 1,
                       initialPage: widget.carouselInitialPage,
-                      enableInfiniteScroll: true,
                       onPageChanged: (index, reason) {
                         setState(() {
                           _currentPage = index;
