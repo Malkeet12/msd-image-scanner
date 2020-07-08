@@ -78,7 +78,6 @@
 
         <Button
             android:id="@+id/doneButton"
-            style="@android:style/Widget.Button"
             android:layout_height="match_parent"
             android:layout_alignEnd="@id/topBar"
             android:layout_alignParentBottom="true"
@@ -95,13 +94,15 @@
 
 
     </LinearLayout>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/doneButton"
         android:layout_below="@id/topBar"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/scanPadding">
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="70dp">
 
         <ImageView
             android:id="@+id/scannedImage"

@@ -130,6 +130,7 @@ class _EditDocState extends State<EditDoc> {
                       height: MediaQuery.of(context).size.height,
                       // width: MediaQuery.of(context).size.width,
                       viewportFraction: 1,
+                      enableInfiniteScroll: false,
                       initialPage: widget.carouselInitialPage,
                       onPageChanged: (index, reason) {
                         setState(() {
@@ -151,7 +152,7 @@ class _EditDocState extends State<EditDoc> {
                                           File(
                                             item["path"],
                                           ),
-                                          fit: BoxFit.fill,
+                                          fit: BoxFit.contain,
                                         ),
                                       ),
                                       Container(
