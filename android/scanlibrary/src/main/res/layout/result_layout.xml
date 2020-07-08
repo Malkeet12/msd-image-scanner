@@ -18,9 +18,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:drawableTop="@drawable/original"
+            android:drawableTop="@drawable/picture1"
             android:text="Original"
-            android:textColor="@android:color/holo_blue_bright" />
+            android:textColor="@android:color/holo_blue_dark" />
 
         <Button
             android:id="@+id/magicColor"
@@ -28,10 +28,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:drawableTop="@drawable/magic_color"
+            android:drawableTop="@drawable/camera1"
             android:singleLine="true"
             android:text="Magic color"
-            android:textColor="#EA7753" />
+            android:textColor="@android:color/holo_blue_dark" />
 
         <Button
             android:id="@+id/grayMode"
@@ -39,10 +39,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:drawableTop="@drawable/cloud"
+            android:drawableTop="@drawable/cloud1"
             android:singleLine="true"
             android:text="Gray Mode"
-            android:textColor="@android:color/darker_gray" />
+            android:textColor="@android:color/holo_blue_dark" />
 
         <Button
             android:id="@+id/BWMode"
@@ -50,10 +50,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:drawableTop="@drawable/ic_black_and_white"
+            android:drawableTop="@drawable/black_and_white"
             android:singleLine="true"
             android:text="B and W"
-            android:textColor="@android:color/background_light" />
+            android:textColor="@android:color/holo_blue_dark" />
 
     </LinearLayout>
 
@@ -66,7 +66,7 @@
         android:orientation="horizontal"
         android:padding="0dp">
 
-        <Button
+        <!-- <Button
             android:id="@+id/rotateButton"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -74,7 +74,7 @@
             android:background="#3B5998"
             android:layoutDirection="ltr"
             android:text="Rotate"
-            android:textColor="@android:color/primary_text_dark" />
+            android:textColor="@android:color/primary_text_dark" /> -->
 
         <Button
             android:id="@+id/doneButton"
