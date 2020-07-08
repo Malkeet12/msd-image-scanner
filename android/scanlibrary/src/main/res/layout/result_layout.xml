@@ -11,15 +11,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical">
 
-        <Button
-            android:id="@+id/rotateButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:drawableTop="@drawable/ic_image"
-            android:text="Rotate"
-            android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/original"
@@ -27,9 +18,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:drawableTop="@drawable/ic_image"
+            android:drawableTop="@drawable/original"
             android:text="Original"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/holo_blue_bright" />
 
         <Button
             android:id="@+id/magicColor"
@@ -37,10 +28,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:drawableTop="@drawable/ic_enhamce_image"
+            android:drawableTop="@drawable/magic_color"
             android:singleLine="true"
             android:text="Magic color"
-            android:textColor="@android:color/white" />
+            android:textColor="#EA7753" />
 
         <Button
             android:id="@+id/grayMode"
@@ -48,10 +39,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:drawableTop="@drawable/ic_gray"
+            android:drawableTop="@drawable/cloud"
             android:singleLine="true"
             android:text="Gray Mode"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/darker_gray" />
 
         <Button
             android:id="@+id/BWMode"
@@ -62,7 +53,17 @@
             android:drawableTop="@drawable/ic_black_and_white"
             android:singleLine="true"
             android:text="B and W"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/background_light" />
+
+        <Button
+            android:id="@+id/rotateButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:drawableTop="@drawable/rotate"
+            android:text="Rotate"
+            android:textColor="@android:color/holo_green_dark" />
     </LinearLayout>
 
 

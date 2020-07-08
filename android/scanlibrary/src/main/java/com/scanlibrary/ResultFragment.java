@@ -87,7 +87,7 @@ public class ResultFragment extends Fragment {
     private class DoneButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-//            showProgressDialog(getResources().getString(R.string.loading));
+           showProgressDialog(getResources().getString(R.string.loading));
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -105,7 +105,7 @@ public class ResultFragment extends Fragment {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                dismissDialog();
+                               dismissDialog();
                                 getActivity().finish();
                             }
                         });
@@ -133,7 +133,7 @@ public class ResultFragment extends Fragment {
                                 transformed = original;
                                 scannedImageView.setImageBitmap(original);
                                 e.printStackTrace();
-                                dismissDialog();
+                                // dismissDialog();
                                 onClick(v);
                             }
                         });
@@ -142,7 +142,7 @@ public class ResultFragment extends Fragment {
                         @Override
                         public void run() {
                             scannedImageView.setImageBitmap(transformed);
-                            dismissDialog();
+                            // dismissDialog();
                         }
                     });
                 }
@@ -166,7 +166,7 @@ public class ResultFragment extends Fragment {
                                 transformed = original;
                                 scannedImageView.setImageBitmap(original);
                                 e.printStackTrace();
-                                dismissDialog();
+                                // dismissDialog();
                                 onClick(v);
                             }
                         });
@@ -175,7 +175,7 @@ public class ResultFragment extends Fragment {
                         @Override
                         public void run() {
                             scannedImageView.setImageBitmap(transformed);
-                            dismissDialog();
+                            // dismissDialog();
                         }
                     });
                 }
@@ -185,7 +185,7 @@ public class ResultFragment extends Fragment {
     private class RotateButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(final View v) {
-            showProgressDialog(getResources().getString(R.string.applying_filter));
+            // showProgressDialog(getResources().getString(R.string.applying_filter));
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -203,7 +203,7 @@ public class ResultFragment extends Fragment {
                                 transformed = original;
                                 scannedImageView.setImageBitmap(original);
                                 e.printStackTrace();
-                                dismissDialog();
+                                // dismissDialog();
                                 onClick(v);
                             }
                         });
@@ -212,7 +212,7 @@ public class ResultFragment extends Fragment {
                         @Override
                         public void run() {
                             scannedImageView.setImageBitmap(transformed);
-                            dismissDialog();
+                            // dismissDialog();
                         }
                     });
                 }
@@ -227,10 +227,10 @@ public class ResultFragment extends Fragment {
 //                showProgressDialog(getResources().getString(R.string.applying_filter));
                 transformed = original;
                 scannedImageView.setImageBitmap(original);
-                dismissDialog();
+                // dismissDialog();
             } catch (OutOfMemoryError e) {
                 e.printStackTrace();
-                dismissDialog();
+                // dismissDialog();
             }
         }
     }
@@ -251,7 +251,7 @@ public class ResultFragment extends Fragment {
                                 transformed = original;
                                 scannedImageView.setImageBitmap(original);
                                 e.printStackTrace();
-                                dismissDialog();
+                                // dismissDialog();
                                 onClick(v);
                             }
                         });
@@ -260,7 +260,7 @@ public class ResultFragment extends Fragment {
                         @Override
                         public void run() {
                             scannedImageView.setImageBitmap(transformed);
-                            dismissDialog();
+                            // dismissDialog();
                         }
                     });
                 }
