@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:image_scanner/blocs/global/bloc.dart';
