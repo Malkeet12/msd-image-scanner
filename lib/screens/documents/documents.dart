@@ -83,7 +83,7 @@ class _DocumentsState extends State<Documents> {
         },
         child: Container(
           color: ColorShades.textColorOffWhite,
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: EdgeInsets.fromLTRB(16, 8, 0, 8),
           child: Column(
             children: <Widget>[
               Row(
@@ -124,7 +124,8 @@ class _DocumentsState extends State<Documents> {
                     behavior: HitTestBehavior.translucent,
                     onTap: () => openBottomSheet(context, name),
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 8.0, right: 12.0),
+                      padding:
+                          const EdgeInsets.fromLTRB(12.0, 12.0, 24.0, 12.0),
                       child: Icon(
                         Icons.more_vert,
                         color: Colors.black,
