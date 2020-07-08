@@ -59,8 +59,6 @@ class _PdfViewerState extends State<PdfViewer> {
       final pdf = pw.Document();
       writeOnPdf(pdf, images);
       Directory documentDirectory = await getApplicationDocumentsDirectory();
-      Directory tempDir = await getTemporaryDirectory();
-      String tempPath = tempDir.path;
       String documentPath = documentDirectory.path;
       fullPath = "$documentPath/${widget.name}.pdf";
       File file = File(fullPath);
