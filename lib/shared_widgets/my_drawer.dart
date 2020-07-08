@@ -73,10 +73,12 @@ class _MyDrawerState extends State<MyDrawer> {
 
     var data = {"str": myText, "type": "text/plain"};
     ForegroundService.start("shareFile", data);
+    Navigator.pop(context);
   }
 
   contactDeveloper() {
     ForegroundService.start('sendEmail', '');
+    Navigator.pop(context);
   }
 
   @override

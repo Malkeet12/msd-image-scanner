@@ -8,6 +8,7 @@ import 'package:image_scanner/blocs/global/event.dart';
 import 'package:image_scanner/screens/document_details.dart';
 import 'package:image_scanner/shared_widgets/img_preview.dart';
 import 'package:image_scanner/shared_widgets/modal.dart';
+import 'package:image_scanner/shared_widgets/my_botom_sheet.dart';
 import 'package:image_scanner/theme/style.dart';
 import 'package:image_scanner/util/common_util.dart';
 import 'package:image_scanner/util/date_formater.dart';
@@ -39,9 +40,19 @@ class _DocumentsState extends State<Documents> {
     });
   }
 
-  openBottomSheet(context, name) async {
-    Modal modal = new Modal();
-    modal.mainBottomSheet(context, name);
+  openBottomSheet(context, name, folderSize) async {
+    await setCurrentDocument(name);
+    var folderSizeReadable = await CommonUtil.formatBytes(folderSize);
+    showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+        context: context,
+        builder: (BuildContext bc) {
+          return MyBottomSheet(
+              name: name, folderSizeReadable: folderSizeReadable);
+        });
+    // Modal modal = new Modal();
+    // modal.mainBottomSheet(context, name);
   }
 
   getUserSelectedView() async {
@@ -68,6 +79,7 @@ class _DocumentsState extends State<Documents> {
     for (var i = docs.length - 1; i >= 0; i--) {
       var doc = docs[i];
       var name = doc["name"];
+      var folderSize = doc["folderSize"];
       var lastUpdated = doc["lastUpdated"];
 
       list.add(GestureDetector(
@@ -122,7 +134,7 @@ class _DocumentsState extends State<Documents> {
                   ),
                   GestureDetector(
                     behavior: HitTestBehavior.translucent,
-                    onTap: () => openBottomSheet(context, name),
+                    onTap: () => openBottomSheet(context, name, folderSize),
                     child: Padding(
                       padding:
                           const EdgeInsets.fromLTRB(12.0, 12.0, 24.0, 12.0),

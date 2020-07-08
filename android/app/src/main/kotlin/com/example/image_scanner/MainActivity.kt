@@ -141,7 +141,13 @@ class MainActivity : FlutterActivity() {
                             val type = call.argument<String>("type")
                             shareFile("$path", "$type")
                         }
-                        "sendEmail"->{
+                        "shareMultipleFiles" -> {
+                            val name = call.arguments
+                            val root = Environment.getExternalStorageDirectory().absolutePath
+                            val folder = File("$root/ImageScanner/$name/")
+                            shareMultipleFiles(folder.listFiles())
+                        }
+                        "sendEmail" -> {
                             val emailIntent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:12malkeet@gmail.com"))
                             emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Image scanner")
                             emailIntent.putExtra(Intent.EXTRA_TEXT, "")
@@ -154,6 +160,26 @@ class MainActivity : FlutterActivity() {
                 }
     }
 
+    private fun shareMultipleFiles(filesToSend: Array<File>) {
+        val builder = VmPolicy.Builder()
+        StrictMode.setVmPolicy(builder.build())
+        val intent = Intent()
+        intent.action = Intent.ACTION_SEND_MULTIPLE
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Here are some files.")
+        intent.type = "image/png"
+
+        val files = ArrayList<Uri>()
+
+        for (file in filesToSend) {
+            val file = File(file.absolutePath)
+            val uri = Uri.fromFile(file)
+            intent.setClipData(ClipData.newRawUri("", uri))
+            files.add(uri)
+        }
+
+        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files)
+        startActivity(intent)
+    }
 
     private fun shareFile(str: String, type: String) {
         val builder = VmPolicy.Builder()
@@ -161,12 +187,12 @@ class MainActivity : FlutterActivity() {
         val share = Intent()
         share.action = Intent.ACTION_SEND
         share.type = type
-        if(type!="text/plain"){
+        if (type != "text/plain") {
             val outputFile = File(str)
             var uri = Uri.fromFile(outputFile)
             share.setClipData(ClipData.newRawUri("", uri))
             share.putExtra(Intent.EXTRA_STREAM, uri)
-        }else{
+        } else {
             share.putExtra(Intent.EXTRA_TEXT, str);
         }
         startActivity(Intent.createChooser(share, "Share"));
@@ -227,6 +253,7 @@ class MainActivity : FlutterActivity() {
                 if (child.isDirectory) {
                     val file = File("${child.absolutePath}")
                     var lastUpdatedTime = getLatestModifiedDate(file)
+                    item.put("folderSize",folderSize(file))
                     item.put("lastUpdated", lastUpdatedTime)
                 }
                 for (file in child.listFiles()) {
@@ -246,7 +273,14 @@ class MainActivity : FlutterActivity() {
         }
         return list
     }
-
+    fun folderSize(directory: File): Long {
+        var length: Long = 0
+        for (file in directory.listFiles()) {
+            length += if (file.isFile) file.length() else folderSize(file)
+        }
+        return length
+    }
+    // return mapOf("length" to length, "lastModifiefDate" to Math.max(latestDate, dir.lastModified()))
     private fun getLatestModifiedDate(dir: File): Long {
         val files = dir.listFiles()
         var latestDate: Long = 0
@@ -258,6 +292,7 @@ class MainActivity : FlutterActivity() {
         }
         return Math.max(latestDate, dir.lastModified())
     }
+
 
     private fun updateGroup(groupId: String): List<String>? {
         val root = Environment.getExternalStorageDirectory().absolutePath
