@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:drawableTop="@drawable/picture1"
+            android:drawableTop="@drawable/original"
             android:text="Original"
             android:textColor="@android:color/holo_blue_dark" />
 
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:drawableTop="@drawable/camera1"
+            android:drawableTop="@drawable/enhanced_image"
             android:singleLine="true"
             android:text="Magic color"
             android:textColor="@android:color/holo_blue_dark" />
@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:drawableTop="@drawable/cloud1"
+            android:drawableTop="@drawable/cloud"
             android:singleLine="true"
             android:text="Gray Mode"
             android:textColor="@android:color/holo_blue_dark" />
