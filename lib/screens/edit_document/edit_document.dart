@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_scanner/blocs/global/bloc.dart';
 import 'package:image_scanner/blocs/global/event.dart';
 import 'package:image_scanner/services/foreground_service.dart';
+import 'package:image_scanner/shared_widgets/zoom.dart';
 import 'package:image_scanner/theme/style.dart';
 
 class EditDoc extends StatefulWidget {
@@ -104,9 +105,12 @@ class _EditDocState extends State<EditDoc> {
                 icon: Icon(Icons.delete_forever),
                 onPressed: () => {_showDialog(images)},
               ),
-              IconButton(
-                icon: Icon(Icons.share),
-                onPressed: () => _shareImage(images, name),
+              Padding(
+                padding: const EdgeInsets.only(right: 12.0),
+                child: IconButton(
+                  icon: Icon(Icons.share),
+                  onPressed: () => _shareImage(images, name),
+                ),
               ),
               // PopupMenuButton<Choice>(
               //   onSelected: (choice) => _select(images, choice),
@@ -148,11 +152,13 @@ class _EditDocState extends State<EditDoc> {
                                   child: Column(
                                     children: <Widget>[
                                       Expanded(
-                                        child: Image.file(
-                                          File(
-                                            item["path"],
+                                        child: ZoomableWidget(
+                                          child: Image.file(
+                                            File(
+                                              item["path"],
+                                            ),
+                                            fit: BoxFit.contain,
                                           ),
-                                          fit: BoxFit.contain,
                                         ),
                                       ),
                                       Container(

@@ -62,16 +62,22 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                 _showDialog(context, name);
               },
             ),
-            IconButton(
-              icon: Icon(Icons.picture_as_pdf),
-              onPressed: () async {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PdfViewer(doc: docs, name: name),
-                  ),
-                );
-              },
+            Padding(
+              padding: const EdgeInsets.only(right: 24.0, left: 4.0),
+              child: IconButton(
+                icon: Icon(
+                  Icons.picture_as_pdf,
+                  size: 32,
+                ),
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PdfViewer(doc: docs, name: name),
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         ),
