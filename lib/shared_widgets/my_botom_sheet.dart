@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_scanner/blocs/global/bloc.dart';
 import 'package:image_scanner/blocs/global/event.dart';
+import 'package:image_scanner/screens/pdf_viewer.dart';
 import 'package:image_scanner/services/foreground_service.dart';
 import 'package:image_scanner/shared_widgets/edit_name_dialog.dart';
 import 'package:image_scanner/theme/style.dart';
@@ -61,14 +62,19 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
 
   ListTile _createTile(
       BuildContext context, String name, IconData icon, Function action,
-      {bool showIcon = true, Color iconColor = Colors.green}) {
+      {bool showIcon = true, Color iconColor = Colors.green, assetPath}) {
     return ListTile(
       leading: showIcon == true
           ? Icon(
               icon,
               color: iconColor,
             )
-          : SizedBox(),
+          : assetPath != null
+              ? Image(
+                  height: 24,
+                  image: AssetImage(assetPath),
+                )
+              : SizedBox(),
       title: Text(name),
       onTap: () {
         Navigator.pop(context);
@@ -210,6 +216,15 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
         });
   }
 
+  viewPdf(docs, name) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PdfViewer(doc: docs, name: name),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GlobalBloc, Map>(builder: (context, currentState) {
@@ -220,7 +235,9 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           _createTile(context, name, Icons.picture_as_pdf, null,
-              showIcon: true, iconColor: Colors.red),
+              showIcon: false,
+              iconColor: Colors.red,
+              assetPath: "assets/images/pdf.png"),
           SizedBox(
             height: 12,
           ),
@@ -228,14 +245,18 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
             color: ColorShades.textSecGray3,
             height: 5,
           ),
-          _createTileWithSecondartText(
-              context,
-              'Share PNG',
-              widget.folderSizeReadable,
-              Icons.picture_as_pdf,
-              () => shareFilesPng(name),
-              showIcon: true,
-              iconColor: Colors.blueAccent),
+          _createTile(
+            context,
+            'View PDF',
+            Icons.picture_as_pdf,
+            () => viewPdf(docs, name),
+            showIcon: false,
+            iconColor: Colors.grey,
+            assetPath: "assets/images/pdf_preview.png",
+          ),
+          _createTileWithSecondartText(context, 'Share PNG',
+              widget.folderSizeReadable, Icons.image, () => shareFilesPng(name),
+              showIcon: true, iconColor: Colors.blueAccent),
           _createTileWithSecondartText(context, 'Share PDF', fileSize,
               Icons.picture_as_pdf, () => shareFileAsPdf(),
               showIcon: true, iconColor: Colors.blueAccent),

@@ -265,7 +265,8 @@ class MyGridView extends StatelessWidget {
                 ),
                 GestureDetector(
                   behavior: HitTestBehavior.translucent,
-                  onTap: () => openBottomSheet(context, docs[index]['name']),
+                  onTap: () => openBottomSheet(
+                      context, docs[index]['name'], docs[index]['folderSize']),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 18.0, vertical: 12.0),
