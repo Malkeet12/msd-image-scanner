@@ -111,7 +111,7 @@ class _MyDrawerState extends State<MyDrawer> {
                                 fontSize: 16.0,
                                 // fontWeight: FontWeight.bold,
                                 height: 24.0 / 16.0)
-                            .copyWith(color: ColorShades.textPrimaryDark),
+                            .copyWith(color: ColorShades.textSecGray3),
                       ),
                     ],
                   ),
