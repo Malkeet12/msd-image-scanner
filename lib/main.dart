@@ -32,7 +32,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: MaterialApp(
-        title: 'Image Scanner',
+        title: 'digipaper',
         // Start the app with the "/" named route. In our case, the app will start
         // on the FirstScreen Widget
         initialRoute: '/',
@@ -100,7 +100,7 @@ class _MyAppState extends State<MyApp> {
         backgroundColor: ColorShades.backgroundColorPrimary,
         centerTitle: true,
         title: Text(
-          'Image scanner',
+          'digipaper',
           style: TextStyle(
             color: ColorShades.textColorOffWhite,
           ),

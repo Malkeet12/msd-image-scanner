@@ -231,50 +231,54 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
       var docs = currentState['doc']['data'];
       var name = currentState['doc']['name'];
       if (name == null) return SizedBox();
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          _createTile(context, name, Icons.picture_as_pdf, null,
-              showIcon: false,
-              iconColor: Colors.red,
-              assetPath: "assets/images/pdf.png"),
-          SizedBox(
-            height: 12,
+      return SingleChildScrollView(
+        child: Container(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              _createTile(context, name, Icons.picture_as_pdf, null,
+                  showIcon: false,
+                  iconColor: Colors.red,
+                  assetPath: "assets/images/pdf.png"),
+              SizedBox(
+                height: 12,
+              ),
+              Divider(
+                color: ColorShades.textSecGray3,
+                height: 5,
+              ),
+              _createTile(
+                context,
+                'View PDF',
+                Icons.picture_as_pdf,
+                () => viewPdf(docs, name),
+                showIcon: true,
+                iconColor: Colors.grey,
+                assetPath: "assets/images/pdf_preview.png",
+              ),
+              _createTileWithSecondartText(
+                  context,
+                  'Share PNG',
+                  widget.folderSizeReadable,
+                  Icons.mobile_screen_share,
+                  () => shareFilesPng(name),
+                  showIcon: true,
+                  iconColor: Colors.blueAccent),
+              _createTileWithSecondartText(context, 'Share PDF', fileSize,
+                  Icons.share, () => shareFileAsPdf(),
+                  showIcon: true, iconColor: Colors.blueAccent),
+              _createTile(
+                  context, 'Rename', Icons.edit, () => _rename(context, name),
+                  showIcon: true, iconColor: Colors.green),
+              _createTile(context, 'Delete', Icons.delete_forever,
+                  () => _deleteFolder(context, name),
+                  showIcon: true, iconColor: Colors.red),
+              SizedBox(
+                height: 12,
+              ),
+            ],
           ),
-          Divider(
-            color: ColorShades.textSecGray3,
-            height: 5,
-          ),
-          _createTile(
-            context,
-            'View PDF',
-            Icons.picture_as_pdf,
-            () => viewPdf(docs, name),
-            showIcon: true,
-            iconColor: Colors.grey,
-            assetPath: "assets/images/pdf_preview.png",
-          ),
-          _createTileWithSecondartText(
-              context,
-              'Share PNG',
-              widget.folderSizeReadable,
-              Icons.mobile_screen_share,
-              () => shareFilesPng(name),
-              showIcon: true,
-              iconColor: Colors.blueAccent),
-          _createTileWithSecondartText(context, 'Share PDF', fileSize,
-              Icons.share, () => shareFileAsPdf(),
-              showIcon: true, iconColor: Colors.blueAccent),
-          _createTile(
-              context, 'Rename', Icons.edit, () => _rename(context, name),
-              showIcon: true, iconColor: Colors.green),
-          _createTile(context, 'Delete', Icons.delete_forever,
-              () => _deleteFolder(context, name),
-              showIcon: true, iconColor: Colors.red),
-          SizedBox(
-            height: 12,
-          ),
-        ],
+        ),
       );
     });
   }

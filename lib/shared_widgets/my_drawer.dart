@@ -10,6 +10,7 @@ import 'package:image_scanner/theme/style.dart';
 import 'package:image_scanner/util/analytics_service.dart';
 import 'package:image_scanner/util/common_util.dart';
 import 'package:image_scanner/util/constants.dart';
+import 'package:image_scanner/util/share_app.dart';
 
 class MyDrawer extends StatefulWidget {
   static String className = 'MyDrawer';
@@ -21,12 +22,12 @@ class MyDrawer extends StatefulWidget {
 class _MyDrawerState extends State<MyDrawer> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   capureImage() async {
-    AnalyticsService().sendEvent(
-      name: 'capture_image_click',
-    );
-    ForegroundService.start('camera', '');
-    ForegroundService.registerCallBack("saveImage", handleImageBitMap);
-    Navigator.pop(context);
+    // AnalyticsService().sendEvent(
+    //   name: 'capture_image_click',
+    // );
+    // ForegroundService.start('camera', '');
+    // ForegroundService.registerCallBack("saveImage", handleImageBitMap);
+    // Navigator.pop(context);
     // Obtain a list of the available cameras on the device.
 //     final cameras = await availableCameras();
 
@@ -66,10 +67,7 @@ class _MyDrawerState extends State<MyDrawer> {
   }
 
   shareWithFirends() {
-    var myText =
-        """I am using digipaper app to scan my documents and share them as pdf. Install now to support indian products
-        
-        https://play.google.com/store/apps/details?id=msd.image_scanner """;
+    var myText = ShareApp.message();
 
     var data = {"str": myText, "type": "text/plain"};
     ForegroundService.start("shareFile", data);
@@ -246,7 +244,9 @@ InkWell listItem(
     Expanded(
       child: Text(
         text,
-        softWrap: true,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        // softWrap: true,
         style: Theme.of(context).textTheme.h4.copyWith(
             color: disabled == true
                 ? ColorShades.textSecGray2

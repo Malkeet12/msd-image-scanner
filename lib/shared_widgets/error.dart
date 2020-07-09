@@ -20,7 +20,7 @@ class ErrorScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Text(
-              "Camera and storage access are needed to use Image scanner",
+              "Camera and storage access are needed to use digipaper",
               style: Theme.of(context).textTheme.h4.copyWith(
                     color: ColorShades.textColorOffWhite,
                   ),

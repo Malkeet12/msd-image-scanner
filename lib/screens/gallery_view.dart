@@ -107,7 +107,7 @@ class _GalleryViewState extends State<GalleryView> {
         drawer: MyDrawer(),
         backgroundColor: ColorShades.backgroundColorPrimary,
         appBar: MyAppBar(
-            text: 'Image scanner',
+            text: 'digipaper',
             onBackTap: () {
               Navigator.pop(context);
             }),

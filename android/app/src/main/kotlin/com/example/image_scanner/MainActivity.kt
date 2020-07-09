@@ -93,10 +93,9 @@ class MainActivity : FlutterActivity() {
                             }
                         }
                         "saveAsPdf" -> {
-                            var path: Path = Paths.get("${call.arguments}")
-                            val fileName: Path = path.fileName
-//                            val f = File("$path")
-                            var src = path.toString().substring(1, path.toString().lastIndexOf("/"))
+                            var file= File("${call.arguments}")
+                            val fileName: String = file.name
+                            var src = file.absolutePath.substring(1, file.absolutePath.lastIndexOf("/"))
                             val root = Environment.getExternalStorageDirectory().absolutePath
                             var dest = "$root/digipaper/"
                             moveFile("$src/", "$fileName", "$dest")
@@ -104,9 +103,9 @@ class MainActivity : FlutterActivity() {
                         }
                         "deleteFile" -> {
                             val documentName = call.argument<String>("documentName")
-                            val fileName = call.argument<String>("fileName")
-                            var path: Path = Paths.get("$fileName")
-                            val name: Path = path.fileName
+                            val filePath = call.argument<String>("filePath")
+                            var file= File(filePath)
+                            var name=file.name
 
                             var success = deleteFile("$documentName", "$name")
                             result.success(success)
@@ -123,11 +122,11 @@ class MainActivity : FlutterActivity() {
                             val currentName = call.argument<String>("currentName")
                             val futureName = call.argument<String>("futureName")
                             val root = Environment.getExternalStorageDirectory().absolutePath
-                            var path = "$root/digipaper/$currentName"
-                            var dest = Paths.get("$root/digipaper/$futureName")
-                            val source = Paths.get("$path")
+                            var currentFile= File("$root/digipaper/$currentName")
+
+                            var destinationFile=File("$root/digipaper/$futureName");
                             try {
-                                Files.move(source, dest)
+                                Files.move(currentFile.toPath(), destinationFile.toPath())
                             } catch (e: FileAlreadyExistsException) {
                                 result.success(false)
                             } catch (e: java.lang.Exception) {
@@ -149,7 +148,7 @@ class MainActivity : FlutterActivity() {
                         }
                         "sendEmail" -> {
                             val emailIntent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:developer@eagertools.com"))
-                            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Image scanner")
+                            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "digipaper")
                             emailIntent.putExtra(Intent.EXTRA_TEXT, "")
                             startActivity(Intent.createChooser(emailIntent, "Chooser Title"))
                         }

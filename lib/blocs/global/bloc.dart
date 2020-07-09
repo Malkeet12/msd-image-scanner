@@ -40,8 +40,9 @@ class GlobalBloc extends Bloc<GlobalEvent, Map> {
       "currentName": event.oldName,
       "futureName": event.name,
     };
-    await ForegroundService.start('renameDocument', data);
-    // add(GetCurrentDocument(id: event.name));
+    var res = await ForegroundService.start('renameDocument', data);
+    // if (res) state['doc']['name'] = event.name;
+    add(GetCurrentDocument(id: event.name));
     // add(FetchAllDocuments());
     yield {...state};
   }
@@ -52,7 +53,7 @@ class GlobalBloc extends Bloc<GlobalEvent, Map> {
   }
 
   Stream<Map> _mapDeleteFileToState(state, event) async* {
-    var data = {"documentName": state['doc']['name'], "fileName": event.file};
+    var data = {"documentName": state['doc']['name'], "filePath": event.file};
     await ForegroundService.start('deleteFile', data);
     add(GetCurrentDocument(id: state['doc']['name']));
     add(FetchAllDocuments());
