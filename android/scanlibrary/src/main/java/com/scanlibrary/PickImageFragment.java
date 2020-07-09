@@ -138,7 +138,7 @@ public class PickImageFragment extends Fragment {
             Uri tempFileUri1 = Uri.fromFile(file);
             cameraIntent.setClipData(ClipData.newRawUri("", tempFileUri1));
             String root = Environment.getExternalStorageDirectory().getAbsolutePath();
-            String dest="$root/ImageScanner/";
+            String dest="$root/digipaper/";
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempFileUri1);
             cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_READ_URI_PERMISSION);
 //            cameraIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);

@@ -98,7 +98,7 @@ class MainActivity : FlutterActivity() {
 //                            val f = File("$path")
                             var src = path.toString().substring(1, path.toString().lastIndexOf("/"))
                             val root = Environment.getExternalStorageDirectory().absolutePath
-                            var dest = "$root/ImageScanner/"
+                            var dest = "$root/digipaper/"
                             moveFile("$src/", "$fileName", "$dest")
                             result.success("$dest$fileName")
                         }
@@ -114,7 +114,7 @@ class MainActivity : FlutterActivity() {
                         "deleteFolder" -> {
                             val documentName = call.arguments as String
                             val root = Environment.getExternalStorageDirectory().absolutePath
-                            var path = "$root/ImageScanner/$documentName"
+                            var path = "$root/digipaper/$documentName"
                             var success = FileUtils.deleteDirectory(File(path));
                             refreshUI()
                             result.success(true)
@@ -123,8 +123,8 @@ class MainActivity : FlutterActivity() {
                             val currentName = call.argument<String>("currentName")
                             val futureName = call.argument<String>("futureName")
                             val root = Environment.getExternalStorageDirectory().absolutePath
-                            var path = "$root/ImageScanner/$currentName"
-                            var dest = Paths.get("$root/ImageScanner/$futureName")
+                            var path = "$root/digipaper/$currentName"
+                            var dest = Paths.get("$root/digipaper/$futureName")
                             val source = Paths.get("$path")
                             try {
                                 Files.move(source, dest)
@@ -144,11 +144,11 @@ class MainActivity : FlutterActivity() {
                         "shareMultipleFiles" -> {
                             val name = call.arguments
                             val root = Environment.getExternalStorageDirectory().absolutePath
-                            val folder = File("$root/ImageScanner/$name/")
+                            val folder = File("$root/digipaper/$name/")
                             shareMultipleFiles(folder.listFiles())
                         }
                         "sendEmail" -> {
-                            val emailIntent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:12malkeet@gmail.com"))
+                            val emailIntent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:developer@eagertools.com"))
                             emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Image scanner")
                             emailIntent.putExtra(Intent.EXTRA_TEXT, "")
                             startActivity(Intent.createChooser(emailIntent, "Chooser Title"))
@@ -200,7 +200,7 @@ class MainActivity : FlutterActivity() {
 
     private fun deleteFile(documentName: String, fileName: String): Boolean {
         val root = Environment.getExternalStorageDirectory().absolutePath
-        var file = File("$root/ImageScanner/$documentName", "$fileName")
+        var file = File("$root/digipaper/$documentName", "$fileName")
         return file.delete()
     }
 
@@ -240,7 +240,7 @@ class MainActivity : FlutterActivity() {
 
     private fun getImages(): MutableList<JSONObject> {
         val root = Environment.getExternalStorageDirectory().absolutePath
-        val folder = File("$root/ImageScanner/")
+        val folder = File("$root/digipaper/")
         folder.mkdirs()
         if (folder.listFiles() == null) return ArrayList()
         val directoryListing: Array<File> = folder.listFiles()
@@ -296,7 +296,7 @@ class MainActivity : FlutterActivity() {
 
     private fun updateGroup(groupId: String): List<String>? {
         val root = Environment.getExternalStorageDirectory().absolutePath
-        val folder = File("$root/ImageScanner/$groupId")
+        val folder = File("$root/digipaper/$groupId")
 //        folder.mkdirs()
         val allFiles: Array<File> = folder.listFiles(object : FilenameFilter {
             override fun accept(dir: File?, name: String): Boolean {
@@ -313,7 +313,7 @@ class MainActivity : FlutterActivity() {
 
     private fun getGroupImages(groupId: String): MutableList<JSONObject> {
         val root = Environment.getExternalStorageDirectory().absolutePath
-        val folder = File("$root/ImageScanner/$groupId")
+        val folder = File("$root/digipaper/$groupId")
 //        folder.mkdirs()
         val allFiles: Array<File> = folder.listFiles(object : FilenameFilter {
             override fun accept(dir: File?, name: String): Boolean {
@@ -335,7 +335,7 @@ class MainActivity : FlutterActivity() {
     private fun SaveImage(finalBitmap: Bitmap) {
         verifyStoragePermissions(this)
         val root = Environment.getExternalStorageDirectory().absolutePath
-        val myDir = File("$root/ImageScanner")
+        val myDir = File("$root/digipaper")
         if (!myDir.exists()) {
             myDir.mkdirs()
         }
@@ -343,9 +343,9 @@ class MainActivity : FlutterActivity() {
         currentFolder = if (currentGroupId != "" && currentGroupId != null) {
             currentGroupId as String
         } else {
-            "ImageScanner${System.currentTimeMillis().toString()}"
+            "digipaper${System.currentTimeMillis().toString()}"
         }
-        val imageGroupDir = File("$root/ImageScanner/$currentFolder")
+        val imageGroupDir = File("$root/digipaper/$currentFolder")
         if (!imageGroupDir.exists()) {
             imageGroupDir.mkdirs()
         }

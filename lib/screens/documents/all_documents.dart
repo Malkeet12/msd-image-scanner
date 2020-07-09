@@ -59,7 +59,7 @@ class _AllDocumentsState extends State<AllDocuments> {
         drawer: MyDrawer(),
         backgroundColor: ColorShades.textColorOffWhite,
         appBar: AppBar(
-          title: Text("All docs"),
+          title: Text("Documents"),
           backgroundColor: Colors.deepOrange,
           centerTitle: true,
         ),
