@@ -95,12 +95,27 @@ class _MyDrawerState extends State<MyDrawer> {
                 height: 100,
                 child: DrawerHeader(
                   padding: EdgeInsets.only(left: 20, top: 30),
-                  child: Text(
-                    'Image Scanner',
-                    style: Theme.of(context)
-                        .textTheme
-                        .h2
-                        .copyWith(color: ColorShades.textPrimaryDark),
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        'digi',
+                        style: TextStyle(
+                                fontSize: 24.0,
+                                fontWeight: FontWeight.bold,
+                                height: 24.0 / 24.0)
+                            .copyWith(
+                          color: Colors.deepOrange,
+                        ),
+                      ),
+                      Text(
+                        'paper',
+                        style: TextStyle(
+                                fontSize: 16.0,
+                                // fontWeight: FontWeight.bold,
+                                height: 24.0 / 16.0)
+                            .copyWith(color: ColorShades.textPrimaryDark),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -108,8 +123,8 @@ class _MyDrawerState extends State<MyDrawer> {
                 context,
                 false,
                 Icon(
-                  Icons.folder,
-                  color: Colors.lightBlue,
+                  Icons.folder_open,
+                  color: Colors.grey,
                 ),
                 "All Documents",
                 () => allDocuments(),
@@ -118,8 +133,8 @@ class _MyDrawerState extends State<MyDrawer> {
                 context,
                 false,
                 Icon(
-                  Icons.share,
-                  color: Colors.lightBlue,
+                  Icons.mobile_screen_share,
+                  color: Colors.grey,
                 ),
                 "Share with your friends",
                 () => shareWithFirends(),
@@ -128,8 +143,8 @@ class _MyDrawerState extends State<MyDrawer> {
                 context,
                 false,
                 Icon(
-                  Icons.contact_mail,
-                  color: Colors.lightBlue,
+                  Icons.alternate_email,
+                  color: Colors.grey,
                 ),
                 "Contact developer",
                 () => contactDeveloper(),
@@ -169,7 +184,7 @@ class _MyDrawerState extends State<MyDrawer> {
               //   false,
               //   Icon(
               //     Icons.image,
-              //     color: Colors.lightBlue,
+              //     color: Colors.grey,
               //   ),
               //   "Pick From Gallery",
               //   () => uploadImage(),
@@ -194,8 +209,8 @@ class _MyDrawerState extends State<MyDrawer> {
                 context,
                 true,
                 Icon(
-                  Icons.cloud,
-                  color: Colors.lightBlue,
+                  Icons.cloud_queue,
+                  color: Colors.grey,
                 ),
                 "Save files to cloud",
                 () => uploadImage(),
@@ -204,8 +219,8 @@ class _MyDrawerState extends State<MyDrawer> {
                 context,
                 true,
                 Icon(
-                  Icons.find_in_page,
-                  color: Colors.lightBlue,
+                  Icons.content_copy,
+                  color: Colors.grey,
                 ),
                 "Copy text from image",
                 () => uploadImage(),

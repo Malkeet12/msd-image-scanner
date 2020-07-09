@@ -39,7 +39,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
     return ListTile(
       leading: Icon(
         icon,
-        color: iconColor,
+        color: Colors.grey,
       ),
       title: Row(
         children: <Widget>[
@@ -67,7 +67,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
       leading: showIcon == true
           ? Icon(
               icon,
-              color: iconColor,
+              color: Colors.grey,
             )
           : assetPath != null
               ? Image(
@@ -250,15 +250,20 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
             'View PDF',
             Icons.picture_as_pdf,
             () => viewPdf(docs, name),
-            showIcon: false,
+            showIcon: true,
             iconColor: Colors.grey,
             assetPath: "assets/images/pdf_preview.png",
           ),
-          _createTileWithSecondartText(context, 'Share PNG',
-              widget.folderSizeReadable, Icons.image, () => shareFilesPng(name),
-              showIcon: true, iconColor: Colors.blueAccent),
+          _createTileWithSecondartText(
+              context,
+              'Share PNG',
+              widget.folderSizeReadable,
+              Icons.mobile_screen_share,
+              () => shareFilesPng(name),
+              showIcon: true,
+              iconColor: Colors.blueAccent),
           _createTileWithSecondartText(context, 'Share PDF', fileSize,
-              Icons.picture_as_pdf, () => shareFileAsPdf(),
+              Icons.share, () => shareFileAsPdf(),
               showIcon: true, iconColor: Colors.blueAccent),
           _createTile(
               context, 'Rename', Icons.edit, () => _rename(context, name),
