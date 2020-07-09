@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_scanner/services/foreground_service.dart';
 import 'package:image_scanner/shared_widgets/my_pdf_view.dart';
 import 'package:image_scanner/theme/style.dart';
+import 'package:image_scanner/util/analytics_service.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -70,6 +71,9 @@ class _PdfViewerState extends State<PdfViewer> {
   }
 
   Future<String> downloadPdf(ctx) async {
+    AnalyticsService().sendEvent(
+      name: 'save_pdf',
+    );
     var result = await ForegroundService.start("saveAsPdf", fullPath);
     _scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text('File saved at $result'),
@@ -78,6 +82,9 @@ class _PdfViewerState extends State<PdfViewer> {
   }
 
   shareFile() async {
+    AnalyticsService().sendEvent(
+      name: 'share_pdf',
+    );
     var result = await ForegroundService.start("saveAsPdf", fullPath);
     var data = {"str": result, "type": "application/pdf"};
     ForegroundService.start("shareFile", data);

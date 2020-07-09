@@ -8,6 +8,7 @@ import 'package:image_scanner/screens/pdf_viewer.dart';
 import 'package:image_scanner/services/foreground_service.dart';
 import 'package:image_scanner/shared_widgets/edit_name_dialog.dart';
 import 'package:image_scanner/theme/style.dart';
+import 'package:image_scanner/util/analytics_service.dart';
 import 'package:image_scanner/util/common_util.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
@@ -114,6 +115,9 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
   }
 
   shareFileAsPdf() async {
+    AnalyticsService().sendEvent(
+      name: 'share_pdf_from_bottom_sheet',
+    );
     if (savedPdfPath != null) {
       var data = {"str": savedPdfPath, "type": "application/pd}f"};
       ForegroundService.start("shareFile", data);
@@ -125,6 +129,9 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
   }
 
   shareFilesPng(name) async {
+    AnalyticsService().sendEvent(
+      name: 'share_png_from_bottom_sheet',
+    );
     ForegroundService.start('shareMultipleFiles', name);
   }
 
@@ -151,13 +158,10 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
     }
   }
 
-  shareFile() async {
-    var result = await ForegroundService.start("saveAsPdf", fullPath);
-    var data = {"str": result, "type": "application/pdf"};
-    ForegroundService.start("shareFile", data);
-  }
-
   _rename(context, name) {
+    AnalyticsService().sendEvent(
+      name: 'rename_from_bottom_sheet',
+    );
     _controller.text = name;
     showDialog(
       context: context,
@@ -169,6 +173,9 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
   }
 
   _deleteFolder(context, name) async {
+    AnalyticsService().sendEvent(
+      name: 'delete_folder_from_bottom_sheet',
+    );
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -217,6 +224,9 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
   }
 
   viewPdf(docs, name) {
+    AnalyticsService().sendEvent(
+      name: 'view_pdf_from_bottom_sheet',
+    );
     Navigator.push(
       context,
       MaterialPageRoute(

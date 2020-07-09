@@ -10,6 +10,7 @@ import 'package:image_scanner/shared_widgets/img_preview.dart';
 import 'package:image_scanner/shared_widgets/modal.dart';
 import 'package:image_scanner/shared_widgets/my_botom_sheet.dart';
 import 'package:image_scanner/theme/style.dart';
+import 'package:image_scanner/util/analytics_service.dart';
 import 'package:image_scanner/util/common_util.dart';
 import 'package:image_scanner/util/date_formater.dart';
 import 'package:image_scanner/util/storage_manager.dart';
@@ -41,6 +42,9 @@ class _DocumentsState extends State<Documents> {
   }
 
   openBottomSheet(context, name, folderSize) async {
+    AnalyticsService().sendEvent(
+      name: 'open_bottom_sheet',
+    );
     await setCurrentDocument(name);
     var folderSizeReadable = await CommonUtil.formatBytes(folderSize);
     showModalBottomSheet(

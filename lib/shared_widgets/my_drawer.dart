@@ -58,6 +58,9 @@ class _MyDrawerState extends State<MyDrawer> {
   }
 
   allDocuments() async {
+    AnalyticsService().sendEvent(
+      name: 'drawer_documents',
+    );
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -67,6 +70,9 @@ class _MyDrawerState extends State<MyDrawer> {
   }
 
   shareWithFirends() {
+    AnalyticsService().sendEvent(
+      name: 'share_with_friends',
+    );
     var myText = ShareApp.message();
 
     var data = {"str": myText, "type": "text/plain"};
@@ -75,6 +81,9 @@ class _MyDrawerState extends State<MyDrawer> {
   }
 
   contactDeveloper() {
+    AnalyticsService().sendEvent(
+      name: 'contact_developer',
+    );
     ForegroundService.start('sendEmail', '');
     Navigator.pop(context);
   }

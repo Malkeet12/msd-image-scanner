@@ -9,6 +9,7 @@ import 'package:image_scanner/services/foreground_service.dart';
 import 'package:image_scanner/shared_widgets/edit_name_dialog.dart';
 import 'package:image_scanner/shared_widgets/img_preview.dart';
 import 'package:image_scanner/theme/style.dart';
+import 'package:image_scanner/util/analytics_service.dart';
 
 class DocumentDetails extends StatefulWidget {
   @override
@@ -29,6 +30,9 @@ class _DocumentDetailsState extends State<DocumentDetails> {
   }
 
   void _showDialog(context, name) {
+    AnalyticsService().sendEvent(
+      name: 'rename_from_details_screen',
+    );
     _controller.text = name;
     showDialog(
       context: context,
@@ -70,6 +74,9 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                   size: 32,
                 ),
                 onPressed: () async {
+                  AnalyticsService().sendEvent(
+                    name: 'view_pdf',
+                  );
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -122,6 +129,9 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                 Icons.camera_alt,
               ),
               onPressed: () async {
+                AnalyticsService().sendEvent(
+                  name: 'add_pages_by_camera_click',
+                );
                 BlocProvider.of<GlobalBloc>(context)
                     .add(AddToCurrentDocument(name: name));
               }),
@@ -198,6 +208,9 @@ class TapToAddContainer extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () async {
+        AnalyticsService().sendEvent(
+          name: 'tap_to_add_pages',
+        );
         BlocProvider.of<GlobalBloc>(context)
             .add(AddToCurrentDocument(name: name));
       },
