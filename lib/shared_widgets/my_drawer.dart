@@ -67,7 +67,7 @@ class _MyDrawerState extends State<MyDrawer> {
 
   shareWithFirends() {
     var myText =
-        """I am using Image Scanner App to scan my documents and share them as pdf. Install now to support indian products
+        """I am using digipaper app to scan my documents and share them as pdf. Install now to support indian products
         
         https://play.google.com/store/apps/details?id=msd.image_scanner """;
 
@@ -126,7 +126,7 @@ class _MyDrawerState extends State<MyDrawer> {
                   Icons.folder_open,
                   color: Colors.grey,
                 ),
-                "All Documents",
+                "Documents",
                 () => allDocuments(),
               ),
               listItem(
@@ -210,20 +210,20 @@ class _MyDrawerState extends State<MyDrawer> {
                 true,
                 Icon(
                   Icons.cloud_queue,
-                  color: Colors.grey,
+                  color: ColorShades.textSecGray2,
                 ),
                 "Save files to cloud",
-                () => uploadImage(),
+                () => () {},
               ),
               listItem(
                 context,
                 true,
                 Icon(
                   Icons.content_copy,
-                  color: Colors.grey,
+                  color: ColorShades.textSecGray2,
                 ),
                 "Copy text from image",
-                () => uploadImage(),
+                () => () {},
               ),
             ],
           ),
