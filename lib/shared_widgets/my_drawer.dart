@@ -1,15 +1,14 @@
 // import 'package:camera/camera.dart';
 import 'dart:math';
-
+import 'package:url_launcher/url_launcher.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image_scanner/screens/documents/all_documents.dart';
 import 'package:image_scanner/screens/gallery_view.dart';
-// import 'package:image_scanner/screens/take_picture.dart';
+import 'package:image_scanner/screens/take_picture.dart';
 import 'package:image_scanner/services/foreground_service.dart';
 import 'package:image_scanner/theme/style.dart';
 import 'package:image_scanner/util/analytics_service.dart';
-import 'package:image_scanner/util/common_util.dart';
-import 'package:image_scanner/util/constants.dart';
 import 'package:image_scanner/util/share_app.dart';
 
 class MyDrawer extends StatefulWidget {
@@ -29,16 +28,16 @@ class _MyDrawerState extends State<MyDrawer> {
     // ForegroundService.registerCallBack("saveImage", handleImageBitMap);
     // Navigator.pop(context);
     // Obtain a list of the available cameras on the device.
-//     final cameras = await availableCameras();
+    final cameras = await availableCameras();
 
-// // Get a specific camera from the list of available cameras.
-//     final firstCamera = cameras.first;
-//     Navigator.push(
-//       context,
-//       MaterialPageRoute(
-//         builder: (context) => TakePicture(camera: firstCamera),
-//       ),
-//     );
+// Get a specific camera from the list of available cameras.
+    final firstCamera = cameras.first;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TakePicture(camera: firstCamera),
+      ),
+    );
   }
 
   handleImageBitMap(data) {
@@ -54,17 +53,17 @@ class _MyDrawerState extends State<MyDrawer> {
     }
   }
 
-  uploadImage() async {
-    AnalyticsService().sendEvent(
-      name: 'upload_image_click',
-    );
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => GalleryView(),
-      ),
-    );
-  }
+  // uploadImage() async {
+  //   AnalyticsService().sendEvent(
+  //     name: 'upload_image_click',
+  //   );
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => GalleryView(),
+  //     ),
+  //   );
+  // }
 
   allDocuments() async {
     AnalyticsService().sendEvent(
@@ -116,7 +115,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       Text(
                         'digi',
                         style: TextStyle(
-                                fontSize: 28.0,
+                                fontSize: 24.0,
                                 fontWeight: FontWeight.bold,
                                 height: 24.0 / 24.0)
                             .copyWith(
@@ -149,12 +148,13 @@ class _MyDrawerState extends State<MyDrawer> {
                 context,
                 false,
                 Icon(
-                  Icons.mobile_screen_share,
+                  Icons.content_copy,
                   color: Colors.grey,
                 ),
-                "Share with your friends",
-                () => shareWithFirends(),
+                "Copy text from image",
+                () => capureImage(),
               ),
+
               listItem(
                 context,
                 false,
@@ -164,6 +164,16 @@ class _MyDrawerState extends State<MyDrawer> {
                 ),
                 "Contact us",
                 () => contactDeveloper(),
+              ),
+              listItem(
+                context,
+                false,
+                Icon(
+                  Icons.mobile_screen_share,
+                  color: Colors.grey,
+                ),
+                "Share with your friends",
+                () => shareWithFirends(),
               ),
               listItem(
                 context,
@@ -205,6 +215,7 @@ class _MyDrawerState extends State<MyDrawer> {
               //   "Capture Image",
               //   () => capureImage(),
               // ),
+
               // listItem(
               //   context,
               //   false,
@@ -239,16 +250,6 @@ class _MyDrawerState extends State<MyDrawer> {
                   color: ColorShades.textSecGray2,
                 ),
                 "Save files to cloud",
-                () => () {},
-              ),
-              listItem(
-                context,
-                true,
-                Icon(
-                  Icons.content_copy,
-                  color: ColorShades.textSecGray2,
-                ),
-                "Copy text from image",
                 () => () {},
               ),
             ],

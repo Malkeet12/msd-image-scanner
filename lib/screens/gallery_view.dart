@@ -43,15 +43,15 @@ class _GalleryViewState extends State<GalleryView> {
   uploadImage() async {
     try {
       //var file = await ImagePicker.pickImage(source: ImageSource.camera);
-      var granted = await Permission.request(PermissionGroup.photos);
-      if (!granted) {
-        _key.currentState.showSnackBar(SnackBar(
-          content: Text('The user did not allow photo access.'),
-          backgroundColor: Colors.redAccent,
-          duration: Duration(seconds: 2),
-        ));
-        return;
-      }
+      // var granted = await Permission.request(PermissionGroup.photos);
+      // if (!granted) {
+      //   _key.currentState.showSnackBar(SnackBar(
+      //     content: Text('The user did not allow photo access.'),
+      //     backgroundColor: Colors.redAccent,
+      //     duration: Duration(seconds: 2),
+      //   ));
+      //   return;
+      // }
 
       final picker = ImagePicker();
       var pickedFile = await picker.getImage(source: ImageSource.gallery);
