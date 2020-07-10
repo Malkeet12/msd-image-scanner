@@ -7,7 +7,6 @@ import 'package:image_scanner/blocs/global/bloc.dart';
 import 'package:image_scanner/blocs/global/event.dart';
 import 'package:image_scanner/screens/document_details.dart';
 import 'package:image_scanner/shared_widgets/img_preview.dart';
-import 'package:image_scanner/shared_widgets/modal.dart';
 import 'package:image_scanner/shared_widgets/my_botom_sheet.dart';
 import 'package:image_scanner/theme/style.dart';
 import 'package:image_scanner/util/analytics_service.dart';

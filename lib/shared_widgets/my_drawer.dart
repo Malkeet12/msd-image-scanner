@@ -45,6 +45,15 @@ class _MyDrawerState extends State<MyDrawer> {
     print('back to future');
   }
 
+  launchURL() async {
+    const url = 'https:malkeet.tech';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      print('Could not launch $url');
+    }
+  }
+
   uploadImage() async {
     AnalyticsService().sendEvent(
       name: 'upload_image_click',
@@ -153,8 +162,18 @@ class _MyDrawerState extends State<MyDrawer> {
                   Icons.alternate_email,
                   color: Colors.grey,
                 ),
-                "Contact developer",
+                "Contact us",
                 () => contactDeveloper(),
+              ),
+              listItem(
+                context,
+                false,
+                Icon(
+                  Icons.verified_user,
+                  color: Colors.grey,
+                ),
+                "Privacy policy",
+                () => launchURL(),
               ),
               // Padding(
               //   padding: const EdgeInsets.only(
