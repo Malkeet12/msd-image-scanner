@@ -91,6 +91,10 @@ class _EditNameDialogState extends State<EditNameDialog> {
                 .copyWith(color: Colors.blueAccent),
           ),
           onPressed: () async {
+            if (inputValue == null || inputValue.length == 0) {
+              Navigator.of(context).pop();
+              return;
+            }
             var data = {
               "currentName": oldName,
               "futureName": inputValue,

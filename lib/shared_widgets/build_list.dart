@@ -52,7 +52,7 @@ class BuildList extends StatelessWidget {
                     name: 'copy_text_click',
                   );
                   Scaffold.of(context).showSnackBar(SnackBar(
-                    backgroundColor: Colors.deepOrange,
+                    backgroundColor: Color(0xff4364A1),
                     content: Text(
                       'Text copied to clipboard ',
                       style: Theme.of(context).textTheme.body2Medium.copyWith(

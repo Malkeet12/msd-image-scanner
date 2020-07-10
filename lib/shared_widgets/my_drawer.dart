@@ -46,7 +46,7 @@ class _MyDrawerState extends State<MyDrawer> {
   }
 
   launchURL() async {
-    const url = 'https:malkeet.tech';
+    const url = 'https://malkeet.tech';
     if (await canLaunch(url)) {
       await launch(url);
     } else {
