@@ -126,14 +126,19 @@ class MainActivity : FlutterActivity() {
 
                             var destinationFile=File("$root/digipaper/$futureName");
                             try {
-                                currentFile.renameTo(destinationFile)
+                              var res=  currentFile.renameTo(destinationFile);
+                                if(res){
+                                refreshUI()
+                                result.success(true)
+                                }else {
+                                    result.success(false)
+                                }
                             } catch (e: FileAlreadyExistsException) {
                                 result.success(false)
                             } catch (e: java.lang.Exception) {
                                 result.success(false)
                             }
-                            refreshUI()
-                            result.success(true)
+
                         }
                         "shareFile" -> {
                             val path = call.argument<String>("str")
