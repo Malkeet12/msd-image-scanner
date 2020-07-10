@@ -178,30 +178,26 @@ class _DocumentsState extends State<Documents> {
                         onTap: () => changeSorting(!reverseSorting),
                         child: Row(
                           children: <Widget>[
-                            Text(
-                              'Last modified',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .body1Bold
-                                  .copyWith(
-                                    color: ColorShades.textSecGray3,
-                                  ),
-                            ),
+                            Text('Last modified',
+                                style: Theme.of(context).textTheme.body1Bold
+                                // .copyWith(
+                                //   color: ColorShades.textSecGray3,
+                                // ),
+                                ),
                             Icon(
                               reverseSorting
                                   ? Icons.arrow_upward
                                   : Icons.arrow_downward,
                               size: 20,
-                              color: ColorShades.textSecGray3,
+                              // color: ColorShades.textSecGray3,
                             )
                           ],
                         ),
                       ),
                       IconButton(
-                        color: Colors.deepOrange,
                         icon: isGrdiView
-                            ? Icon(Icons.line_style)
-                            : Icon(Icons.grid_on),
+                            ? Icon(Icons.view_list)
+                            : Icon(Icons.view_module),
                         onPressed: () => isGrdiView
                             ? setUserView('linear')
                             : setUserView('grid'),
