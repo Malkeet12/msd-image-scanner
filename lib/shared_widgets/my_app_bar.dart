@@ -5,18 +5,20 @@ class MyAppBar extends StatelessWidget with PreferredSizeWidget {
   final onBackTap;
   final text;
   final hideBack;
+  final color;
   MyAppBar({
     Key key,
     @required this.text,
     this.hideBack,
     this.onBackTap,
+    this.color,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       elevation: 0.0,
-      backgroundColor: Colors.deepOrange,
+      backgroundColor: color == null ? Colors.deepOrange : color,
       centerTitle: true,
       title: Text(
         text,

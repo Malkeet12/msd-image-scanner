@@ -25,34 +25,41 @@ class ImagePreview extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: MyDrawer(),
-      backgroundColor: ColorShades.backgroundColorPrimary,
-      appBar: MyAppBar(text: 'Image preview'),
+      // backgroundColor: ColorShades.backgroundColorPrimary,
+      appBar: MyAppBar(
+        text: 'Image preview',
+        color: Color(0xff4364A1),
+      ),
       // The image is stored as a file on the device. Use the `Image.file`
       // constructor with the given path to display the image.
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Center(
-              child: FutureBuilder<Size>(
-                future: CommonUtil.getImageSize(Image.file(
-                  File(imagePath),
-                )),
-                builder: (BuildContext context, AsyncSnapshot<Size> snapshot) {
-                  if (snapshot.hasData) {
-                    return Container(
-                        foregroundDecoration:
-                            TextDetectDecoration(currentLabels, snapshot.data),
-                        child:
-                            Image.file(File(imagePath), fit: BoxFit.fitWidth));
-                  } else {
-                    return Text('Detecting...');
-                  }
-                },
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: Center(
+                child: FutureBuilder<Size>(
+                  future: CommonUtil.getImageSize(Image.file(
+                    File(imagePath),
+                  )),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<Size> snapshot) {
+                    if (snapshot.hasData) {
+                      return Container(
+                          foregroundDecoration: TextDetectDecoration(
+                              currentLabels, snapshot.data),
+                          child: Image.file(File(imagePath),
+                              fit: BoxFit.fitWidth));
+                    } else {
+                      return Text('Detecting...');
+                    }
+                  },
+                ),
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: PrimaryButton(
+              child: BlueButton(
                 onPressed: () => Navigator.pop(context),
                 text: 'Click another',
               ),

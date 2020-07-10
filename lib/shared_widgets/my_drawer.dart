@@ -32,6 +32,7 @@ class _MyDrawerState extends State<MyDrawer> {
 
 // Get a specific camera from the list of available cameras.
     final firstCamera = cameras.first;
+    Navigator.pop(context);
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -69,6 +70,7 @@ class _MyDrawerState extends State<MyDrawer> {
     AnalyticsService().sendEvent(
       name: 'drawer_documents',
     );
+    Navigator.pop(context);
     Navigator.push(
       context,
       MaterialPageRoute(

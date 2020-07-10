@@ -37,7 +37,7 @@ class BuildList extends StatelessWidget {
               "${text}",
               style: TextStyle(
                 fontSize: 16.0,
-                color: ColorShades.textColorOffWhite,
+                color: ColorShades.textPrimaryDark,
               ),
             ),
           ),
@@ -52,14 +52,21 @@ class BuildList extends StatelessWidget {
                     name: 'copy_text_click',
                   );
                   Scaffold.of(context).showSnackBar(SnackBar(
-                    content: Text('Text copied to clipboard '),
+                    backgroundColor: Colors.deepOrange,
+                    content: Text(
+                      'Text copied to clipboard ',
+                      style: Theme.of(context).textTheme.body2Medium.copyWith(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
                     duration: const Duration(seconds: 1),
                   ));
                   Clipboard.setData(ClipboardData(text: text));
                 },
                 child: Icon(
                   Icons.content_copy,
-                  color: ColorShades.textColorOffWhite,
+                  color: Colors.blue[800],
                 ),
               ),
               SizedBox(
