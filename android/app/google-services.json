@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:1010760649410:android:deb376ba5dd86836ab895b",
         "android_client_info": {
-          "package_name": "msd.digipaper"
+          "package_name": "msd.image_scanner"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "1010760649410-pavb698jr5qd5sfnhk4800hoi7im434o.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "msd.digipaper",
+            "package_name": "msd.image_scanner",
             "certificate_hash": "9c0331e971dd619ad28dbe42aa0146f736f6f728"
           }
         },

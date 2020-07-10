@@ -1,4 +1,4 @@
-package msd.digipaper
+package msd.image_scanner
 
 //import com.scanlibrary.ScanConstants
 import android.Manifest
