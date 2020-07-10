@@ -37,6 +37,7 @@ class TakePictureState extends State<TakePicture> {
       widget.camera,
       // Define the resolution to use.
       ResolutionPreset.medium,
+      enableAudio: false,
     );
 
     // Next, initialize the controller. This returns a Future.
