@@ -126,7 +126,7 @@ class MainActivity : FlutterActivity() {
 
                             var destinationFile=File("$root/digipaper/$futureName");
                             try {
-                                Files.move(currentFile.toPath(), destinationFile.toPath())
+                                currentFile.renameTo(destinationFile)
                             } catch (e: FileAlreadyExistsException) {
                                 result.success(false)
                             } catch (e: java.lang.Exception) {
