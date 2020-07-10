@@ -107,7 +107,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       Text(
                         'digi',
                         style: TextStyle(
-                                fontSize: 24.0,
+                                fontSize: 28.0,
                                 fontWeight: FontWeight.bold,
                                 height: 24.0 / 24.0)
                             .copyWith(
@@ -257,11 +257,12 @@ InkWell listItem(
         overflow: TextOverflow.ellipsis,
         // softWrap: true,
         style: Theme.of(context).textTheme.h4.copyWith(
-            color: disabled == true
-                ? ColorShades.textSecGray2
-                : ColorShades.textSecGray3,
-            fontSize: 16.0,
-            fontWeight: FontWeight.bold),
+              color: disabled == true
+                  ? ColorShades.textSecGray2
+                  : ColorShades.textSecGray3,
+              fontSize: 16.0,
+              // fontWeight: FontWeight.bold,
+            ),
       ),
     ),
   );

@@ -185,7 +185,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
                 text: '', // default text style
                 children: <TextSpan>[
                   TextSpan(
-                    text: 'Are you sure you want to delete ',
+                    text: 'Are you sure you want to delete ?',
                     style: Theme.of(context)
                         .textTheme
                         .h4
@@ -277,8 +277,8 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
               _createTileWithSecondartText(context, 'Share PDF', fileSize,
                   Icons.share, () => shareFileAsPdf(),
                   showIcon: true, iconColor: Colors.blueAccent),
-              _createTile(
-                  context, 'Rename', Icons.edit, () => _rename(context, name),
+              _createTile(context, "Rename file", Icons.edit,
+                  () => _rename(context, name),
                   showIcon: true, iconColor: Colors.green),
               _createTile(context, 'Delete', Icons.delete_forever,
                   () => _deleteFolder(context, name),

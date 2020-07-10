@@ -178,7 +178,7 @@ class Modal {
                 text: '', // default text style
                 children: <TextSpan>[
                   TextSpan(
-                    text: 'Are you sure you want to delete ',
+                    text: 'Are you sure you want to delete ?',
                     style: Theme.of(context)
                         .textTheme
                         .h4

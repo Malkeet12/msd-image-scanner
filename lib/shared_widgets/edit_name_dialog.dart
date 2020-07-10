@@ -31,7 +31,7 @@ class _EditNameDialogState extends State<EditNameDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: new Text(
-        "Rename",
+        "Rename file",
         style: Theme.of(context)
             .textTheme
             .h3

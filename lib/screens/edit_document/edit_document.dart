@@ -32,7 +32,7 @@ class _EditDocState extends State<EditDoc> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: new Text(
-            "Are you sure you want to remove this image",
+            "Are you sure you want to remove this image ?",
             style: Theme.of(context)
                 .textTheme
                 .h4

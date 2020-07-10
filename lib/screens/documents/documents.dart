@@ -180,7 +180,7 @@ class _DocumentsState extends State<Documents> {
                         child: Row(
                           children: <Widget>[
                             Text(
-                              'Last modified by me',
+                              'Last modified',
                               style: Theme.of(context)
                                   .textTheme
                                   .body1Bold
