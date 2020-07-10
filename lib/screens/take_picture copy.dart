@@ -120,7 +120,7 @@ class TakePictureState extends State<TakePicture> {
             writeOnPdf(_file);
             await savePdf();
             String fullPath =
-                "/data/user/0/msd.image_scanner/app_flutter/example.pdf";
+                "/data/user/0/msd.digipaper/app_flutter/example.pdf";
 
             Navigator.push(
                 context,
