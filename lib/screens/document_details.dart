@@ -10,6 +10,7 @@ import 'package:image_scanner/shared_widgets/edit_name_dialog.dart';
 import 'package:image_scanner/shared_widgets/img_preview.dart';
 import 'package:image_scanner/theme/style.dart';
 import 'package:image_scanner/util/analytics_service.dart';
+import 'package:image_scanner/util/permission.dart';
 
 class DocumentDetails extends StatefulWidget {
   @override
@@ -43,6 +44,10 @@ class _DocumentDetailsState extends State<DocumentDetails> {
   }
 
   onCameraClick(name) async {
+    var isPermissionGranted = await MyPermission.handlePermissions();
+    if (isPermissionGranted == false) {
+      return;
+    }
     AnalyticsService().sendEvent(
       name: 'add_pages_by_camera_click',
     );
@@ -235,6 +240,10 @@ class TapToAddContainer extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () async {
+        var isPermissionGranted = await MyPermission.handlePermissions();
+        if (isPermissionGranted == false) {
+          return;
+        }
         AnalyticsService().sendEvent(
           name: 'tap_to_add_pages',
         );

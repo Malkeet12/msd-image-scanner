@@ -29,20 +29,12 @@ class _AllDocumentsState extends State<AllDocuments> {
     getUserImages();
   }
 
-  Future<bool> handlePermissions() async {
-    var permission1 = await Permission.request(PermissionGroup.camera);
-    var permission2 = await Permission.request(PermissionGroup.storage);
-    // var permission3 = await Permission.request(PermissionGroup.mediaLibrary);
-    // var permission4 = await Permission.request(PermissionGroup.photos);
-    return permission1 && permission2;
-  }
-
   getUserImages() async {
     BlocProvider.of<GlobalBloc>(context).add(FetchAllDocuments());
   }
 
   onCameraClick() async {
-    var isPermissionGranted = await handlePermissions();
+    var isPermissionGranted = await MyPermission.handlePermissions();
     if (isPermissionGranted == false) {
       return;
     }
@@ -53,7 +45,8 @@ class _AllDocumentsState extends State<AllDocuments> {
   }
 
   onGalleryClick() async {
-    var isPermissionGranted = await Permission.request(PermissionGroup.storage);
+    var isPermissionGranted =
+        await MyPermission.request(PermissionGroup.storage);
     if (isPermissionGranted == false) {
       return;
     }
