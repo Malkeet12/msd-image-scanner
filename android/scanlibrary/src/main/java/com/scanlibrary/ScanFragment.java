@@ -3,14 +3,19 @@ package com.scanlibrary;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -32,7 +37,7 @@ import java.util.Map;
 public class ScanFragment extends Fragment {
 
     private Button scanButton;
-    private  Button rotateButton;
+    private Button rotateButton;
     private ImageView sourceImageView;
     private FrameLayout sourceFrame;
     private PolygonView polygonView;
@@ -72,12 +77,103 @@ public class ScanFragment extends Fragment {
         sourceFrame.post(new Runnable() {
             @Override
             public void run() {
+                Uri uri = getUri();
                 original = getBitmap();
+                if(original.getHeight() < original.getWidth()){
+                    Matrix matrix = new Matrix();
+                    matrix.postRotate(90);
+                    Bitmap rotatedImg = Bitmap.createBitmap(original, 0, 0, original.getWidth(), original.getHeight(), matrix, true);
+                    original.recycle();
+                    original=rotatedImg;
+                }
+
                 if (original != null) {
                     setBitmap(original);
                 }
             }
         });
+    }
+
+    /**
+     * Rotate an image if required.
+     *
+     * @param img
+     * @param selectedImage
+     * @return
+     */
+    public static float getExifAngle(Uri uri) {
+        try {
+            ExifInterface exifInterface = new ExifInterface(uri.getPath());
+            if(exifInterface == null) {
+                return -1f;
+            }
+
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_UNDEFINED);
+
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    return 90f;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    return 180f;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    return 270f;
+                case ExifInterface.ORIENTATION_NORMAL:
+                    return 0f;
+                case ExifInterface.ORIENTATION_UNDEFINED:
+                    return -1f;
+                default:
+                    return -1f;
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return -1f;
+        }
+    }
+//    private static int rotateImageIfRequired(Bitmap original, Uri uri) {
+//
+//        float orient= getExifAngle(uri);
+//
+//        return rotatedImg;
+        // Detect rotation
+//        int rotation = getRotation(context, selectedImage);
+//        if (rotation != 0) {
+//            Matrix matrix = new Matrix();
+//            matrix.postRotate(rotation);
+//            Bitmap rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
+//            img.recycle();
+//            return rotatedImg;
+//        }
+//        else{
+//            return img;
+//        }
+//    }
+
+    /**
+     * Get the rotation of the last image added.
+     *
+     * @param context
+     * @param selectedImage
+     * @return
+     */
+    private static int getRotation(Context context, Uri selectedImage) {
+
+        int rotation = 0;
+        ContentResolver content = context.getContentResolver();
+
+        Cursor mediaCursor = content.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                new String[]{"orientation", "date_added"},
+                null, null, "date_added desc");
+
+        if (mediaCursor != null && mediaCursor.getCount() != 0) {
+            while (mediaCursor.moveToNext()) {
+                rotation = mediaCursor.getInt(0);
+                break;
+            }
+        }
+        mediaCursor.close();
+        return rotation;
     }
 
     private Bitmap getBitmap() {
@@ -164,6 +260,7 @@ public class ScanFragment extends Fragment {
             }
         }
     }
+
     private class RotateButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
@@ -171,11 +268,12 @@ public class ScanFragment extends Fragment {
             matrix.postRotate(90);
             final Bitmap rotatedBitmap = Bitmap.createBitmap(original, 0, 0, original.getWidth(), original.getHeight(), matrix, true);
             original = rotatedBitmap;
-            setBitmap(original);
+            setBitmap(rotatedBitmap);
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     sourceImageView.setImageBitmap(original);
+
                     // dismissDialog();
                 }
             });
@@ -233,7 +331,7 @@ public class ScanFragment extends Fragment {
 
         @Override
         protected Bitmap doInBackground(Void... params) {
-            Bitmap bitmap =  getScannedBitmap(original, points);
+            Bitmap bitmap = getScannedBitmap(original, points);
             Uri uri = Utils.getUri(getActivity(), bitmap);
             scanner.onScanFinish(uri);
             return bitmap;
