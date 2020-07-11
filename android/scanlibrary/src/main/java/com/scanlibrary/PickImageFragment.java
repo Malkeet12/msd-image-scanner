@@ -178,15 +178,15 @@ public class PickImageFragment extends Fragment {
                 e.printStackTrace();
             }
         } else {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Intent data = new Intent();
-                    data.putExtra(ScanConstants.SCANNED_RESULT, "");
-                    getActivity().setResult(Activity.RESULT_CANCELED, data);
-                    getActivity().finish();
-                }
-            });
+//            getActivity().runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    Intent data = new Intent();
+//                    data.putExtra(ScanConstants.SCANNED_RESULT, "");
+//                    getActivity().setResult(Activity.RESULT_CANCELED, data);
+//                    getActivity().finish();
+//                }
+//            });
         }
         if (bitmap != null) {
             postImagePick(bitmap);

@@ -24,15 +24,13 @@ import io.flutter.plugin.common.MethodChannel
 import org.apache.commons.io.FileUtils
 import org.json.JSONObject
 import java.io.*
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.Paths
 
 class MainActivity : FlutterActivity() {
     companion object {
         var channel: MethodChannel? = null
     }
 
+    private var PICK_IMAGE_REQUEST_CODE: Int = 55
     private var currentGroupId: Any? = null
     private var fileUri: Uri? = null
 
@@ -53,17 +51,23 @@ class MainActivity : FlutterActivity() {
                             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                             intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference)
                             startActivityForResult(intent, REQUEST_CODE)
-
-//                       openCamera()
                             result.success("message")
+
                         }
                         "gallery" -> {
-                            val REQUEST_CODE = 100
-                            currentGroupId = call.arguments
-                            val preference: Int = ScanConstants.OPEN_MEDIA
-                            val intent = Intent(this, ScanActivity::class.java)
-                            intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference)
-                            startActivityForResult(intent, REQUEST_CODE)
+                            val intent: Intent
+                            if (Build.VERSION.SDK_INT < 19) {
+                                intent = Intent()
+                                intent.action = Intent.ACTION_GET_CONTENT
+                                intent.type = "*/*"
+                                startActivityForResult(intent, PICK_IMAGE_REQUEST_CODE)
+                            } else {
+                                intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+                                intent.addCategory(Intent.CATEGORY_OPENABLE)
+                                intent.type = "*/*"
+                                startActivityForResult(intent, PICK_IMAGE_REQUEST_CODE)
+                            }
+                            result.success("message")
 
                         }
                         "getImages" -> {
@@ -431,17 +435,27 @@ class MainActivity : FlutterActivity() {
 
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
-            val uri: Uri = data.extras.getParcelable(ScanConstants.SCANNED_RESULT)
             var bitmap: Bitmap? = null
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-                contentResolver.delete(uri, null, null)
-                SaveImage(bitmap);
+            if(requestCode==PICK_IMAGE_REQUEST_CODE){
+                val uri = data.data
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+                    SaveImage(bitmap);
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }else{
+                val uri: Uri = data.extras.getParcelable(ScanConstants.SCANNED_RESULT)
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+                    contentResolver.delete(uri, null, null)
+                    SaveImage(bitmap);
 
-//                scannedImageView.setImageBitmap(bitmap)
-            } catch (e: IOException) {
-                e.printStackTrace()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
             }
+
         }
     }
 }

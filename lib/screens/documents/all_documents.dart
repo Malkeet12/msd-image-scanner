@@ -48,6 +48,14 @@ class _AllDocumentsState extends State<AllDocuments> {
     ForegroundService.start('camera', '');
   }
 
+  onGalleryClick() async {
+    var isPermissionGranted = await Permission.request(PermissionGroup.storage);
+    if (isPermissionGranted == false) {
+      return;
+    }
+    ForegroundService.start('gallery', '');
+  }
+
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -76,14 +84,31 @@ class _AllDocumentsState extends State<AllDocuments> {
               );
           },
         ),
+        // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: FloatingActionButton(
-              backgroundColor: Colors.deepOrange,
-              child: Icon(
-                Icons.camera_alt,
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              FloatingActionButton(
+                heroTag: "gallery",
+                onPressed: () => onGalleryClick(),
+                child: Icon(
+                  Icons.add_photo_alternate,
+                  size: 32,
+                ),
               ),
-              onPressed: () => onCameraClick()),
+              SizedBox(width: 20),
+              FloatingActionButton(
+                heroTag: "camera",
+                onPressed: () => onCameraClick(),
+                backgroundColor: Colors.deepOrange,
+                child: Icon(
+                  Icons.camera_alt,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
