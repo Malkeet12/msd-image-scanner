@@ -28,6 +28,7 @@ class ImagePreview extends StatelessWidget {
       // backgroundColor: ColorShades.backgroundColorPrimary,
       appBar: MyAppBar(
         text: 'Copy text from image',
+        color: Color(0xff4364A1),
       ),
       // The image is stored as a file on the device. Use the `Image.file`
       // constructor with the given path to display the image.
@@ -83,6 +84,9 @@ class ImagePreview extends StatelessWidget {
               ),
             ),
             BuildList(texts: currentLabels),
+            SizedBox(
+              height: 40,
+            )
           ],
         ),
       ),

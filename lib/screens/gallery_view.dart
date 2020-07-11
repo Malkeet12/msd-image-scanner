@@ -144,6 +144,7 @@ class _GalleryViewState extends State<GalleryView> {
     return SingleChildScrollView(
       child: Center(
         child: Container(
+          margin: EdgeInsets.only(bottom: 50),
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
