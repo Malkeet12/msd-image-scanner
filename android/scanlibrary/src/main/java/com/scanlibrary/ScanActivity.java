@@ -55,6 +55,9 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
     public void onBitmapSelect(Uri uri) {
         ScanFragment fragment = new ScanFragment();
         Bundle bundle = new Bundle();
+        if(uri==null){
+            uri=getIntent().getExtras().getParcelable("image");
+        }
         bundle.putParcelable(ScanConstants.SELECTED_BITMAP, uri);
         fragment.setArguments(bundle);
         android.app.FragmentManager fragmentManager = getFragmentManager();

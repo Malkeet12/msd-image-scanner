@@ -17,6 +17,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import com.scanlibrary.ScanActivity
 import com.scanlibrary.ScanConstants
+import com.scanlibrary.Utils
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodCall
@@ -55,6 +56,7 @@ class MainActivity : FlutterActivity() {
 
                         }
                         "gallery" -> {
+                            currentGroupId = call.arguments
                             val intent: Intent
                             if (Build.VERSION.SDK_INT < 19) {
                                 intent = Intent()
@@ -440,7 +442,15 @@ class MainActivity : FlutterActivity() {
                 val uri = data.data
                 try {
                     bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-                    SaveImage(bitmap);
+                    val preference: Int = ScanConstants.OPEN_MEDIA
+                    val intent = Intent(this, ScanActivity::class.java)
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    val uri: Uri = Utils.getUri(activity, bitmap)
+                    intent.putExtra("image", uri)
+                    intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference)
+                    startActivityForResult(intent, 100)
+//                    SaveImage(bitmap);
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }

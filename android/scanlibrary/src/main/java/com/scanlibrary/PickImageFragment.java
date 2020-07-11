@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -114,10 +115,7 @@ public class PickImageFragment extends Fragment {
     }
 
     public void openMediaContent() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("image/*");
-        startActivityForResult(intent, ScanConstants.PICKFILE_REQUEST_CODE);
+        scanner.onBitmapSelect((Uri) getArguments() .getParcelable("image"));
     }
 
     public void openCamera() {
@@ -141,8 +139,6 @@ public class PickImageFragment extends Fragment {
             String dest="$root/digipaper/";
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempFileUri1);
             cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//            cameraIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//            cameraIntent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         } else {
             Uri tempFileUri = Uri.fromFile(file);
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempFileUri);
@@ -178,15 +174,15 @@ public class PickImageFragment extends Fragment {
                 e.printStackTrace();
             }
         } else {
-//            getActivity().runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    Intent data = new Intent();
-//                    data.putExtra(ScanConstants.SCANNED_RESULT, "");
-//                    getActivity().setResult(Activity.RESULT_CANCELED, data);
-//                    getActivity().finish();
-//                }
-//            });
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Intent data = new Intent();
+                    data.putExtra(ScanConstants.SCANNED_RESULT, "");
+                    getActivity().setResult(Activity.RESULT_CANCELED, data);
+                    getActivity().finish();
+                }
+            });
         }
         if (bitmap != null) {
             postImagePick(bitmap);
