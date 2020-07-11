@@ -53,9 +53,9 @@ class _EditDocState extends State<EditDoc> {
                 var path = doc[_currentPage]["path"];
                 BlocProvider.of<GlobalBloc>(context)
                     .add(DeleteFile(file: path));
-                setState(() {
-                  _currentPage = _currentPage - 1;
-                });
+                // setState(() {
+                //   _currentPage = _currentPage - 1;
+                // });
                 Navigator.of(context).pop();
                 if (doc.length == 1) {
                   Navigator.of(context).pop();
