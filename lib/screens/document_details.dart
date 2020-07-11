@@ -42,6 +42,23 @@ class _DocumentDetailsState extends State<DocumentDetails> {
     );
   }
 
+  onCameraClick(name) async {
+    AnalyticsService().sendEvent(
+      name: 'add_pages_by_camera_click',
+    );
+    BlocProvider.of<GlobalBloc>(context).add(AddToCurrentDocument(
+      name: name,
+    ));
+  }
+
+  onGalleryClick(name) async {
+    AnalyticsService().sendEvent(
+      name: 'add_pages_by_gallery_click',
+    );
+    BlocProvider.of<GlobalBloc>(context)
+        .add(AddToCurrentDocument(name: name, src: 'gallery'));
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GlobalBloc, Map>(builder: (context, currentState) {
@@ -122,19 +139,29 @@ class _DocumentDetailsState extends State<DocumentDetails> {
           ),
         ),
         floatingActionButton: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: FloatingActionButton(
-              backgroundColor: Colors.deepOrange,
-              child: Icon(
-                Icons.camera_alt,
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              FloatingActionButton(
+                heroTag: "gallery",
+                onPressed: () => onGalleryClick(name),
+                child: Icon(
+                  Icons.add_photo_alternate,
+                  size: 32,
+                ),
               ),
-              onPressed: () async {
-                AnalyticsService().sendEvent(
-                  name: 'add_pages_by_camera_click',
-                );
-                BlocProvider.of<GlobalBloc>(context)
-                    .add(AddToCurrentDocument(name: name));
-              }),
+              SizedBox(width: 20),
+              FloatingActionButton(
+                heroTag: "camera",
+                onPressed: () => onCameraClick(name),
+                backgroundColor: Colors.deepOrange,
+                child: Icon(
+                  Icons.camera_alt,
+                ),
+              ),
+            ],
+          ),
         ),
       );
     });

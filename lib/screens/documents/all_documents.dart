@@ -7,6 +7,7 @@ import 'package:image_scanner/services/foreground_service.dart';
 import 'package:image_scanner/shared_widgets/empty_state.dart';
 import 'package:image_scanner/shared_widgets/my_drawer.dart';
 import 'package:image_scanner/theme/style.dart';
+import 'package:image_scanner/util/analytics_service.dart';
 import 'package:image_scanner/util/permission.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -45,6 +46,9 @@ class _AllDocumentsState extends State<AllDocuments> {
     if (isPermissionGranted == false) {
       return;
     }
+    AnalyticsService().sendEvent(
+      name: 'add_document_by_camera_click',
+    );
     ForegroundService.start('camera', '');
   }
 
@@ -53,6 +57,9 @@ class _AllDocumentsState extends State<AllDocuments> {
     if (isPermissionGranted == false) {
       return;
     }
+    AnalyticsService().sendEvent(
+      name: 'add_document_by_gallery_click',
+    );
     ForegroundService.start('gallery', '');
   }
 

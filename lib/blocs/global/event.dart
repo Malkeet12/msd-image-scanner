@@ -23,7 +23,8 @@ class GetCurrentDocument extends GlobalEvent {
 
 class AddToCurrentDocument extends GlobalEvent {
   var name;
-  AddToCurrentDocument({@required this.name});
+  var src;
+  AddToCurrentDocument({@required this.name, this.src});
 }
 
 class RenameDocument extends GlobalEvent {

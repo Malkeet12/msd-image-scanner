@@ -48,7 +48,10 @@ class GlobalBloc extends Bloc<GlobalEvent, Map> {
   }
 
   Stream<Map> _mapAddToCurrentDocumentToState(state, event) async* {
-    ForegroundService.start('camera', state['doc']['name']);
+    if (event.src == "gallery") {
+      ForegroundService.start('gallery', state['doc']['name']);
+    } else
+      ForegroundService.start('camera', state['doc']['name']);
     yield {...state};
   }
 
