@@ -438,7 +438,8 @@ class MainActivity : FlutterActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             var bitmap: Bitmap? = null
-            if(requestCode==PICK_IMAGE_REQUEST_CODE){
+            //temporary solution will fix tomorrow
+            if(requestCode==PICK_IMAGE_REQUEST_CODE && requestCode != 2342){
                 val uri = data.data
                 try {
                     bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
@@ -454,7 +455,7 @@ class MainActivity : FlutterActivity() {
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
-            }else{
+            }else if(requestCode != 2342){
                 val uri: Uri = data.extras.getParcelable(ScanConstants.SCANNED_RESULT)
                 try {
                     bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)

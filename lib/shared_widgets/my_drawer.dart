@@ -54,17 +54,17 @@ class _MyDrawerState extends State<MyDrawer> {
     }
   }
 
-  // uploadImage() async {
-  //   AnalyticsService().sendEvent(
-  //     name: 'upload_image_click',
-  //   );
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => GalleryView(),
-  //     ),
-  //   );
-  // }
+  uploadImage() async {
+    AnalyticsService().sendEvent(
+      name: 'upload_image_click',
+    );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => GalleryView(),
+      ),
+    );
+  }
 
   allDocuments() async {
     AnalyticsService().sendEvent(
@@ -150,17 +150,6 @@ class _MyDrawerState extends State<MyDrawer> {
                 context,
                 false,
                 Icon(
-                  Icons.content_copy,
-                  color: Colors.grey,
-                ),
-                "Copy text from image",
-                () => capureImage(),
-              ),
-
-              listItem(
-                context,
-                false,
-                Icon(
                   Icons.alternate_email,
                   color: Colors.grey,
                 ),
@@ -187,47 +176,46 @@ class _MyDrawerState extends State<MyDrawer> {
                 "Privacy policy",
                 () => launchURL(),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.only(
-              //     left: 20,
-              //     right: 16,
-              //     top: 24,
-              //   ),
-              //   child: Text(
-              //     'Extract text from image',
-              //     softWrap: true,
-              //     style: Theme.of(context).textTheme.body2Medium.copyWith(
-              //           color: Colors.blueAccent,
-              //           // fontFamily: 'Rounded Mplus 1c',
-              //           fontSize: 16.0,
-              //           fontWeight: FontWeight.bold,
-              //         ),
-              //   ),
-              // ),
-              // SizedBox(
-              //   height: 8,
-              // ),
-              // listItem(
-              //   context,
-              //   false,
-              //   Icon(
-              //     Icons.camera_alt,
-              //     color: colors[uid + 1],
-              //   ),
-              //   "Capture Image",
-              //   () => capureImage(),
-              // ),
-
-              // listItem(
-              //   context,
-              //   false,
-              //   Icon(
-              //     Icons.image,
-              //     color: Colors.grey,
-              //   ),
-              //   "Pick From Gallery",
-              //   () => uploadImage(),
-              // ),
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 20,
+                  right: 16,
+                  top: 24,
+                ),
+                child: Text(
+                  'Copy text from image',
+                  softWrap: true,
+                  style: Theme.of(context).textTheme.body2Medium.copyWith(
+                        color: Colors.blueAccent,
+                        // fontFamily: 'Rounded Mplus 1c',
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              listItem(
+                context,
+                false,
+                Icon(
+                  Icons.linked_camera,
+                  color: Colors.grey,
+                ),
+                "Capture image",
+                () => capureImage(),
+              ),
+              listItem(
+                context,
+                false,
+                Icon(
+                  Icons.photo_size_select_actual,
+                  color: Colors.grey,
+                ),
+                "Pick From Gallery",
+                () => uploadImage(),
+              ),
               Padding(
                 padding: const EdgeInsets.only(
                   left: 20,

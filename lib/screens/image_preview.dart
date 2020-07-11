@@ -27,8 +27,7 @@ class ImagePreview extends StatelessWidget {
       drawer: MyDrawer(),
       // backgroundColor: ColorShades.backgroundColorPrimary,
       appBar: MyAppBar(
-        text: 'Image preview',
-        color: Color(0xff4364A1),
+        text: 'Copy text from image',
       ),
       // The image is stored as a file on the device. Use the `Image.file`
       // constructor with the given path to display the image.
@@ -37,23 +36,26 @@ class ImagePreview extends StatelessWidget {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: Center(
-                child: FutureBuilder<Size>(
-                  future: CommonUtil.getImageSize(Image.file(
-                    File(imagePath),
-                  )),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<Size> snapshot) {
-                    if (snapshot.hasData) {
-                      return Container(
-                          foregroundDecoration: TextDetectDecoration(
-                              currentLabels, snapshot.data),
-                          child: Image.file(File(imagePath),
-                              fit: BoxFit.fitWidth));
-                    } else {
-                      return Text('Detecting...');
-                    }
-                  },
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height / 2,
+                child: Center(
+                  child: FutureBuilder<Size>(
+                    future: CommonUtil.getImageSize(Image.file(
+                      File(imagePath),
+                    )),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<Size> snapshot) {
+                      if (snapshot.hasData) {
+                        return Container(
+                            foregroundDecoration: TextDetectDecoration(
+                                currentLabels, snapshot.data),
+                            child: Image.file(File(imagePath),
+                                fit: BoxFit.fitWidth));
+                      } else {
+                        return Text('Detecting...');
+                      }
+                    },
+                  ),
                 ),
               ),
             ),

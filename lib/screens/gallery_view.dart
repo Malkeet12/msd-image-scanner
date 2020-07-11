@@ -105,9 +105,10 @@ class _GalleryViewState extends State<GalleryView> {
       home: Scaffold(
         key: _key,
         drawer: MyDrawer(),
-        backgroundColor: ColorShades.backgroundColorPrimary,
+        // backgroundColor: ColorShades.backgroundColorPrimary,
         appBar: MyAppBar(
-            text: 'digipaper',
+            text: 'Copy text from image',
+            color: Color(0xff4364A1),
             onBackTap: () {
               Navigator.pop(context);
             }),
@@ -118,7 +119,7 @@ class _GalleryViewState extends State<GalleryView> {
 
   Widget _buildImage() {
     return SizedBox(
-      height: MediaQuery.of(context).size.height / 3,
+      height: MediaQuery.of(context).size.height / 2,
       child: Center(
         child: FutureBuilder<Size>(
           future: CommonUtil.getImageSize(Image.file(
@@ -146,6 +147,10 @@ class _GalleryViewState extends State<GalleryView> {
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
+                SizedBox(
+                  height: 12,
+                ),
+                if (_file != null) _buildImage(),
                 if (_file != null)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -154,7 +159,6 @@ class _GalleryViewState extends State<GalleryView> {
                       text: 'Upload another',
                     ),
                   ),
-                if (_file != null) _buildImage(),
                 if (_file != null)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12.0),
