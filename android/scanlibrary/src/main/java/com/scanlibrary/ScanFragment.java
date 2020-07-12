@@ -7,6 +7,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.RectF;
@@ -16,7 +17,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +28,9 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -88,6 +94,7 @@ public class ScanFragment extends Fragment {
                 }
 
                 if (original != null) {
+                    // original=  getResizedBitmap(original);
                     setBitmap(original);
                 }
             }
@@ -111,8 +118,9 @@ public class ScanFragment extends Fragment {
         return uri;
     }
 
-    private void setBitmap(Bitmap original) {
-        Bitmap scaledBitmap = scaledBitmap(original, sourceFrame.getWidth(), sourceFrame.getHeight());
+    private void setBitmap(Bitmap originalBit) {
+        Bitmap scaledBitmap = scaledBitmap(originalBit, sourceFrame.getWidth(), (int) (sourceFrame.getHeight()*0.7));
+        original=scaledBitmap;
         sourceImageView.setImageBitmap(scaledBitmap);
         Bitmap tempBitmap = ((BitmapDrawable) sourceImageView.getDrawable()).getBitmap();
         Map<Integer, PointF> pointFs = getEdgePoints(tempBitmap);
@@ -221,18 +229,74 @@ public class ScanFragment extends Fragment {
         float yRatio = (float) original.getHeight() / sourceImageView.getHeight();
 
         float x1 = (points.get(0).x) * xRatio;
-        float x2 = (points.get(1).x) * xRatio;
+        float x2 =  (points.get(1).x) * xRatio;
         float x3 = (points.get(2).x) * xRatio;
         float x4 = (points.get(3).x) * xRatio;
         float y1 = (points.get(0).y) * yRatio;
         float y2 = (points.get(1).y) * yRatio;
         float y3 = (points.get(2).y) * yRatio;
         float y4 = (points.get(3).y) * yRatio;
+        // Bitmap out = null;
+
         Log.d("", "POints(" + x1 + "," + y1 + ")(" + x2 + "," + y2 + ")(" + x3 + "," + y3 + ")(" + x4 + "," + y4 + ")");
         Bitmap _bitmap = ((ScanActivity) getActivity()).getScannedBitmap(original, x1, y1, x2, y2, x3, y3, x4, y4);
         return _bitmap;
     }
 
+    public Bitmap getResizedBitmap(Bitmap bm) {
+//        DisplayMetrics displayMetrics = new DisplayMetrics();
+//        displayMetrics=  getActivity().getResources().getDisplayMetrics();
+//        Display display = getActivity().getWindowManager().getDefaultDisplay();
+//        DisplayMetrics outMetrics = new DisplayMetrics ();
+//        display.getMetrics(outMetrics);
+        final DisplayMetrics displayMetrics=getResources().getDisplayMetrics();
+        final float screenWidthInDp=displayMetrics.widthPixels/displayMetrics.density;
+        final float screenHeightInDp=displayMetrics.heightPixels/displayMetrics.density;
+//        float density  = getResources().getDisplayMetrics().density;
+//        float dpHeight = outMetrics.heightPixels / density;
+//        float dpWidth  = outMetrics.widthPixels / density;
+        int newHeight =800;// displayMetrics.heightPixels;
+        int newWidth = 800;//displayMetrics.widthPixels;
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) screenWidthInDp) / width;
+        float scaleHeight = ((float) screenHeightInDp) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
+    }
+//    // Decodes image and scales it to reduce memory consumption
+//    private Bitmap decodeFile(File f) {
+//        try {
+//            // Decode image size
+//            BitmapFactory.Options o = new BitmapFactory.Options();
+//            o.inJustDecodeBounds = true;
+//            BitmapFactory.decodeStream(new FileInputStream(f), null, o);
+//
+//            // The new size we want to scale to
+//            final int REQUIRED_SIZE=70;
+//
+//            // Find the correct scale value. It should be the power of 2.
+//            int scale = 1;
+//            while(o.outWidth / scale / 2 >= REQUIRED_SIZE &&
+//                    o.outHeight / scale / 2 >= REQUIRED_SIZE) {
+//                scale *= 2;
+//            }
+//
+//            // Decode with inSampleSize
+//            BitmapFactory.Options o2 = new BitmapFactory.Options();
+//            o2.inSampleSize = scale;
+//            return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
+//        } catch (FileNotFoundException e) {}
+//        return null;
+//    }
     private class ScanAsyncTask extends AsyncTask<Void, Void, Bitmap> {
 
         private Map<Integer, PointF> points;

@@ -73,8 +73,8 @@ class MainActivity : FlutterActivity() {
                                     getIntent.type = "image/*"
                                     val pickIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                                     pickIntent.type = "image/*"
-//                                    val chooserIntent = Intent.createChooser(getIntent, "Select Image")
-//                                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(pickIntent))
+                                    // val chooserIntent = Intent.createChooser(getIntent, "Select Image")
+                                    // chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(pickIntent))
                                     startActivityForResult(pickIntent, PICK_IMAGE_REQUEST_CODE)
                                 }
                                 result.success("message")
