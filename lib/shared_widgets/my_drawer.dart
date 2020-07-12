@@ -55,6 +55,7 @@ class _MyDrawerState extends State<MyDrawer> {
   }
 
   uploadImage() async {
+    Navigator.pop(context);
     AnalyticsService().sendEvent(
       name: 'upload_image_click',
     );
