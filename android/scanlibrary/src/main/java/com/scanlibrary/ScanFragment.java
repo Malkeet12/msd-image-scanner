@@ -94,7 +94,6 @@ public class ScanFragment extends Fragment {
                 }
 
                 if (original != null) {
-                    // original=  getResizedBitmap(original);
                     setBitmap(original);
                 }
             }
@@ -246,60 +245,6 @@ public class ScanFragment extends Fragment {
         return _bitmap;
     }
 
-    public Bitmap getResizedBitmap(Bitmap bm) {
-//        DisplayMetrics displayMetrics = new DisplayMetrics();
-//        displayMetrics=  getActivity().getResources().getDisplayMetrics();
-//        Display display = getActivity().getWindowManager().getDefaultDisplay();
-//        DisplayMetrics outMetrics = new DisplayMetrics ();
-//        display.getMetrics(outMetrics);
-        final DisplayMetrics displayMetrics=getResources().getDisplayMetrics();
-        final float screenWidthInDp=displayMetrics.widthPixels/displayMetrics.density;
-        final float screenHeightInDp=displayMetrics.heightPixels/displayMetrics.density;
-//        float density  = getResources().getDisplayMetrics().density;
-//        float dpHeight = outMetrics.heightPixels / density;
-//        float dpWidth  = outMetrics.widthPixels / density;
-        int newHeight =800;// displayMetrics.heightPixels;
-        int newWidth = 800;//displayMetrics.widthPixels;
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-        float scaleWidth = ((float) screenWidthInDp) / width;
-        float scaleHeight = ((float) screenHeightInDp) / height;
-        // CREATE A MATRIX FOR THE MANIPULATION
-        Matrix matrix = new Matrix();
-        // RESIZE THE BIT MAP
-        matrix.postScale(scaleWidth, scaleHeight);
-
-        // "RECREATE" THE NEW BITMAP
-        Bitmap resizedBitmap = Bitmap.createBitmap(
-                bm, 0, 0, width, height, matrix, false);
-        bm.recycle();
-        return resizedBitmap;
-    }
-//    // Decodes image and scales it to reduce memory consumption
-//    private Bitmap decodeFile(File f) {
-//        try {
-//            // Decode image size
-//            BitmapFactory.Options o = new BitmapFactory.Options();
-//            o.inJustDecodeBounds = true;
-//            BitmapFactory.decodeStream(new FileInputStream(f), null, o);
-//
-//            // The new size we want to scale to
-//            final int REQUIRED_SIZE=70;
-//
-//            // Find the correct scale value. It should be the power of 2.
-//            int scale = 1;
-//            while(o.outWidth / scale / 2 >= REQUIRED_SIZE &&
-//                    o.outHeight / scale / 2 >= REQUIRED_SIZE) {
-//                scale *= 2;
-//            }
-//
-//            // Decode with inSampleSize
-//            BitmapFactory.Options o2 = new BitmapFactory.Options();
-//            o2.inSampleSize = scale;
-//            return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
-//        } catch (FileNotFoundException e) {}
-//        return null;
-//    }
     private class ScanAsyncTask extends AsyncTask<Void, Void, Bitmap> {
 
         private Map<Integer, PointF> points;
