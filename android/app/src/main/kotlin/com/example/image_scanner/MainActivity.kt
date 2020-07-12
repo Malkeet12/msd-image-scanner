@@ -2,6 +2,7 @@ package msd.image_scanner
 
 //import com.scanlibrary.ScanConstants
 import android.Manifest
+import android.R
 import android.app.Activity
 import android.content.ClipData
 import android.content.Intent
@@ -13,6 +14,8 @@ import android.os.Environment
 import android.os.StrictMode
 import android.os.StrictMode.VmPolicy
 import android.provider.MediaStore
+import android.view.MenuItem
+import android.view.SurfaceHolder
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import com.scanlibrary.ScanActivity
@@ -34,6 +37,7 @@ class MainActivity : FlutterActivity() {
     private var PICK_IMAGE_REQUEST_CODE: Int = 55
     private var currentGroupId: Any? = null
     private var fileUri: Uri? = null
+    private var forService: Intent? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
@@ -57,19 +61,28 @@ class MainActivity : FlutterActivity() {
                         }
                         "gallery" -> {
                             currentGroupId = call.arguments
-                            val intent: Intent
-                            if (Build.VERSION.SDK_INT < 19) {
-                                intent = Intent()
-                                intent.action = Intent.ACTION_GET_CONTENT
-                                intent.type = "*/*"
-                                startActivityForResult(intent, PICK_IMAGE_REQUEST_CODE)
-                            } else {
-                                intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-                                intent.addCategory(Intent.CATEGORY_OPENABLE)
-                                intent.type = "*/*"
-                                startActivityForResult(intent, PICK_IMAGE_REQUEST_CODE)
+                            try {
+                                val intent: Intent
+                                if (Build.VERSION.SDK_INT < 19) {
+                                    intent = Intent()
+                                    intent.action = Intent.ACTION_GET_CONTENT
+                                    intent.type = "*/*"
+                                    startActivityForResult(intent, PICK_IMAGE_REQUEST_CODE)
+                                } else {
+                                    val getIntent = Intent(Intent.ACTION_GET_CONTENT)
+                                    getIntent.type = "image/*"
+                                    val pickIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                                    pickIntent.type = "image/*"
+//                                    val chooserIntent = Intent.createChooser(getIntent, "Select Image")
+//                                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(pickIntent))
+                                    startActivityForResult(pickIntent, PICK_IMAGE_REQUEST_CODE)
+                                }
+                                result.success("message")
+                            } catch (e: java.lang.Exception) {
+                                println("error")
+//                                result.success("message")
                             }
-                            result.success("message")
+
 
                         }
                         "getImages" -> {
@@ -99,7 +112,7 @@ class MainActivity : FlutterActivity() {
                             }
                         }
                         "saveAsPdf" -> {
-                            var file= File("${call.arguments}")
+                            var file = File("${call.arguments}")
                             val fileName: String = file.name
                             var src = file.absolutePath.substring(1, file.absolutePath.lastIndexOf("/"))
                             val root = Environment.getExternalStorageDirectory().absolutePath
@@ -110,8 +123,8 @@ class MainActivity : FlutterActivity() {
                         "deleteFile" -> {
                             val documentName = call.argument<String>("documentName")
                             val filePath = call.argument<String>("filePath")
-                            var file= File(filePath)
-                            var name=file.name
+                            var file = File(filePath)
+                            var name = file.name
 
                             var success = deleteFile("$documentName", "$name")
                             result.success(success)
@@ -128,15 +141,15 @@ class MainActivity : FlutterActivity() {
                             val currentName = call.argument<String>("currentName")
                             val futureName = call.argument<String>("futureName")
                             val root = Environment.getExternalStorageDirectory().absolutePath
-                            var currentFile= File("$root/digipaper/$currentName")
+                            var currentFile = File("$root/digipaper/$currentName")
 
-                            var destinationFile=File("$root/digipaper/$futureName");
+                            var destinationFile = File("$root/digipaper/$futureName");
                             try {
-                              var res=  currentFile.renameTo(destinationFile);
-                                if(res){
-                                refreshUI()
-                                result.success(true)
-                                }else {
+                                var res = currentFile.renameTo(destinationFile);
+                                if (res) {
+                                    refreshUI()
+                                    result.success(true)
+                                } else {
                                     result.success(false)
                                 }
                             } catch (e: FileAlreadyExistsException) {
@@ -263,7 +276,7 @@ class MainActivity : FlutterActivity() {
                 if (child.isDirectory) {
                     val file = File("${child.absolutePath}")
                     var lastUpdatedTime = getLatestModifiedDate(file)
-                    item.put("folderSize",folderSize(file))
+                    item.put("folderSize", folderSize(file))
                     item.put("lastUpdated", lastUpdatedTime)
                 }
                 for (file in child.listFiles()) {
@@ -283,6 +296,7 @@ class MainActivity : FlutterActivity() {
         }
         return list
     }
+
     fun folderSize(directory: File): Long {
         var length: Long = 0
         for (file in directory.listFiles()) {
@@ -290,6 +304,7 @@ class MainActivity : FlutterActivity() {
         }
         return length
     }
+
     // return mapOf("length" to length, "lastModifiefDate" to Math.max(latestDate, dir.lastModified()))
     private fun getLatestModifiedDate(dir: File): Long {
         val files = dir.listFiles()
@@ -433,40 +448,43 @@ class MainActivity : FlutterActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (data != null) {
+            super.onActivityResult(requestCode, resultCode, data)
+            if (resultCode == Activity.RESULT_OK && requestCode != 2342) {
+                var bitmap: Bitmap? = null
+                //temporary solution will fix tomorrow
+                if (requestCode == PICK_IMAGE_REQUEST_CODE) {
+                    val uri = data.data
+                    try {
+                        bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+                        val preference: Int = ScanConstants.OPEN_MEDIA
+                        val intent = Intent(this, ScanActivity::class.java)
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                        if (bitmap != null) {
+                            val uri: Uri = Utils.getUri(activity, bitmap)
+                            intent.putExtra("image", uri)
+                            intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference)
+                            startActivityForResult(intent, 100)
+                        }
 
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            var bitmap: Bitmap? = null
-            //temporary solution will fix tomorrow
-            if(requestCode==PICK_IMAGE_REQUEST_CODE && requestCode != 2342){
-                val uri = data.data
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-                    val preference: Int = ScanConstants.OPEN_MEDIA
-                    val intent = Intent(this, ScanActivity::class.java)
-                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                    val uri: Uri = Utils.getUri(activity, bitmap)
-                    intent.putExtra("image", uri)
-                    intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference)
-                    startActivityForResult(intent, 100)
-//                    SaveImage(bitmap);
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }else if(requestCode != 2342){
-                val uri: Uri = data.extras.getParcelable(ScanConstants.SCANNED_RESULT)
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-                    contentResolver.delete(uri, null, null)
-                    SaveImage(bitmap);
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                } else {
+                    val uri: Uri = data.extras.getParcelable(ScanConstants.SCANNED_RESULT)
+                    try {
+                        bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+                        contentResolver.delete(uri, null, null)
+                        SaveImage(bitmap);
 
-                } catch (e: IOException) {
-                    e.printStackTrace()
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
                 }
+
             }
-
         }
     }
 }
