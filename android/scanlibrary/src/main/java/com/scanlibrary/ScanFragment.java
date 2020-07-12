@@ -119,7 +119,10 @@ public class ScanFragment extends Fragment {
     }
 
     private void setBitmap(Bitmap originalBit) {
-        Bitmap scaledBitmap = scaledBitmap(originalBit, sourceFrame.getWidth(), (int) (sourceFrame.getHeight()*0.7));
+//          DisplayMetrics      displayMetrics=  getActivity().getResources().getDisplayMetrics();
+//        int newHeight = displayMetrics.heightPixels;
+//        int newWidth =displayMetrics.widthPixels;
+        Bitmap scaledBitmap = scaledBitmap(originalBit, sourceFrame.getWidth(), sourceFrame.getHeight());
         original=scaledBitmap;
         sourceImageView.setImageBitmap(scaledBitmap);
         Bitmap tempBitmap = ((BitmapDrawable) sourceImageView.getDrawable()).getBitmap();
