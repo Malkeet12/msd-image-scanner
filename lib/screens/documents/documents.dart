@@ -79,7 +79,7 @@ class _DocumentsState extends State<Documents> {
     }
     List<Widget> list = new List<Widget>();
 
-    for (var i = docs.length - 1; i >= 0; i--) {
+    for (var i = 0; i < docs.length; i++) {
       var doc = docs[i];
       var name = doc["name"];
       var folderSize = doc["folderSize"];
@@ -186,8 +186,8 @@ class _DocumentsState extends State<Documents> {
                                 ),
                             Icon(
                               reverseSorting
-                                  ? Icons.arrow_upward
-                                  : Icons.arrow_downward,
+                                  ? Icons.arrow_downward
+                                  : Icons.arrow_upward,
                               size: 20,
                               // color: ColorShades.textSecGray3,
                             )
