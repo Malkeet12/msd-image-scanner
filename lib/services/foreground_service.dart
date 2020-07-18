@@ -31,6 +31,6 @@ class ForegroundService {
   }
 
   static Future<dynamic> _handleMethod(MethodCall call) async {
-    await callBackDispacther[call.method]();
+    await callBackDispacther[call.method](call.arguments);
   }
 }

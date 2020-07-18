@@ -3,18 +3,13 @@ import 'dart:io';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-// import 'package:image_picker/image_picker.dart';
 import 'package:image_scanner/shared_widgets/blue_button.dart';
 import 'package:image_scanner/shared_widgets/build_list.dart';
 import 'package:image_scanner/shared_widgets/my_app_bar.dart';
 import 'package:image_scanner/shared_widgets/my_drawer.dart';
-import 'package:image_scanner/shared_widgets/primary_button.dart';
 import 'package:image_scanner/shared_widgets/text_decoration.dart';
-import 'package:image_scanner/theme/style.dart';
 import 'package:image_scanner/util/analytics_service.dart';
 import 'package:image_scanner/util/common_util.dart';
-import 'package:image_scanner/util/permission.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:share/share.dart';
 
 class GalleryView extends StatefulWidget {

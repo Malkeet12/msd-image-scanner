@@ -2,7 +2,6 @@ package msd.image_scanner
 
 //import com.scanlibrary.ScanConstants
 import android.Manifest
-import android.R
 import android.app.Activity
 import android.content.ClipData
 import android.content.Intent
@@ -14,8 +13,6 @@ import android.os.Environment
 import android.os.StrictMode
 import android.os.StrictMode.VmPolicy
 import android.provider.MediaStore
-import android.view.MenuItem
-import android.view.SurfaceHolder
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import com.scanlibrary.ScanActivity
@@ -35,8 +32,11 @@ class MainActivity : FlutterActivity() {
     }
 
     private var PICK_IMAGE_REQUEST_CODE: Int = 55
+    private var CAPTURE_IMAGE_FOR_SCANNING_REQUEST_CODE: Int = 99
+    private var CAPTURE_IMAGE_FOR_TEXT_EXTRACTION_REQUEST_CODE: Int = 56
     private var currentGroupId: Any? = null
     private var fileUri: Uri? = null
+    private var temporaryPathForTextExtraction: Any? = null
     private var forService: Intent? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -47,7 +47,6 @@ class MainActivity : FlutterActivity() {
                 .setMethodCallHandler { call: MethodCall, result: MethodChannel.Result ->
                     when (call.method) {
                         "camera" -> {
-                            val REQUEST_CODE = 99
 
                             currentGroupId = call.arguments
                             val preference: Int = ScanConstants.OPEN_CAMERA
@@ -55,7 +54,7 @@ class MainActivity : FlutterActivity() {
                             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                             intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference)
-                            startActivityForResult(intent, REQUEST_CODE)
+                            startActivityForResult(intent, CAPTURE_IMAGE_FOR_SCANNING_REQUEST_CODE)
                             result.success("message")
 
                         }
@@ -84,6 +83,16 @@ class MainActivity : FlutterActivity() {
                             }
 
 
+                        }
+                        "openCameraForTextExtraction" ->{
+                            val builder = VmPolicy.Builder()
+                            StrictMode.setVmPolicy(builder.build())
+                            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                            var imageUri = Uri.fromFile(File(Environment.getExternalStorageDirectory(), "fname_" + System.currentTimeMillis().toString() + ".jpg"))
+                            temporaryPathForTextExtraction=imageUri.path
+                            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
+                            intent.setClipData(ClipData.newRawUri("", imageUri))
+                            startActivityForResult(intent, CAPTURE_IMAGE_FOR_TEXT_EXTRACTION_REQUEST_CODE)
                         }
                         "getImages" -> {
                             val images = getImages()
@@ -448,6 +457,12 @@ class MainActivity : FlutterActivity() {
         }
     }
 
+
+    fun sendTemporaryPathToFlutter() {
+        channel?.invokeMethod("copyText", temporaryPathForTextExtraction)
+                
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (data != null) {
             super.onActivityResult(requestCode, resultCode, data)
@@ -486,5 +501,9 @@ class MainActivity : FlutterActivity() {
 
             }
         }
+         if(requestCode==CAPTURE_IMAGE_FOR_TEXT_EXTRACTION_REQUEST_CODE){
+                sendTemporaryPathToFlutter();
+            }
+
     }
 }

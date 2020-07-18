@@ -26,10 +26,10 @@ class _AllDocumentsState extends State<AllDocuments> {
   void initState() {
     super.initState();
     ForegroundService.registerCallBack("refreshUI", getUserImages);
-    getUserImages();
+    getUserImages("");
   }
 
-  getUserImages() async {
+  getUserImages(data) async {
     BlocProvider.of<GlobalBloc>(context).add(FetchAllDocuments());
   }
 

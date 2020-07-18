@@ -26,7 +26,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
     ForegroundService.registerCallBack("refreshCurrentDoc", refreshCurrentDoc);
   }
 
-  refreshCurrentDoc() async {
+  refreshCurrentDoc(data) async {
     BlocProvider.of<GlobalBloc>(context).add(GetCurrentDocument());
   }
 

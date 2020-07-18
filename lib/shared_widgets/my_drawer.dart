@@ -1,11 +1,8 @@
-// import 'package:camera/camera.dart';
-import 'dart:math';
+import 'package:image_scanner/screens/text_extraction/image_preview.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image_scanner/screens/documents/all_documents.dart';
-import 'package:image_scanner/screens/gallery_view.dart';
-import 'package:image_scanner/screens/take_picture.dart';
+import 'package:image_scanner/screens/text_extraction/gallery_view.dart';
 import 'package:image_scanner/services/foreground_service.dart';
 import 'package:image_scanner/theme/style.dart';
 import 'package:image_scanner/util/analytics_service.dart';
@@ -19,30 +16,21 @@ class MyDrawer extends StatefulWidget {
 }
 
 class _MyDrawerState extends State<MyDrawer> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   capureImage() async {
-    // AnalyticsService().sendEvent(
-    //   name: 'capture_image_click',
-    // );
-    // ForegroundService.start('camera', '');
-    // ForegroundService.registerCallBack("saveImage", handleImageBitMap);
-    // Navigator.pop(context);
-    // Obtain a list of the available cameras on the device.
-    final cameras = await availableCameras();
-
-// Get a specific camera from the list of available cameras.
-    final firstCamera = cameras.first;
+    AnalyticsService().sendEvent(
+      name: 'capture_image_click',
+    );
     Navigator.pop(context);
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TakePicture(camera: firstCamera),
+        builder: (context) => ImagePreview(),
       ),
     );
   }
 
-  handleImageBitMap(data) {
-    print('back to future');
+  handleImage(path) async {
+    // If the picture was taken, display it on a new screen.
   }
 
   launchURL() async {

@@ -5,7 +5,7 @@ import 'package:image_scanner/blocs/global/bloc.dart';
 import 'package:image_scanner/blocs/global/state.dart';
 import 'package:image_scanner/screens/documents/all_documents.dart';
 // import 'package:image_scanner/screens/take_picture.dart';
-import 'package:image_scanner/screens/gallery_view.dart';
+import 'package:image_scanner/screens/text_extraction/gallery_view.dart';
 import 'package:image_scanner/shared_widgets/blue_button.dart';
 import 'package:image_scanner/shared_widgets/my_drawer.dart';
 import 'package:image_scanner/theme/style.dart';
