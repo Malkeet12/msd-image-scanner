@@ -31,13 +31,12 @@ class MainActivity : FlutterActivity() {
         var channel: MethodChannel? = null
     }
 
-    private var PICK_IMAGE_REQUEST_CODE: Int = 55
-    private var CAPTURE_IMAGE_FOR_SCANNING_REQUEST_CODE: Int = 99
-    private var CAPTURE_IMAGE_FOR_TEXT_EXTRACTION_REQUEST_CODE: Int = 56
+    private var pickImageRequestCode: Int = 55
+    private var captureImageForScanningRequestCode: Int = 99
+    private var  captureImageForTextExtractionRequestCode: Int = 56
+    private var pickImageForTextExtractionRequestCode: Int = 57
     private var currentGroupId: Any? = null
-    private var fileUri: Uri? = null
     private var temporaryPathForTextExtraction: Any? = null
-    private var forService: Intent? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
@@ -54,7 +53,7 @@ class MainActivity : FlutterActivity() {
                             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                             intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference)
-                            startActivityForResult(intent, CAPTURE_IMAGE_FOR_SCANNING_REQUEST_CODE)
+                            startActivityForResult(intent, captureImageForScanningRequestCode)
                             result.success("message")
 
                         }
@@ -66,7 +65,7 @@ class MainActivity : FlutterActivity() {
                                     intent = Intent()
                                     intent.action = Intent.ACTION_GET_CONTENT
                                     intent.type = "*/*"
-                                    startActivityForResult(intent, PICK_IMAGE_REQUEST_CODE)
+                                    startActivityForResult(intent, pickImageRequestCode)
                                 } else {
                                     val getIntent = Intent(Intent.ACTION_GET_CONTENT)
                                     getIntent.type = "image/*"
@@ -74,7 +73,7 @@ class MainActivity : FlutterActivity() {
                                     pickIntent.type = "image/*"
                                     // val chooserIntent = Intent.createChooser(getIntent, "Select Image")
                                     // chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(pickIntent))
-                                    startActivityForResult(pickIntent, PICK_IMAGE_REQUEST_CODE)
+                                    startActivityForResult(pickIntent, pickImageRequestCode)
                                 }
                                 result.success("message")
                             } catch (e: java.lang.Exception) {
@@ -84,6 +83,7 @@ class MainActivity : FlutterActivity() {
 
 
                         }
+                       
                         "openCameraForTextExtraction" ->{
                             val builder = VmPolicy.Builder()
                             StrictMode.setVmPolicy(builder.build())
@@ -92,7 +92,7 @@ class MainActivity : FlutterActivity() {
                             temporaryPathForTextExtraction=imageUri.path
                             intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
                             intent.setClipData(ClipData.newRawUri("", imageUri))
-                            startActivityForResult(intent, CAPTURE_IMAGE_FOR_TEXT_EXTRACTION_REQUEST_CODE)
+                            startActivityForResult(intent, captureImageForTextExtractionRequestCode)
                         }
                         "getImages" -> {
                             val images = getImages()
@@ -469,7 +469,7 @@ class MainActivity : FlutterActivity() {
             if (resultCode == Activity.RESULT_OK && requestCode != 2342) {
                 var bitmap: Bitmap? = null
                 //temporary solution will fix tomorrow
-                if (requestCode == PICK_IMAGE_REQUEST_CODE) {
+                if (requestCode == pickImageRequestCode) {
                     val uri = data.data
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
@@ -487,7 +487,7 @@ class MainActivity : FlutterActivity() {
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }
-                } else {
+                }else {
                     val uri: Uri = data.extras.getParcelable(ScanConstants.SCANNED_RESULT)
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
@@ -501,9 +501,10 @@ class MainActivity : FlutterActivity() {
 
             }
         }
-         if(requestCode==CAPTURE_IMAGE_FOR_TEXT_EXTRACTION_REQUEST_CODE){
+         if(requestCode==captureImageForTextExtractionRequestCode){
                 sendTemporaryPathToFlutter();
             }
+
 
     }
 }

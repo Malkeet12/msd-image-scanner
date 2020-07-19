@@ -32,8 +32,7 @@ class _ImagePreviewState extends State<ImagePreview> {
   @override
   void initState() {
     super.initState();
-    ForegroundService.registerCallBack("copyText", extractText);
-    ForegroundService.start("openCameraForTextExtraction", "");
+    clickAnother();
   }
 
   clickAnother() {
