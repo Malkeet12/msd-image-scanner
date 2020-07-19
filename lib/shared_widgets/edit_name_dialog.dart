@@ -34,6 +34,7 @@ class _EditNameDialogState extends State<EditNameDialog> {
     var colorScheme = Theme.of(context).colorScheme;
     var textTheme = Theme.of(context).textTheme;
     return AlertDialog(
+      shape: OutlineInputBorder(borderRadius: BorderRadius.circular(16.0)),
       title: new Text(
         "Rename file",
         style: Theme.of(context)

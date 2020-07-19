@@ -1,8 +1,8 @@
-import 'package:image_scanner/screens/text_extraction/image_preview.dart';
+import 'package:image_scanner/screens/text_extraction/click_pic.dart';
+import 'package:image_scanner/screens/text_extraction/pick_from_gallery.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:image_scanner/screens/documents/all_documents.dart';
-import 'package:image_scanner/screens/text_extraction/gallery_view.dart';
 import 'package:image_scanner/services/foreground_service.dart';
 import 'package:image_scanner/theme/style.dart';
 import 'package:image_scanner/util/analytics_service.dart';
@@ -24,7 +24,7 @@ class _MyDrawerState extends State<MyDrawer> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ImagePreview(),
+        builder: (context) => ClickPic(),
       ),
     );
   }
@@ -33,8 +33,7 @@ class _MyDrawerState extends State<MyDrawer> {
     // If the picture was taken, display it on a new screen.
   }
 
-  launchURL() async {
-    const url = 'https://malkeet.tech';
+  launchURL(url) async {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -50,7 +49,7 @@ class _MyDrawerState extends State<MyDrawer> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => GalleryView(),
+        builder: (context) => PickFromGallery(),
       ),
     );
   }
@@ -159,11 +158,22 @@ class _MyDrawerState extends State<MyDrawer> {
                 context,
                 false,
                 Icon(
+                  Icons.rate_review,
+                  color: Colors.grey,
+                ),
+                "Rate digipaper",
+                () => launchURL(
+                    'https://play.google.com/store/apps/details?id=msd.image_scanner'),
+              ),
+              listItem(
+                context,
+                false,
+                Icon(
                   Icons.verified_user,
                   color: Colors.grey,
                 ),
                 "Privacy policy",
-                () => launchURL(),
+                () => launchURL('https://malkeet.tech'),
               ),
               Padding(
                 padding: const EdgeInsets.only(

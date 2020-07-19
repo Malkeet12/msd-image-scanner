@@ -1,15 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_scanner/theme/style.dart';
 
-/*
--------Usage---------
-PrimaryButton(
-          text: 'Register',
-          disabled: true, //optional
-          onPressed: _onPressed,
-        ),
-*/
-
 class BlueButton extends StatelessWidget {
   final String text;
   final bool disabled;
@@ -26,21 +17,12 @@ class BlueButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var colorScheme = Theme.of(context).colorScheme;
-    var textTheme = Theme.of(context).textTheme;
     return Container(
       height: 42.0,
       width: width ?? null,
       decoration: BoxDecoration(
-        boxShadow: [
-          // BoxShadow(
-          //   color: ColorShades.textPrimaryDark,
-          //   offset: Offset(-7, -7),
-          //   blurRadius: 20,
-          // )
-        ],
+        boxShadow: [],
         borderRadius: BorderRadius.circular(50.0),
-        // border: Border.all(color: ColorShades.textPrimaryDark, width: 3.0),
       ),
       child: RaisedButton(
         padding: EdgeInsets.symmetric(horizontal: 20),

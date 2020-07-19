@@ -5,16 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:image_scanner/screens/text_extraction/copy_text.dart';
 import 'package:image_scanner/services/foreground_service.dart';
 
-class ImagePreview extends StatefulWidget {
-  const ImagePreview({
+class ClickPic extends StatefulWidget {
+  const ClickPic({
     Key key,
   }) : super(key: key);
 
   @override
-  _ImagePreviewState createState() => _ImagePreviewState();
+  _ClickPicState createState() => _ClickPicState();
 }
 
-class _ImagePreviewState extends State<ImagePreview> {
+class _ClickPicState extends State<ClickPic> {
   final TextRecognizer textRecognizer =
       FirebaseVision.instance.textRecognizer();
   var completeDoc;

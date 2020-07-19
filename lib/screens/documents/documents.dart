@@ -28,7 +28,7 @@ class Documents extends StatefulWidget {
 
 class _DocumentsState extends State<Documents> {
   var currentView = "linear";
-  var reverseSorting = false;
+  var reverseSorting = true;
   setCurrentDocument(id) async {
     BlocProvider.of<GlobalBloc>(context).add(GetCurrentDocument(id: id));
   }

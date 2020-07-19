@@ -31,6 +31,7 @@ class _EditDocState extends State<EditDoc> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          shape: OutlineInputBorder(borderRadius: BorderRadius.circular(16.0)),
           title: new Text(
             "Are you sure you want to remove this image ?",
             style: Theme.of(context)

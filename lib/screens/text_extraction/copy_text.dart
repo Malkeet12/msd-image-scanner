@@ -19,12 +19,14 @@ class CopyText extends StatelessWidget {
     this.ctaAction,
     this.file,
     this.isEmptyState,
+    this.ctaIcon = Icons.camera_alt,
   }) : super(key: key);
   final ctaAction;
   final List labels;
   final completeDoc;
   final isEmptyState;
   final file;
+  final ctaIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +93,7 @@ class CopyText extends StatelessWidget {
         child: FloatingActionButton(
           backgroundColor: Color(0xff4364A1),
           child: Icon(
-            Icons.camera_alt,
+            ctaIcon,
           ),
           onPressed: () => ctaAction(),
         ),

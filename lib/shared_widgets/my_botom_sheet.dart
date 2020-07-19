@@ -180,6 +180,8 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
+            shape:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(16.0)),
             title: Text.rich(
               TextSpan(
                 text: '', // default text style

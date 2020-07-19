@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:image_scanner/shared_widgets/blue_button.dart';
-import 'package:image_scanner/shared_widgets/primary_button.dart';
 import 'package:image_scanner/theme/style.dart';
 import 'package:image_scanner/util/analytics_service.dart';
 import 'package:share/share.dart';
