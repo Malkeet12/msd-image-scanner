@@ -173,7 +173,8 @@ class _MyDrawerState extends State<MyDrawer> {
                   color: Colors.grey,
                 ),
                 "Privacy policy",
-                () => launchURL('https://malkeet.tech'),
+                () =>
+                    launchURL('https://msdstudio.in/digipaper/privacy-policy'),
               ),
               Padding(
                 padding: const EdgeInsets.only(
